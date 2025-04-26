@@ -1,0 +1,133 @@
+/* Estilo do cabeçalho */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espaça os elementos */
+    background-color: transparent; /* Sem fundo para mostrar as elipses */
+    padding: 20px 40px;
+    position: relative;
+    z-index: 1; /* Garante que o cabeçalho fique acima das elipses */
+}
+
+header .logo {
+    width: 80px; /* Define o tamanho da logo */
+    height: auto; /* Mantém a proporção da imagem */
+}
+
+header h1 {
+    color: #007D7A;
+    font-size: 32px; /* Tamanho do título */
+    margin: 0;
+    flex-grow: 1; /* Faz o título ocupar o espaço restante */
+    text-align: center; /* Centraliza o texto */
+}
+
+/* Estilo do body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF; /* Fundo branco */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    position: relative; /* Necessário para posicionar os elementos absolutos */
+    overflow: hidden; /* Garante que elementos fora da tela não sejam visíveis */
+}
+
+/* Estilo do dashboard */
+#dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px; /* Espaçamento entre os cards */
+    margin: 40px;
+    position: relative;
+    z-index: 1; /* Garante que o dashboard fique acima das elipses */
+}
+
+/* Estilo dos cards */
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 200px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centraliza o conteúdo do card */
+}
+
+.card img {
+    width: 60px; /* Define a largura fixa */
+    height: 60px; /* Define a altura fixa */
+    object-fit: contain; /* Garante que a imagem seja ajustada sem distorção */
+    border-radius: 8px; /* Bordas arredondadas */
+    margin-bottom: 10px; /* Espaço abaixo da imagem */
+    display: block; /* Garante que a imagem seja um bloco */
+    margin-left: auto; /* Centraliza horizontalmente */
+    margin-right: auto; /* Centraliza horizontalmente */
+}
+
+.card h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Barra de progresso */
+.progress-bar {
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    height: 20px;
+    position: relative;
+    margin-top: 10px;
+}
+
+.progress-bar-fill {
+    background-color: #007D7A;
+    height: 100%;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+    width: 65%; /* Exemplo de preenchimento */
+}
+
+/* Elipse Amarela */
+body::before {
+    content: "";
+    position: absolute;
+    width: 313.98px;
+    height: 424.58px;
+    left: -100px; /* Movido mais para a esquerda */
+    top: 550px; /* Mantido mais para cima */
+    background: #ECB011;
+    border-radius: 50%; /* Garante que seja uma elipse */
+    z-index: -1; /* Coloca atrás do conteúdo */
+    transform: rotate(-45deg); /* Gira a elipse 45 graus no sentido anti-horário */
+}
+
+/* Elipse Verde */
+body::after {
+    content: "";
+    position: absolute;
+    width: 184px;
+    height: 403.48px;
+    left: 1200px; /* Ajustado para mover mais para dentro */
+    top: -100px; /* Movido mais para cima */
+    background: #007D7A;
+    border-radius: 50%; /* Garante que seja uma elipse */
+    z-index: -1; /* Coloca atrás do conteúdo */
+    transform: rotate(-45deg); /* Gira a elipse 45 graus no sentido anti-horário */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #dashboard {
+        flex-direction: column; /* Empilha os cards verticalmente */
+        align-items: center; /* Centraliza os cards */
+    }
+
+    .card {
+        width: 90%; /* Cards ocupam 90% da largura da tela */
+    }
+}
