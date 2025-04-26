@@ -16,7 +16,6 @@ IMAGE_MAPPING = {
     "Precipitador": "/static/images/precipitador.png",
 }
 
-
 # Função para carregar os dados do CSV
 def load_frentes_from_csv(file_path):
     frentes = []
@@ -36,6 +35,7 @@ def load_frentes_from_csv(file_path):
     except Exception as e:
         print(f"Erro ao carregar o arquivo CSV: {e}")
     return frentes
+
 # Rota principal para renderizar o dashboard
 @app.route("/")
 def index():
@@ -47,5 +47,9 @@ def get_frentes():
     frentes = load_frentes_from_csv("templates/frentes.csv")  # Corrigido o caminho
     return jsonify(frentes)
 
+# 🎯 Dica Bônus adicionada aqui
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Pega a porta do ambiente (Render exige isso!)
+    app.run(host="0.0.0.0", port=port, debug=True)
+    # Para rodar localmente, use: python app.py
+    # Para rodar no Render, use: render -p 5000 app.py
