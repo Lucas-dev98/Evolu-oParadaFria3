@@ -1,9 +1,7 @@
-name,value
-Contratos,100
-Logística,70
-Ventilador,20
-Espeçador,90
-Financeiro,75
-Eletrica,85
-Forno,60
-Precipitador,50
+name,value,sub_activities
+Patio de Alimentação,80,
+Secagem,70,
+Torre de Resfriamento,60,
+Mistura,90,
+Briquetagem,85,
+Forno,0,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25

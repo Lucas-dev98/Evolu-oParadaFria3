@@ -6,17 +6,18 @@ import sys
 app = Flask(__name__)
 
 IMAGE_MAPPING = {
-    "Contratos": "/static/images/contratos.png",
-    "Logística": "/static/images/logistica.png",
-    "Ventilador": "/static/images/ventilador.png",
-    "Espeçador": "/static/images/espessador.png",
-    "Financeiro": "/static/images/financeiro.png",
-    "Eletrica": "/static/images/eletrica.png",
+    "Patio de Alimentação": "/static/images/patioAlimentação.png",
+    "Secagem": "/static/images/secagem.png",
+    "Torre de Resfriamento": "/static/images/TorreResfriamento.png",
+    "Mistura": "/static/images/mistura.png",
+    "Briquetagem": "/static/images/briquetagem.png",
     "Forno": "/static/images/forno.png",
-    "Precipitador": "/static/images/precipitador.png",
+        "Meio do Forno": "/static/images/precipitador.png",
+        "Forno ( Abaixamento)": "/static/images/precipitador.png",
+        "Forno ( Levantamento)": "/static/images/forno.png",
 }
 
-# Função para carregar os dados do CSV
+# Atualizar a função para incluir atividades secundárias
 def load_frentes_from_csv(file_path):
     frentes = []
     try:
@@ -24,11 +25,25 @@ def load_frentes_from_csv(file_path):
         with open(file_path, mode='r', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                print(f"Lendo linha: {row}")  # Log para depuração
+                sub_activities = []
+                if "sub_activities" in row and row["sub_activities"]:
+                    sub_activities_raw = row["sub_activities"].split(";")
+                    for sub_activity in sub_activities_raw:
+                        name, value = sub_activity.split(":")
+                        sub_activities.append({"name": name.strip(), "value": int(value.strip())})
+
+                # Calcula a porcentagem da atividade pai com base nas subatividades
+                if sub_activities:
+                    total_value = sum(sub["value"] for sub in sub_activities)
+                    total_value = min(total_value, 100)  # Limita o valor total a 100%
+                else:
+                    total_value = int(row["value"])  # Usa o valor da atividade pai se não houver subatividades
+
                 frentes.append({
                     "name": row["name"],
-                    "value": int(row["value"]),
-                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png")  # Adiciona a imagem
+                    "value": total_value,
+                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png"),
+                    "sub_activities": sub_activities
                 })
     except FileNotFoundError:
         print(f"Erro: O arquivo {file_path} não foi encontrado.")
