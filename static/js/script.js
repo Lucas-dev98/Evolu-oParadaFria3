@@ -32,36 +32,31 @@ document.addEventListener("DOMContentLoaded", () => {
             card.appendChild(progressBar);
 
             // Adiciona atividades secundárias
+            let subActivitiesList = null;
             if (frente.sub_activities && frente.sub_activities.length > 0) {
-                const subActivitiesList = document.createElement("ul");
+                subActivitiesList = document.createElement("ul");
                 subActivitiesList.style.display = "none"; // Esconde inicialmente
 
                 frente.sub_activities.forEach(subActivity => {
                     const listItem = document.createElement("li");
                     listItem.textContent = `${subActivity.name}: ${subActivity.value}%`;
-
-                    // Atualiza a porcentagem da atividade pai ao clicar na subatividade
-                    listItem.addEventListener("click", () => {
-                        subActivity.value = (subActivity.value + 10) % 110; // Exemplo de incremento
-                        listItem.textContent = `${subActivity.name}: ${subActivity.value}%`;
-
-                        // Recalcula a porcentagem da atividade pai
-                        const totalValue = frente.sub_activities.reduce((sum, sub) => sum + sub.value, 0);
-                        progressBarFill.style.width = `${totalValue}%`;
-                        progressBarFill.textContent = `${totalValue}%`;
-                    });
-
                     subActivitiesList.appendChild(listItem);
-                });
-
-                // Adiciona evento de clique para exibir/ocultar atividades secundárias
-                card.addEventListener("click", () => {
-                    subActivitiesList.style.display =
-                        subActivitiesList.style.display === "none" ? "block" : "none";
                 });
 
                 card.appendChild(subActivitiesList);
             }
+
+            // Adiciona evento de clique para exibir/ocultar atividades secundárias
+            card.addEventListener("click", (event) => {
+                // Evita que o clique afete outros cards
+                event.stopPropagation();
+
+                // Verifica se o card tem subatividades antes de alternar a visibilidade
+                if (subActivitiesList) {
+                    subActivitiesList.style.display =
+                        subActivitiesList.style.display === "none" ? "block" : "none";
+                }
+            });
 
             dashboard.appendChild(card);
         });
