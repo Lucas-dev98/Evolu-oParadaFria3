@@ -43,6 +43,7 @@ def load_frentes_from_csv(file_path):
                 frentes.append({
                     "name": row["name"],
                     "value": total_value,
+                     "baseline": int(row["baseline"]),
                     "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png"),
                     "sub_activities": sub_activities
                 })

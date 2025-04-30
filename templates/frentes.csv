@@ -1,7 +1,7 @@
-name,value,sub_activities
-Patio de Alimentação,80,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
-Secagem,70,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
-Torre de Resfriamento,60,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
-Mistura,90,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
-Briquetagem,85,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
-Forno,0,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+name,value,baseline,sub_activities
+Patio de Alimentação,80,100,Abaixamento:35;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Secagem,70,90,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Torre de Resfriamento,60,80,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Mistura,90,95,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Briquetagem,85,90,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Forno,0,75,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25

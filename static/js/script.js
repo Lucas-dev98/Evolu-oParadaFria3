@@ -26,10 +26,27 @@ document.addEventListener("DOMContentLoaded", () => {
             progressBarFill.style.width = `${frente.value}%`;
             progressBarFill.textContent = `${frente.value}%`;
 
+            // Calcula a diferença entre o valor real e o baseline
+            const difference = Math.abs(frente.value - frente.baseline);
+
+            // Aplica a cor com base na diferença
+            if (difference > 20) {
+                progressBarFill.style.backgroundColor = "red"; // Muito fora do previsto
+            } else if (difference > 10) {
+                progressBarFill.style.backgroundColor = "yellow"; // Moderadamente fora do previsto
+            } else {
+                progressBarFill.style.backgroundColor = "#007D7A"; // Dentro do previsto
+            }
+
+            const baselineText = document.createElement("p");
+            baselineText.className = "baseline-text";
+            baselineText.textContent = `Planejado: ${frente.baseline}%`;
+
             progressBar.appendChild(progressBarFill);
             card.appendChild(image); // Adiciona a imagem ao card
             card.appendChild(title);
             card.appendChild(progressBar);
+            card.appendChild(baselineText);
 
             // Adiciona atividades secundárias
             let subActivitiesList = null;
@@ -66,10 +83,19 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadFrentes() {
         try {
             const response = await fetch("/api/frentes");
+
+            // Verifica se a resposta é válida
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+            }
+
             const frentes = await response.json();
             renderDashboard(frentes);
         } catch (error) {
             console.error("Erro ao carregar os dados:", error);
+
+            // Exibe uma mensagem de erro no dashboard
+            dashboard.innerHTML = `<p class="error-message">Erro ao carregar os dados. Tente novamente mais tarde.</p>`;
         }
     }
 
