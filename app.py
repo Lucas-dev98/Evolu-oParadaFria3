@@ -12,9 +12,9 @@ IMAGE_MAPPING = {
     "Mistura": "/static/images/mistura.png",
     "Briquetagem": "/static/images/briquetagem.png",
     "Forno": "/static/images/forno.png",
-        "Meio do Forno": "/static/images/precipitador.png",
-        "Forno ( Abaixamento)": "/static/images/precipitador.png",
-        "Forno ( Levantamento)": "/static/images/forno.png",
+    "Meio do Forno": "/static/images/precipitador.png",
+    "Forno ( Abaixamento)": "/static/images/precipitador.png",
+    "Forno ( Levantamento)": "/static/images/forno.png",
 }
 
 # Atualizar a função para incluir atividades secundárias

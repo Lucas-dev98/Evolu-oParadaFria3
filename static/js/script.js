@@ -27,20 +27,23 @@ document.addEventListener("DOMContentLoaded", () => {
             progressBarFill.textContent = `${frente.value}%`;
 
             // Calcula a diferença entre o valor real e o baseline
-            const difference = Math.abs(frente.value - frente.baseline);
+            const difference = frente.baseline - frente.value; // Calcula a diferença diretamente
 
             // Aplica a cor com base na diferença
-            if (difference > 20) {
-                progressBarFill.style.backgroundColor = "red"; // Muito fora do previsto
-            } else if (difference > 10) {
-                progressBarFill.style.backgroundColor = "yellow"; // Moderadamente fora do previsto
-            } else {
-                progressBarFill.style.backgroundColor = "#007D7A"; // Dentro do previsto
+            if (difference <= 20) {
+                progressBarFill.style.backgroundColor = "#007D7A"; // Igual ou maior que o previsto
+            } else if (difference <= 19 && difference > 10) {
+                progressBarFill.style.backgroundColor = "ECB011"; // Moderadamente menor que o previsto
+            } else if (difference <= 10 && difference > 0) {
+                progressBarFill.style.backgroundColor = "orange"; // Menor que o previsto
+            } else if (difference < 0) {
+                progressBarFill.style.backgroundColor = "red"; // Muito menor que o previsto
             }
 
-            const baselineText = document.createElement("p");
-            baselineText.className = "baseline-text";
-            baselineText.textContent = `Planejado: ${frente.baseline}%`;
+// Adiciona o texto do baseline
+const baselineText = document.createElement("p");
+baselineText.className = "baseline-text";
+baselineText.textContent = `Planejado: ${frente.baseline}%`;
 
             progressBar.appendChild(progressBarFill);
             card.appendChild(image); // Adiciona a imagem ao card
