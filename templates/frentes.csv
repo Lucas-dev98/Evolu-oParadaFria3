@@ -1,7 +1,7 @@
 name,value,sub_activities
-Patio de Alimentação,80,
-Secagem,70,
-Torre de Resfriamento,60,
-Mistura,90,
-Briquetagem,85,
+Patio de Alimentação,80,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Secagem,70,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Torre de Resfriamento,60,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Mistura,90,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
+Briquetagem,85,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25
 Forno,0,Abaixamento:25;Levantamento:25;Meio do Forno:25;Forno ( Abaixamento):25;Forno ( Levantamento):25

@@ -30,14 +30,15 @@ def load_frentes_from_csv(file_path):
                     sub_activities_raw = row["sub_activities"].split(";")
                     for sub_activity in sub_activities_raw:
                         name, value = sub_activity.split(":")
-                        sub_activities.append({"name": name.strip(), "value": int(value.strip())})
+                        # Cada subatividade é limitada a 100%
+                        sub_activities.append({"name": name.strip(), "value": min(int(value.strip()), 100)})
 
                 # Calcula a porcentagem da atividade pai com base nas subatividades
                 if sub_activities:
-                    total_value = sum(sub["value"] for sub in sub_activities)
+                    total_value = sum(sub["value"] for sub in sub_activities) / len(sub_activities)  # Média das subatividades
                     total_value = min(total_value, 100)  # Limita o valor total a 100%
                 else:
-                    total_value = int(row["value"])  # Usa o valor da atividade pai se não houver subatividades
+                    total_value = min(int(row["value"]), 100)  # Usa o valor da atividade pai se não houver subatividades
 
                 frentes.append({
                     "name": row["name"],
