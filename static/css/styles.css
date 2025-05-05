@@ -147,12 +147,15 @@ body::after {
 
 /* Responsividade para telas menores (máx. 480px) */
 @media (max-width: 480px) {
+    body {
+        overflow-x: hidden; /* Remove a rolagem horizontal */
+    }
+
     #dashboard {
         flex-direction: column; /* Empilha os cards verticalmente */
         align-items: center; /* Centraliza os cards */
         text-align: center; /* Centraliza o conteúdo dentro do dashboard */
     }
-    
 
     .card {
         width: 100%; /* Faz os cards ocuparem 100% da largura da tela */
@@ -175,18 +178,18 @@ body::after {
         width: 50px; /* Diminui o tamanho da logo em telas menores */
         margin: 0 auto; /* Centraliza a logo horizontalmente */
     }
-    
+
     body::before {
-        width: 150px; /* Ajusta a largura da elipse amarela */
-        height: 250px; /* Ajusta a altura da elipse amarela */
-        left: -30px; /* Ajusta a posição da elipse amarela */
-        top: 300px; /* Ajusta a posição da elipse amarela */
+        width: 200px; /* Ajusta a largura da elipse amarela */
+        height: 200px; /* Ajusta a altura da elipse amarela */
+        left: -50px; /* Ajusta a posição da elipse amarela para não ultrapassar a tela */
+        top: 30px; /* Ajusta a posição da elipse amarela */
     }
 
     body::after {
-        width: 80px; /* Ajusta a largura da elipse verde */
-        height: 150px; /* Ajusta a altura da elipse verde */
-        left: calc(50% - 40px); /* Centraliza a elipse verde horizontalmente */
+        width: 200px; /* Ajusta a largura da elipse verde */
+        height: 200px; /* Ajusta a altura da elipse verde */
+        left: calc(100% - 200px); /* Ajusta a posição da elipse verde para não ultrapassar a tela */
         top: -30px; /* Ajusta a posição da elipse verde */
     }
 
@@ -446,7 +449,7 @@ body::after {
         width: 400px; /* Reduz a largura da elipse amarela */
         height: 450px; /* Reduz a altura da elipse amarela */
         left: -250px; /* Ajusta a posição da elipse amarela */
-        top: 950px; /* Ajusta a posição da elipse amarela */
+        top: 800px; /* Ajusta a posição da elipse amarela */
     }
     
     /* Ajuste das elipses Verde */
