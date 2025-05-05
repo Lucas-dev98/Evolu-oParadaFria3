@@ -30,7 +30,7 @@ body {
     padding: 0;
     text-align: center;
     position: relative; /* Necessário para posicionar os elementos absolutos */
-    overflow: auto; /* Permite scroll vertical e horizontal */
+    overflow: hidden; /* Remove as barras de rolagem */
     min-width: 100vw; /* Garante que o conteúdo não quebre horizontalmente */
     min-height: 100vh; /* Garante que o conteúdo não quebre verticalmente */
 }
@@ -95,14 +95,14 @@ body {
     width: 65%; /* Exemplo de preenchimento */
 }
 
-/* Elipse Amarela */
+/* Ajuste das elipses */
 body::before {
     content: "";
     position: absolute;
-    width: 350px;
-    height: 450px;
-    left: -100px; /* Movido mais para a esquerda */
-    top: 550px; /* Mantido mais para cima */
+    width: 300px; /* Ajustado para não ultrapassar a tela */
+    height: 400px; /* Ajustado para não ultrapassar a tela */
+    left: -100px; /* Mantido dentro da tela */
+    top: 500px; /* Mantido dentro da tela */
     background: #ECB011;
     border-radius: 50%; /* Garante que seja uma elipse */
     z-index: -1; /* Coloca atrás do conteúdo */
@@ -113,10 +113,10 @@ body::before {
 body::after {
     content: "";
     position: absolute;
-    width: 184px;
-    height: 403.48px;
-    left: 1200px; /* Ajustado para mover mais para dentro */
-    top: -100px; /* Movido mais para cima */
+    width: 200px; /* Ajustado para não ultrapassar a tela */
+    height: 400px; /* Ajustado para não ultrapassar a tela */
+    left: calc(100% - 250px); /* Ajustado para ficar dentro da tela */
+    top: -100px; /* Mantido dentro da tela */
     background: #007D7A;
     border-radius: 50%; /* Garante que seja uma elipse */
     z-index: -1; /* Coloca atrás do conteúdo */
@@ -145,151 +145,74 @@ body::after {
     font-weight: bold;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+/* Responsividade para telas menores (máx. 480px) */
+@media (max-width: 480px) {
     #dashboard {
         flex-direction: column; /* Empilha os cards verticalmente */
         align-items: center; /* Centraliza os cards */
+        text-align: center; /* Centraliza o conteúdo dentro do dashboard */
+    }
+    
+
+    .card {
+        width: 100%; /* Faz os cards ocuparem 100% da largura da tela */
+        max-width: 280px; /* Limita a largura máxima dos cards */
+        margin: 0 auto; /* Centraliza os cards horizontalmente */
+        text-align: center; /* Centraliza o conteúdo do card */
     }
 
-/* Removed duplicate and misplaced CSS block */
+    header {
+        text-align: center; /* Centraliza o conteúdo do cabeçalho */
+    }
 
-header .logo {
-    width: 80px; /* Define o tamanho da logo */
-    height: auto; /* Mantém a proporção da imagem */
+    header h1 {
+        font-size: 18px; /* Diminui o tamanho do título em telas menores */
+        text-align: center; /* Centraliza o título */
+        margin-bottom: 20px; /* Adiciona espaçamento abaixo do título */
+    }
+
+    header .logo {
+        width: 50px; /* Diminui o tamanho da logo em telas menores */
+        margin: 0 auto; /* Centraliza a logo horizontalmente */
+    }
+    
+    body::before {
+        width: 150px; /* Ajusta a largura da elipse amarela */
+        height: 250px; /* Ajusta a altura da elipse amarela */
+        left: -30px; /* Ajusta a posição da elipse amarela */
+        top: 300px; /* Ajusta a posição da elipse amarela */
+    }
+
+    body::after {
+        width: 80px; /* Ajusta a largura da elipse verde */
+        height: 150px; /* Ajusta a altura da elipse verde */
+        left: calc(50% - 40px); /* Centraliza a elipse verde horizontalmente */
+        top: -30px; /* Ajusta a posição da elipse verde */
+    }
+
+    .progress-bar {
+        height: 10px; /* Diminui a altura da barra de progresso */
+    }
+
+    .progress-bar-fill {
+        font-size: 8px; /* Diminui o tamanho da fonte na barra de progresso */
+    }
+
+    .card ul {
+        padding: 3px; /* Diminui o padding da lista */
+        text-align: center; /* Centraliza os itens da lista */
+    }
+
+    .card ul li {
+        font-size: 10px; /* Diminui o tamanho da fonte dos itens da lista */
+    }
+
+    .card ul li:hover {
+        font-size: 12px; /* Aumenta o tamanho da fonte ao passar o mouse */
+        font-weight: bold; /* Mantém o negrito ao passar o mouse */
+    }
 }
-
-header h1 {
-    color: #007D7A;
-    font-size: 32px; /* Tamanho do título */
-    margin: 0;
-    flex-grow: 1; /* Faz o título ocupar o espaço restante */
-    text-align: center; /* Centraliza o texto */
-}
-
-/* Estilo do body */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #FFFFFF; /* Fundo branco */
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    position: relative; /* Necessário para posicionar os elementos absolutos */
-    overflow: auto; /* Permite scroll vertical e horizontal */
-    min-width: 100vw; /* Garante que o conteúdo não quebre horizontalmente */
-    min-height: 100vh; /* Garante que o conteúdo não quebre verticalmente */
-}
-
-/* Estilo do dashboard */
-#dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 40px; /* Espaçamento entre os cards */
-    margin: 40px;
-    position: relative;
-    z-index: 1; /* Garante que o dashboard fique acima das elipses */
-    min-width: 100%; /* Garante que o dashboard ocupe toda a largura */
-}
-
-/* Estilo dos cards */
-.card {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 200px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Centraliza o conteúdo do card */
-}
-
-.card img {
-    width: 60px; /* Define a largura fixa */
-    height: 60px; /* Define a altura fixa */
-    object-fit: contain; /* Garante que a imagem seja ajustada sem distorção */
-    border-radius: 8px; /* Bordas arredondadas */
-    margin-bottom: 10px; /* Espaço abaixo da imagem */
-    display: block; /* Garante que a imagem seja um bloco */
-    margin-left: auto; /* Centraliza horizontalmente */
-    margin-right: auto; /* Centraliza horizontalmente */
-}
-
-.card h2 {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Barra de progresso */
-.progress-bar {
-    background-color: #D9D9D9;
-    border-radius: 10px;
-    height: 20px;
-    position: relative;
-    margin-top: 10px;
-}
-
-.progress-bar-fill {
-    background-color: #007D7A;
-    height: 100%;
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    font-size: 12px;
-    line-height: 20px;
-    width: 65%; /* Exemplo de preenchimento */
-}
-
-/* Elipse Amarela */
-body::before {
-    content: "";
-    position: absolute;
-    width: 313.98px;
-    height: 424.58px;
-    left: -100px; /* Movido mais para a esquerda */
-    top: 550px; /* Mantido mais para cima */
-    background: #ECB011;
-    border-radius: 50%; /* Garante que seja uma elipse */
-    z-index: -1; /* Coloca atrás do conteúdo */
-    transform: rotate(-45deg); /* Gira a elipse 45 graus no sentido anti-horário */
-}
-
-/* Elipse Verde */
-body::after {
-    content: "";
-    position: absolute;
-    width: 184px;
-    height: 403.48px;
-    left: 1200px; /* Ajustado para mover mais para dentro */
-    top: -100px; /* Movido mais para cima */
-    background: #007D7A;
-    border-radius: 50%; /* Garante que seja uma elipse */
-    z-index: -1; /* Coloca atrás do conteúdo */
-    transform: rotate(-45deg); /* Gira a elipse 45 graus no sentido anti-horário */
-}
-
-.card ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.card ul li {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-    cursor: pointer;
-}
-
-.card ul li:hover {
-    color: #007D7A;
-    font-weight: bold;
-}
-
+/* Responsividade para telas médias (máx. 768px) */
 /* Responsividade */
 @media (max-width: 768px) {
     #dashboard {
@@ -352,70 +275,7 @@ body::after {
         font-weight: bold; /* Mantém o negrito ao passar o mouse */
     }
     }
-
-    /* Responsividade para telas menores (máx. 480px) */
-@media (max-width: 480px) {
-    #dashboard {
-        flex-direction: column; /* Empilha os cards verticalmente */
-        align-items: center; /* Centraliza os cards */
-    }
-
-    .card {
-        width: 100%; /* Faz os cards ocuparem 100% da largura da tela */
-        max-width: 280px; /* Limita a largura máxima dos cards */
-        margin: 0 auto; /* Centraliza os cards horizontalmente */
-    }
-
-    header {
-        text-align: center; /* Centraliza o conteúdo do cabeçalho */
-    }
-
-    header h1 {
-        font-size: 18px; /* Diminui o tamanho do título em telas menores */
-        text-align: center; /* Centraliza o título */
-    }
-
-    header .logo {
-        width: 50px; /* Diminui o tamanho da logo em telas menores */
-        margin: 0 auto; /* Centraliza a logo horizontalmente */
-    }
-
-    body::before {
-        width: 150px; /* Ajusta a largura da elipse amarela */
-        height: 250px; /* Ajusta a altura da elipse amarela */
-        left: -30px; /* Ajusta a posição da elipse amarela */
-        top: 300px; /* Ajusta a posição da elipse amarela */
-    }
-
-    body::after {
-        width: 80px; /* Ajusta a largura da elipse verde */
-        height: 150px; /* Ajusta a altura da elipse verde */
-        left: 600px; /* Ajusta a posição da elipse verde */
-        top: -30px; /* Ajusta a posição da elipse verde */
-    }
-
-    .progress-bar {
-        height: 10px; /* Diminui a altura da barra de progresso */
-    }
-
-    .progress-bar-fill {
-        font-size: 8px; /* Diminui o tamanho da fonte na barra de progresso */
-    }
-
-    .card ul {
-        padding: 3px; /* Diminui o padding da lista */
-    }
-
-    .card ul li {
-        font-size: 10px; /* Diminui o tamanho da fonte dos itens da lista */
-    }
-
-    .card ul li:hover {
-        font-size: 12px; /* Aumenta o tamanho da fonte ao passar o mouse */
-        font-weight: bold; /* Mantém o negrito ao passar o mouse */
-    }
-}
-
+/* Responsividade para telas grandes (máx. 1200px) */
 /* ---------- Desktops grandes ---------- */
 @media (min-width: 1200px) {
     #dashboard {
@@ -480,201 +340,212 @@ body::after {
     #dashboard {
         max-width: 1440px; /* Limita a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
-        gap: 60px; /* Aumenta o espaçamento entre os cards */
+        gap: 50px; /* Ajusta o espaçamento entre os cards */
     }
 
     .card {
-        width: 300px; /* Aumenta a largura dos cards */
-        padding: 40px; /* Aumenta o padding dos cards */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Aumenta a sombra dos cards */
+        width: 280px; /* Ajusta a largura dos cards */
+        padding: 30px; /* Ajusta o padding dos cards */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ajusta a sombra dos cards */
     }
 
     .card img {
-        width: 100px; /* Aumenta o tamanho das imagens */
-        height: 100px; /* Aumenta a altura das imagens */
+        width: 80px; /* Ajusta o tamanho das imagens */
+        height: 80px; /* Ajusta a altura das imagens */
     }
 
     .card h2 {
-        font-size: 26px; /* Aumenta o tamanho da fonte do título */
-        margin-bottom: 20px; /* Aumenta o espaçamento abaixo do título */
+        font-size: 20px; /* Ajusta o tamanho da fonte do título */
+        margin-bottom: 15px; /* Ajusta o espaçamento abaixo do título */
     }
 
     .progress-bar {
-        height: 30px; /* Aumenta a altura da barra de progresso */
+        height: 20px; /* Ajusta a altura da barra de progresso */
     }
 
     .progress-bar-fill {
-        font-size: 16px; /* Aumenta o tamanho da fonte na barra de progresso */
-        line-height: 30px; /* Ajusta a altura da linha para centralizar o texto */
+        font-size: 12px; /* Ajusta o tamanho da fonte na barra de progresso */
+        line-height: 20px; /* Ajusta a altura da linha para centralizar o texto */
     }
 
     header {
-        padding: 40px 80px; /* Aumenta o padding do cabeçalho */
+        padding: 30px 60px; /* Ajusta o padding do cabeçalho */
     }
 
     header h1 {
-        font-size: 40px; /* Aumenta o tamanho do título */
+        font-size: 32px; /* Ajusta o tamanho do título */
     }
 
     header .logo {
-        width: 120px; /* Aumenta o tamanho da logo */
+        width: 100px; /* Ajusta o tamanho da logo */
     }
 
+    /* Ajuste das elipses Amarela */
     body::before {
-        width: 500px; /* Aumenta a largura da elipse amarela */
-        height: 600px; /* Aumenta a altura da elipse amarela */
-        left: -200px; /* Ajusta a posição da elipse amarela */
-        top: 700px; /* Ajusta a posição da elipse amarela */
+        width: 350px; /* Ajusta a largura da elipse amarela */
+        height: 400px; /* Ajusta a altura da elipse amarela */
+        left: -180px; /* Ajusta a posição da elipse amarela */
+        top: 950px; /* Ajusta a posição da elipse amarela */
     }
 
+    /* Ajuste das elipses Verde */
     body::after {
-        width: 300px; /* Aumenta a largura da elipse verde */
-        height: 500px; /* Aumenta a altura da elipse verde */
-        left: 1600px; /* Ajusta a posição da elipse verde */
+        width: 300px; /* Ajusta a largura da elipse verde */
+        height: 450px; /* Ajusta a altura da elipse verde */
+        left: calc(105% - 150px); /* Ajusta a posição da elipse verde */
         top: -200px; /* Ajusta a posição da elipse verde */
     }
 }
 /* ---------- Monitores Full HD completos ---------- */
 @media (min-width: 1920px) {
     #dashboard {
-        max-width: 1920px; /* Limita a largura máxima do dashboard */
+        max-width: 1600px; /* Reduz ainda mais a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
-        gap: 70px; /* Aumenta o espaçamento entre os cards */
+        gap: 40px; /* Reduz o espaçamento entre os cards */
     }
 
     .card {
-        width: 350px; /* Aumenta a largura dos cards */
-        padding: 50px; /* Aumenta o padding dos cards */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Aumenta a sombra dos cards */
+        width: 280px; /* Reduz a largura dos cards */
+        padding: 20px; /* Reduz o padding dos cards */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ajusta a sombra dos cards */
     }
 
     .card img {
-        width: 120px; /* Aumenta o tamanho das imagens */
-        height: 120px; /* Aumenta a altura das imagens */
+        width: 90px; /* Reduz o tamanho das imagens */
+        height: 90px; /* Reduz a altura das imagens */
     }
 
     .card h2 {
-        font-size: 30px; /* Aumenta o tamanho da fonte do título */
-        margin-bottom: 25px; /* Aumenta o espaçamento abaixo do título */
+        font-size: 20px; /* Reduz o tamanho da fonte do título */
+        margin-bottom: 15px; /* Ajusta o espaçamento abaixo do título */
     }
 
     .progress-bar {
-        height: 35px; /* Aumenta a altura da barra de progresso */
+        height: 20px; /* Reduz a altura da barra de progresso */
     }
 
     .progress-bar-fill {
-        font-size: 18px; /* Aumenta o tamanho da fonte na barra de progresso */
-        line-height: 35px; /* Ajusta a altura da linha para centralizar o texto */
+        font-size: 12px; /* Reduz o tamanho da fonte na barra de progresso */
+        line-height: 20px; /* Ajusta a altura da linha para centralizar o texto */
     }
 
     header {
-        padding: 50px 100px; /* Aumenta o padding do cabeçalho */
+        padding: 30px 60px; /* Reduz o padding do cabeçalho */
     }
 
     header h1 {
-        font-size: 48px; /* Aumenta o tamanho do título */
+        font-size: 32px; /* Reduz o tamanho do título */
     }
 
     header .logo {
-        width: 150px; /* Aumenta o tamanho da logo */
+        width: 100px; /* Reduz o tamanho da logo */
     }
 
+    /* Ajuste das elipses Amarela */
     body::before {
-        width: 600px; /* Aumenta a largura da elipse amarela */
-        height: 700px; /* Aumenta a altura da elipse amarela */
+        width: 400px; /* Reduz a largura da elipse amarela */
+        height: 450px; /* Reduz a altura da elipse amarela */
         left: -250px; /* Ajusta a posição da elipse amarela */
-        top: 800px; /* Ajusta a posição da elipse amarela */
+        top: 950px; /* Ajusta a posição da elipse amarela */
     }
-
+    
+    /* Ajuste das elipses Verde */
     body::after {
-        width: 400px; /* Aumenta a largura da elipse verde */
-        height: 600px; /* Aumenta a altura da elipse verde */
-        left: 1800px; /* Ajusta a posição da elipse verde */
-        top: -250px; /* Ajusta a posição da elipse verde */
+        width: 400px; /* Mantém a largura da elipse verde */
+        height: 500px; /* Mantém a altura da elipse verde */
+        left: calc(100% - 100px); /* Move mais para o canto direito */
+        top: -250px; /* Mantém a posição vertical */
     }
 }
 
 /* ---------- Telas 2K, 4K e ultra-wide ---------- */
 @media (min-width: 2560px) {
     #dashboard {
-        max-width: 2560px; /* Limita a largura máxima do dashboard */
+        max-width: 2000px; /* Reduz ainda mais a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
-        gap: 80px; /* Aumenta o espaçamento entre os cards */
+        gap: 50px; /* Reduz o espaçamento entre os cards */
     }
 
     .card {
-        width: 400px; /* Aumenta a largura dos cards */
-        padding: 60px; /* Aumenta o padding dos cards */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Aumenta a sombra dos cards */
+        width: 300px; /* Reduz a largura dos cards */
+        padding: 30px; /* Reduz o padding dos cards */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ajusta a sombra dos cards */
     }
 
     .card img {
-        width: 150px; /* Aumenta o tamanho das imagens */
-        height: 150px; /* Aumenta a altura das imagens */
+        width: 100px; /* Reduz o tamanho das imagens */
+        height: 100px; /* Reduz a altura das imagens */
     }
 
     .card h2 {
-        font-size: 36px; /* Aumenta o tamanho da fonte do título */
-        margin-bottom: 30px; /* Aumenta o espaçamento abaixo do título */
+        font-size: 22px; /* Reduz o tamanho da fonte do título */
+        margin-bottom: 20px; /* Ajusta o espaçamento abaixo do título */
     }
 
     .progress-bar {
-        height: 40px; /* Aumenta a altura da barra de progresso */
+        height: 25px; /* Reduz a altura da barra de progresso */
     }
 
     .progress-bar-fill {
-        font-size: 20px; /* Aumenta o tamanho da fonte na barra de progresso */
-        line-height: 40px; /* Ajusta a altura da linha para centralizar o texto */
+        font-size: 14px; /* Reduz o tamanho da fonte na barra de progresso */
+        line-height: 25px; /* Ajusta a altura da linha para centralizar o texto */
     }
 
     header {
-        padding: 60px 120px; /* Aumenta o padding do cabeçalho */
+        padding: 40px 80px; /* Reduz o padding do cabeçalho */
     }
 
     header h1 {
-        font-size: 56px; /* Aumenta o tamanho do título */
+        font-size: 36px; /* Reduz o tamanho do título */
     }
 
     header .logo {
-        width: 180px; /* Aumenta o tamanho da logo */
+        width: 120px; /* Reduz o tamanho da logo */
     }
 
     body::before {
-        width: 800px; /* Aumenta a largura da elipse amarela */
-        height: 900px; /* Aumenta a altura da elipse amarela */
-        left: -300px; /* Ajusta a posição da elipse amarela */
-        top: 1000px; /* Ajusta a posição da elipse amarela */
+        width: 500px; /* Reduz a largura da elipse amarela */
+        height: 600px; /* Reduz a altura da elipse amarela */
+        left: -200px; /* Ajusta a posição da elipse amarela */
+        top: 700px; /* Ajusta a posição da elipse amarela */
     }
 
     body::after {
-        width: 500px; /* Aumenta a largura da elipse verde */
-        height: 700px; /* Aumenta a altura da elipse verde */
-        left: 2200px; /* Ajusta a posição da elipse verde */
+        width: 500px; /* Reduz a largura da elipse verde */
+        height: 600px; /* Reduz a altura da elipse verde */
+        left: 2400px; /* Ajusta a posição da elipse verde */
         top: -300px; /* Ajusta a posição da elipse verde */
     }
 }
+/* ---------- Telas ultra-wide ---------- */
+@media (min-width: 3840px) {
+    #dashboard {
+        max-width: 3000px; /* Reduz ainda mais a largura máxima do dashboard */
+        margin: 0 auto; /* Centraliza o dashboard horizontalmente */
+        gap: 60px; /* Reduz o espaçamento entre os cards */
+    }
 
-.progress-bar-fill {
-    height: 100%;
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    font-size: 12px;
-    line-height: 20px;
-    transition: background-color 0.3s ease; /* Suaviza a transição de cor */
-}
+    .card {
+        width: 350px; /* Reduz a largura dos cards */
+        padding: 40px; /* Reduz o padding dos cards */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Ajusta a sombra dos cards */
+    }
 
-.progress-bar-fill.red {
-    background-color: red; /* Muito fora do previsto */
-}
+    .card img {
+        width: 120px; /* Reduz o tamanho das imagens */
+        height: 120px; /* Reduz a altura das imagens */
+    }
 
-.progress-bar-fill.yellow {
-    background-color: yellow; /* Moderadamente fora do previsto */
-    color: black; /* Ajusta a cor do texto para contraste */
-}
+    .card h2 {
+        font-size: 26px; /* Reduz o tamanho da fonte do título */
+        margin-bottom: 25px; /* Ajusta o espaçamento abaixo do título */
+    }
 
-.progress-bar-fill.green {
-    background-color: #007D7A; /* Dentro do previsto */
-}
+    .progress-bar {
+        height: 30px; /* Reduz a altura da barra de progresso */
+    }
 
-}
+    .progress-bar-fill {
+        font-size: 16px; /* Reduz o tamanho da fonte na barra de progresso */
+        line-height: 30px; /* Ajusta a altura da linha para centralizar o texto */
+    }

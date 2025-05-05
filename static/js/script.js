@@ -30,14 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const difference = frente.baseline - frente.value; // Calcula a diferença diretamente
 
             // Aplica a cor com base na diferença
-            if (difference <= 20) {
-                progressBarFill.style.backgroundColor = "#007D7A"; // Igual ou maior que o previsto
-            } else if (difference <= 19 && difference > 10) {
-                progressBarFill.style.backgroundColor = "ECB011"; // Moderadamente menor que o previsto
-            } else if (difference <= 10 && difference > 0) {
-                progressBarFill.style.backgroundColor = "orange"; // Menor que o previsto
-            } else if (difference < 0) {
-                progressBarFill.style.backgroundColor = "red"; // Muito menor que o previsto
+            if (difference <= 0) {
+                progressBarFill.style.backgroundColor = "#007D7A"; // Igual ou maior que o previsto (verde)
+            } else {
+                progressBarFill.style.backgroundColor = "red"; // Abaixo do previsto (vermelho)
             }
 
 // Adiciona o texto do baseline

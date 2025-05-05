@@ -12,12 +12,12 @@ IMAGE_MAPPING = {
     "Mistura": "/static/images/mistura.png",
     "Briquetagem": "/static/images/briquetagem.png",
     "Forno": "/static/images/forno.png",
-    "Meio do Forno": "/static/images/precipitador.png",
-    "Forno ( Abaixamento)": "/static/images/precipitador.png",
-    "Forno ( Levantamento)": "/static/images/forno.png",
+    "Ventiladores": "static/images/ventilador.png",  # Corrigido
+    "Precipitadores": "/static/images/precipitador.png",  # Corrigido
+    "Peneiramento": "/static/images/peneiramento.png",
+    "Patio de Briquete": "/static/images/patioBriquete.png",
 }
 
-# Atualizar a função para incluir atividades secundárias
 def load_frentes_from_csv(file_path):
     frentes = []
     try:
@@ -25,28 +25,28 @@ def load_frentes_from_csv(file_path):
         with open(file_path, mode='r', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
+                print(f"Lendo linha: {row}")  # Adicionado para depuração
                 sub_activities = []
                 if "sub_activities" in row and row["sub_activities"]:
                     sub_activities_raw = row["sub_activities"].split(";")
                     for sub_activity in sub_activities_raw:
                         name, value = sub_activity.split(":")
-                        # Cada subatividade é limitada a 100%
                         sub_activities.append({"name": name.strip(), "value": min(int(value.strip()), 100)})
 
-                # Calcula a porcentagem da atividade pai com base nas subatividades
                 if sub_activities:
-                    total_value = sum(sub["value"] for sub in sub_activities) / len(sub_activities)  # Média das subatividades
-                    total_value = min(total_value, 100)  # Limita o valor total a 100%
+                    value = sum(sub["value"] for sub in sub_activities) / len(sub_activities)
+                    value = min(value, 100)
                 else:
-                    total_value = min(int(row["value"]), 100)  # Usa o valor da atividade pai se não houver subatividades
+                    value = min(int(row["value"]), 100)
 
                 frentes.append({
                     "name": row["name"],
-                    "value": total_value,
-                     "baseline": int(row["baseline"]),
+                    "value": value,
+                    "baseline": int(row["baseline"]),
                     "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png"),
                     "sub_activities": sub_activities
                 })
+        print(f"Frentes carregadas: {frentes}")  # Adicionado para depuração
     except FileNotFoundError:
         print(f"Erro: O arquivo {file_path} não foi encontrado.")
     except Exception as e:
