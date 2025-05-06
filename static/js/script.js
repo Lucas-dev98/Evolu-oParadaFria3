@@ -36,16 +36,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 progressBarFill.style.backgroundColor = "red"; // Abaixo do previsto (vermelho)
             }
 
-// Adiciona o texto do baseline
+// Adiciona o texto do baseline e do real
 const baselineText = document.createElement("p");
 baselineText.className = "baseline-text";
-baselineText.textContent = `Planejado: ${frente.baseline}%`;
+baselineText.innerHTML = `Planejado: ${frente.baseline}%<br>Real: ${frente.value}%`;
 
-            progressBar.appendChild(progressBarFill);
-            card.appendChild(image); // Adiciona a imagem ao card
-            card.appendChild(title);
-            card.appendChild(progressBar);
-            card.appendChild(baselineText);
+progressBar.appendChild(progressBarFill);
+card.appendChild(image); // Adiciona a imagem ao card
+card.appendChild(title);
+card.appendChild(progressBar);
+card.appendChild(baselineText);
 
             // Adiciona atividades secundárias
             let subActivitiesList = null;

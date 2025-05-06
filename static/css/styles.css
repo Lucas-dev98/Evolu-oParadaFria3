@@ -7,7 +7,7 @@ header {
     padding: 20px 40px;
     position: relative;
     z-index: 1; /* Garante que o cabeçalho fique acima das elipses */
-}
+    }
 
 header .logo {
     width: 80px; /* Define o tamanho da logo */
@@ -30,8 +30,6 @@ body {
     padding: 0;
     text-align: center;
     position: relative; /* Necessário para posicionar os elementos absolutos */
-    overflow: hidden; /* Remove as barras de rolagem */
-    min-width: 100vw; /* Garante que o conteúdo não quebre horizontalmente */
     min-height: 100vh; /* Garante que o conteúdo não quebre verticalmente */
 }
 
@@ -99,10 +97,6 @@ body {
 body::before {
     content: "";
     position: absolute;
-    width: 300px; /* Ajustado para não ultrapassar a tela */
-    height: 400px; /* Ajustado para não ultrapassar a tela */
-    left: -100px; /* Mantido dentro da tela */
-    top: 500px; /* Mantido dentro da tela */
     background: #ECB011;
     border-radius: 50%; /* Garante que seja uma elipse */
     z-index: -1; /* Coloca atrás do conteúdo */
@@ -113,10 +107,6 @@ body::before {
 body::after {
     content: "";
     position: absolute;
-    width: 200px; /* Ajustado para não ultrapassar a tela */
-    height: 400px; /* Ajustado para não ultrapassar a tela */
-    left: calc(100% - 250px); /* Ajustado para ficar dentro da tela */
-    top: -100px; /* Mantido dentro da tela */
     background: #007D7A;
     border-radius: 50%; /* Garante que seja uma elipse */
     z-index: -1; /* Coloca atrás do conteúdo */
@@ -148,13 +138,25 @@ body::after {
 /* Responsividade para telas menores (máx. 480px) */
 @media (max-width: 480px) {
     body {
+        display: flex; /* Torna o body um contêiner flexível */
+        flex-direction: column; /* Empilha os elementos verticalmente */
+        align-items: center; /* Centraliza os elementos horizontalmente */
+        justify-content: center; /* Centraliza os elementos verticalmente */
+        overflow-y: auto; /* Permite a rolagem vertical */
         overflow-x: hidden; /* Remove a rolagem horizontal */
+        min-width: 100vw; /* Garante que o conteúdo não quebre horizontalmente */
+        min-height: 100vh; /* Garante que o conteúdo ocupe toda a altura da tela */
     }
 
     #dashboard {
+        display: flex; /* Torna o dashboard um contêiner flexível */
         flex-direction: column; /* Empilha os cards verticalmente */
-        align-items: center; /* Centraliza os cards */
+        align-items: center; /* Centraliza os cards horizontalmente */
+        justify-content: center; /* Centraliza os cards verticalmente */
         text-align: center; /* Centraliza o conteúdo dentro do dashboard */
+        gap: 20px; /* Diminui o espaçamento entre os cards */
+        margin: 20px; /* Diminui a margem do dashboard */
+        width: 100%; /* Faz o dashboard ocupar toda a largura */
     }
 
     .card {
@@ -165,13 +167,17 @@ body::after {
     }
 
     header {
+        display: flex; /* Torna o cabeçalho um contêiner flexível */
+        flex-direction: column; /* Empilha os elementos do cabeçalho verticalmente */
+        align-items: center; /* Centraliza os elementos horizontalmente */
         text-align: center; /* Centraliza o conteúdo do cabeçalho */
+        margin-bottom: 20px; /* Adiciona espaçamento abaixo do cabeçalho */
     }
 
     header h1 {
         font-size: 18px; /* Diminui o tamanho do título em telas menores */
         text-align: center; /* Centraliza o título */
-        margin-bottom: 20px; /* Adiciona espaçamento abaixo do título */
+        margin-bottom: 10px; /* Adiciona espaçamento abaixo do título */
     }
 
     header .logo {
@@ -180,17 +186,11 @@ body::after {
     }
 
     body::before {
-        width: 200px; /* Ajusta a largura da elipse amarela */
-        height: 200px; /* Ajusta a altura da elipse amarela */
-        left: -50px; /* Ajusta a posição da elipse amarela para não ultrapassar a tela */
-        top: 30px; /* Ajusta a posição da elipse amarela */
+        display: none; /* Oculta a elipse amarela */
     }
 
     body::after {
-        width: 200px; /* Ajusta a largura da elipse verde */
-        height: 200px; /* Ajusta a altura da elipse verde */
-        left: calc(100% - 200px); /* Ajusta a posição da elipse verde para não ultrapassar a tela */
-        top: -30px; /* Ajusta a posição da elipse verde */
+        display: none; /* Oculta a elipse verde */
     }
 
     .progress-bar {
@@ -215,6 +215,7 @@ body::after {
         font-weight: bold; /* Mantém o negrito ao passar o mouse */
     }
 }
+    
 /* Responsividade para telas médias (máx. 768px) */
 /* Responsividade */
 @media (max-width: 768px) {
@@ -552,3 +553,4 @@ body::after {
         font-size: 16px; /* Reduz o tamanho da fonte na barra de progresso */
         line-height: 30px; /* Ajusta a altura da linha para centralizar o texto */
     }
+}
