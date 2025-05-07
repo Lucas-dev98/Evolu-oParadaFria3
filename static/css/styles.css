@@ -1,8 +1,45 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que o padding e a borda sejam incluídos no tamanho total dos elementos */
+}
+
+html, body {
+    height: 100%; /* Garante que o body ocupe toda a altura da tela */
+}
+
+body {
+    line-height: 1.5; /* Define um espaçamento padrão entre as linhas */
+    font-family: Arial, sans-serif; /* Define uma fonte padrão */
+    -webkit-font-smoothing: antialiased; /* Melhora a renderização de fontes no Webkit */
+    -moz-osx-font-smoothing: grayscale; /* Melhora a renderização de fontes no Firefox */
+}
+
+img, picture, video, canvas, svg {
+    display: block; /* Garante que esses elementos sejam tratados como blocos */
+    max-width: 100%; /* Garante que eles não ultrapassem o tamanho do contêiner */
+}
+
+input, button, textarea, select {
+    font: inherit; /* Garante que esses elementos herdem a fonte do body */
+}
+
+a {
+    text-decoration: none; /* Remove o sublinhado dos links */
+    color: inherit; /* Faz os links herdarem a cor do texto */
+}
+
+ul, ol {
+    list-style: none; /* Remove os marcadores das listas */
+}
+
 /* Estilo do cabeçalho */
 header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Espaça os elementos */
+    display: flex; /* Torna o cabeçalho um contêiner flexível */
+    flex-direction: column;
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    justify-content: center; /* Centraliza os itens horizontalmente */
     background-color: transparent; /* Sem fundo para mostrar as elipses */
     padding: 20px 40px;
     position: relative;
@@ -12,6 +49,7 @@ header {
 header .logo {
     width: 80px; /* Define o tamanho da logo */
     height: auto; /* Mantém a proporção da imagem */
+    margin-right: auto; /* Move o ícone para a extrema esquerda */
 }
 
 header h1 {
@@ -22,15 +60,46 @@ header h1 {
     text-align: center; /* Centraliza o texto */
 }
 
+header .Titulo {
+    color: #007D7A;
+    font-size: 32px; /* Tamanho do título */
+    margin: 0 auto; /* Centraliza o título horizontalmente */
+    text-align: center; /* Centraliza o texto */
+    flex-grow: 1; /* Faz o título ocupar o espaço restante */
+}
+
+.curva-image {
+    align-items: center; /* Centraliza a imagem verticalmente */
+    justify-content: center; /* Centraliza a imagem horizontalmente */
+    display: flex; /* Garante que a imagem seja exibida como um bloco */
+    flex-direction: column; /* Empilha os elementos verticalmente *
+    margin: 20px auto; /* Centraliza horizontalmente e adiciona espaçamento acima e abaixo */
+    width: 80%; /* Define a largura como 80% do contêiner */
+    max-width: 700px; /* Define uma largura máxima */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 8px; /* Adiciona bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra leve */
+}
+
 /* Estilo do body */
 body {
     font-family: Arial, sans-serif;
     background-color: #FFFFFF; /* Fundo branco */
     margin: 0;
-    padding: 0;
+    padding: 20px 20px 20px 20px; /* Adiciona espaçamento ao redor do conteúdo */
     text-align: center;
     position: relative; /* Necessário para posicionar os elementos absolutos */
     min-height: 100vh; /* Garante que o conteúdo não quebre verticalmente */
+}
+
+.Frentes {
+    font-family: arial, sans-serif; /* Define a fonte */
+    font-size: 24px; /* Define o tamanho da fonte */
+    font-weight: bold; /* Deixa o texto em negrito */
+    color: #007D7A; /* Define a cor do texto */
+    text-align: center; /* Centraliza o texto */
+    margin: 20px 0; /* Adiciona espaçamento acima e abaixo */
+    letter-spacing: 2px; /* Adiciona espaçamento entre as letras */
 }
 
 /* Estilo do dashboard */
@@ -138,16 +207,17 @@ body::after {
 /* Responsividade para telas menores (máx. 480px) */
 @media (max-width: 480px) {
     body {
-        display: flex; /* Torna o body um contêiner flexível */
-        flex-direction: column; /* Empilha os elementos verticalmente */
-        align-items: center; /* Centraliza os elementos horizontalmente */
-        justify-content: center; /* Centraliza os elementos verticalmente */
-        overflow-y: auto; /* Permite a rolagem vertical */
-        overflow-x: hidden; /* Remove a rolagem horizontal */
-        min-width: 100vw; /* Garante que o conteúdo não quebre horizontalmente */
-        min-height: 100vh; /* Garante que o conteúdo ocupe toda a altura da tela */
+        display: flex;
+        align-items: center;
+        overflow-y: auto;
+        overflow-x: auto;
+        min-width: 100vw;
+        min-height: 100vh;
+        align-content: space-between;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
     }
-
     #dashboard {
         display: flex; /* Torna o dashboard um contêiner flexível */
         flex-direction: column; /* Empilha os cards verticalmente */
@@ -382,6 +452,13 @@ body::after {
 
     header .logo {
         width: 100px; /* Ajusta o tamanho da logo */
+    }
+
+    .curva-image {
+        margin: 30px auto; /* Adiciona mais espaçamento acima */
+        width: 60%; /* Reduz a largura para 60% do contêiner */
+        max-width: 900px; /* Define uma largura máxima maior */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Aumenta a sombra */
     }
 
     /* Ajuste das elipses Amarela */

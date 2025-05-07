@@ -6,16 +6,17 @@ import sys
 app = Flask(__name__)
 
 IMAGE_MAPPING = {
-    "Patio de Alimentação": "/static/images/patioAlimentação.png",
-    "Secagem": "/static/images/secagem.png",
-    "Torre de Resfriamento": "/static/images/TorreResfriamento.png",
-    "Mistura": "/static/images/mistura.png",
-    "Briquetagem": "/static/images/briquetagem.png",
-    "Forno": "/static/images/forno.png",
-    "Ventiladores": "static/images/ventilador.png",  # Corrigido
-    "Precipitadores": "/static/images/precipitador.png",  # Corrigido
-    "Peneiramento": "/static/images/peneiramento.png",
-    "Patio de Briquete": "/static/images/patioBriquete.png",
+    "Patio de Alimentação": "/static/images/frentes/patioAlimentação.png",
+    "Secagem": "/static/images/frentes/secagem.png",
+    "Torre de Resfriamento": "/static/images/frentes/TorreResfriamento.png",
+    "Mistura": "/static/images/frentes/mistura.png",
+    "Briquetagem": "/static/images/frentes/briquetagem.png",
+    "Forno": "/static/images/frentes/forno.png",
+    "Ventiladores": "static/images/frentes/ventilador.png",  # Corrigido
+    "Precipitadores": "/static/images/frentes/precipitador.png",  # Corrigido
+    "Peneiramento": "/static/images/frentes/peneiramento.png",
+    "Patio de Briquete": "/static/images/frentes/patioBriquete.png",
+    "Curva S" : "/static/images/curva/20240730 - Curva da PF4 2024.png",
 }
 
 def load_frentes_from_csv(file_path):
@@ -61,7 +62,7 @@ def load_frentes_from_csv(file_path):
                     "name": row["name"],  # Nome da frente de trabalho
                     "value": value,  # Valor real (progresso)
                     "baseline": int(row["baseline"]),  # Valor planejado
-                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png"),  # Caminho da imagem
+                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/frentes/default.png"),  # Caminho da imagem
                     "sub_activities": sub_activities  # Lista de atividades secundárias
                 })
         print(f"Frentes carregadas: {frentes}")  # Log para depuração após carregar todas as frentes
