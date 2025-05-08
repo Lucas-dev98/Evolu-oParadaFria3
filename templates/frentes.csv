@@ -1,11 +1,11 @@
 name,value,baseline,sub_activities
-Patio de Alimentação,0,100,Abaixamento:100;Levantamento:100
-Secagem,0,90,Abaixamento:70;Levantamento:65
-Torre de Resfriamento,0,80,Abaixamento:35;Levantamento:25
-Mistura,0,95,Abaixamento:25;Levantamento:25
-Briquetagem,0,90,Abaixamento:25;Levantamento:25
-Forno,0,75,Abaixamento:25;Levantamento:25
-Ventiladores,0,70,Sub1:30;Sub2:20
-Precipitadores,0,80,Sub1:40;Sub2:20
-Peneiramento,0,85,Sub1:50;Sub2:25
-Patio de Briquete,0,95,Sub1:60;Sub2:30
+Patio de Alimentação,100,100,Abaixamento:100|100;Levantamento:100|100
+Secagem,80,90,Abaixamento:70|90;Levantamento:65|90
+Torre de Resfriamento,30,80,Abaixamento:35|80;Levantamento:25|80
+Mistura,25,95,Abaixamento:25|95;Levantamento:25|95
+Briquetagem,25,90,Abaixamento:25|90;Levantamento:25|90
+Forno,25,75,Abaixamento:25|75;Levantamento:25|75
+Ventiladores,25,70,Sub1:30|70;Sub2:20|70
+Precipitadores,30,80,Sub1:40|80;Sub2:20|80
+Peneiramento,40,85,Sub1:50|85;Sub2:25|85
+Patio de Briquete,45,95,Sub1:60|95;Sub2:30|95
