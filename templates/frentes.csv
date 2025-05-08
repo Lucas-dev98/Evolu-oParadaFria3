@@ -1,5 +1,5 @@
 name,value,baseline,sub_activities
-Patio de Alimentação,100,100,Abaixamento:100|100;Levantamento:100|100
+Patio de Alimentação,90,100,Abaixamento:90|100;Levantamento:100|100
 Secagem,80,90,Abaixamento:70|90;Levantamento:65|90
 Torre de Resfriamento,30,80,Abaixamento:35|80;Levantamento:25|80
 Mistura,25,95,Abaixamento:25|95;Levantamento:25|95
