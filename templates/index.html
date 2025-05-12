@@ -5,20 +5,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Evolução da Parada</title>
         <link rel="stylesheet" href="/static/css/styles.css">
-        <link rel="icon" href="/static/images/icon/valeFavIcon.jpg" type="image/x-icon"> <!-- Adiciona o favicon -->
+        <link rel="icon" href="static/images/icon/valeFavIcon.jpg" type="image/x-icon">
     </head>
     <body>
         <header>
-            <img src="/static/images//icon/valeFavIcon.jpg" alt="Logo da Vale" class="logo">
+            <img src="static/images/icon/valeFavIcon.jpg" alt="Logo da Vale" class="logo">
             <h1 class="Titulo">Evolução da Parada Fria 1</h1>
             <br>
-                <br>   
-            <img src="static\images\curva\20240730 - Curva da PF4 2024.PNG" alt="Curva S" class="curva-image">
+            <img src="static/images/curva/20240730 - Curva da PF4 2024.PNG" alt="Curva S" class="curva-image">
         </header>
-        <div class="Frentes"> Frentes de Trabalho</div>
+
+        <div class="Frentes">Frentes de Trabalho</div>
         <br>
-            <br>
-        <div class="dashboard" id="dashboard"></div>
+
+        <!-- Dropdown para alternar entre as seções -->
+        <div class="dropdown">
+            <button class="dropdown-button">Selecionar Seção</button>
+            <div class="dropdown-menu">
+                <button data-section="procedimento-parada">Procedimento de Parada</button>
+                <button data-section="manutencao">Manutenção</button>
+                <button data-section="procedimento-partida">Procedimento de Partida</button>
+            </div>
+        </div>
+
+        <!-- Seção: Procedimento de Parada -->
+        <section id="procedimento-parada" class="hidden">
+            <h2 class="dropdown-title">Procedimento de Parada</h2>
+            <div id="dashboard-parada" class="dashboard dropdown-content"></div>
+        </section>
+
+        <!-- Seção: Manutenção -->
+        <section id="manutencao">
+            <h2 class="dropdown-title">Manutenção</h2>
+            <div id="dashboard-manutencao" class="dashboard dropdown-content"></div>
+        </section>
+
+        <!-- Seção: Procedimento de Partida -->
+        <section id="procedimento-partida" class="hidden">
+            <h2 class="dropdown-title">Procedimento de Partida</h2>
+            <div id="dashboard-partida" class="dashboard dropdown-content"></div>
+        </section>
+
         <script src="/static/js/script.js"></script>
     </body>
 </html>
