@@ -1,7 +1,7 @@
 import csv
 
 # Caminhos dos arquivos
-caminho_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\frentes_filtrado.csv'
+caminho_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\frentes_filtrado_corrigido.csv'
 caminho_saida1 = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\procedimento_parada.csv'
 caminho_saida2 = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\manutencao.csv'
 caminho_saida3 = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\procedimento_partida.csv'
