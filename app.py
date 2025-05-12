@@ -1,23 +1,25 @@
 from flask import Flask, render_template, jsonify
 import csv
 import os
-import sys
+import csv
 
 app = Flask(__name__)
 
+
 IMAGE_MAPPING = {
-    "Patio de Alimentação": "/static/images/frentes/patioAlimentação.png",
+    "Patio_Alimentação": "/static/images/frentes/patioAlimentacao.png",
     "Secagem": "/static/images/frentes/secagem.png",
-    "Torre de Resfriamento": "/static/images/frentes/TorreResfriamento.png",
+    "Torre_Resfriamento": "/static/images/frentes/TorreResfriamento.png",
     "Mistura": "/static/images/frentes/mistura.png",
     "Briquetagem": "/static/images/frentes/briquetagem.png",
     "Forno": "/static/images/frentes/forno.png",
     "Ventiladores": "static/images/frentes/ventilador.png",  # Corrigido
     "Precipitadores": "/static/images/frentes/precipitador.png",  # Corrigido
     "Peneiramento": "/static/images/frentes/peneiramento.png",
-    "Patio de Briquete": "/static/images/frentes/patioBriquete.png",
+    "Patio_Briquete": "/static/images/frentes/patioBriquete.png",
     "Curva S" : "/static/images/curva/20240730 - Curva da PF4 2024.png",
 }
+# Removed misplaced code
 
 def load_frentes_from_csv(file_path):
     frentes = []
@@ -25,23 +27,34 @@ def load_frentes_from_csv(file_path):
         with open(file_path, mode="r", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
+                # Extrai o nome e mapeia a imagem
+                name = row.get("name", "").strip()
+                image = IMAGE_MAPPING.get(name, "/static/images/default.png")
+                
                 sub_activities = []
                 if "sub_activities" in row and row["sub_activities"]:
                     sub_activities_raw = row["sub_activities"].split(";")
                     for sub_activity in sub_activities_raw:
-                        name, values = sub_activity.split(":")
-                        real, planned = map(int, values.split("|"))
-                        sub_activities.append({
-                            "name": name.strip(),
-                            "real": real,
-                            "planned": planned
-                        })
-
+                        try:
+                            # Verifica se o formato está correto
+                            if ":" in sub_activity and "|" in sub_activity:
+                                sub_name, values = sub_activity.split(":")
+                                real, planned = map(int, values.split("|"))
+                                sub_activities.append({
+                                    "name": sub_name.strip(),
+                                    "real": real,
+                                    "planned": planned
+                                })
+                            else:
+                                print(f"Formato inválido para subatividade: {sub_activity}")
+                        except ValueError:
+                            print(f"Erro ao processar subatividade: {sub_activity}")
+            
                 frentes.append({
-                    "name": row["name"],
-                    "real": int(row["value"]),
-                    "planned": int(row["baseline"]),
-                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/default.png"),
+                    "name": name,
+                    "real": int(row.get("value", 0)),
+                    "planned": int(row.get("baseline", 0)),
+                    "image": image,
                     "sub_activities": sub_activities
                 })
     except FileNotFoundError:
@@ -49,7 +62,6 @@ def load_frentes_from_csv(file_path):
     except Exception as e:
         print(f"Erro ao carregar o arquivo CSV: {e}")
     return frentes
-
 # Rota principal para renderizar o dashboard
 @app.route("/")
 def index():
@@ -58,7 +70,7 @@ def index():
 # Rota para fornecer os dados do CSV como JSON
 @app.route("/api/frentes")
 def get_frentes():
-    frentes = load_frentes_from_csv("templates/frentes.csv")  # Corrigido o caminho
+    frentes = load_frentes_from_csv(r"./data/csv/frentes_filtrado.csv")
     return jsonify(frentes)
 
 # 🎯 Dica Bônus adicionada aqui
