@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 import csv
-import re
+import re, os
 
 app = Flask(__name__)
 
@@ -47,8 +47,8 @@ def load_frentes_from_csv(file_path):
                 
                 frentes.append({
                     "name": row["name"],
-                    "real": int(row["value"]),
-                    "planned": int(row["baseline"]),
+                    "real": float(row["value"].replace(',', '.')),
+                    "planned": float(row["baseline"].replace(',', '.')),
                     "image": IMAGE_MAPPING.get(row["name"], "/static/images/default-placeholder.png"),
                     "sub_activities": sub_activities
                 })
@@ -60,7 +60,14 @@ def load_frentes_from_csv(file_path):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    curva_dir = os.path.join('static', 'images', 'curva')
+    # Lista todos os arquivos da pasta curva
+    imagens = [f for f in os.listdir(curva_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    # Ordena por data de modificação (mais recente por último)
+    imagens.sort(key=lambda x: os.path.getmtime(os.path.join(curva_dir, x)))
+    # Pega a última imagem (mais recente)
+    imagem_curva = imagens[-1] if imagens else None
+    return render_template('index.html', imagem_curva=imagem_curva)
 
 @app.route("/api/procedimento_parada")
 def get_procedimento_parada():

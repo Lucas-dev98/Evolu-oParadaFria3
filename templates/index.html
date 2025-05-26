@@ -12,8 +12,7 @@
             <img src="static/images/icon/valeFavIcon.jpg" alt="Logo da Vale" class="logo">
             <h1 class="Titulo">Evolução da Parada Fria 1</h1>
             <br>
-            <img src="static/images/curva/20240730 - Curva da PF4 2024.PNG" alt="Curva S" class="curva-image">
-        </header>
+            <img src="{{ url_for('static', filename='images/curva/' ~ imagem_curva) }}" alt="Curva S" class="curva-image">
 
         <div class="Frentes">Frentes de Trabalho</div>
         <br>
@@ -30,8 +29,8 @@
 
         <!-- Seção: Procedimento de Parada -->
         <section id="procedimento-parada" class="hidden">
-            <h2 class="dropdown-title">Procedimento de Parada</h2>
-            <div id="dashboard-parada" class="dashboard dropdown-content"></div>
+            <h2>Procedimento de Parada</h2>
+            <div id="dashboard-parada" class="dashboard"></div>
         </section>
 
         <!-- Seção: Manutenção -->

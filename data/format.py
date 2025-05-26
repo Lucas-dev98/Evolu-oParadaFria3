@@ -29,6 +29,9 @@ def corrigir_padroes(texto):
     # Remove os caracteres `/`, `\`
     texto = re.sub(r"[\\/]", "", texto)
     
+    
+    texto = re.sub(r"disponível", "", texto)
+    
     return texto
 
 def processar_arquivo(caminho_entrada, caminho_saida):
