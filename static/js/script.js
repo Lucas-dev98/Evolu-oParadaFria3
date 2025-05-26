@@ -49,87 +49,114 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para renderizar categorias
     function renderCategoria(categoria, container) {
-        container.innerHTML = ''; // Limpar o conteúdo existente
+    container.innerHTML = ''; // Limpar o conteúdo existente
 
-        if (categoria && categoria.length > 0) {
-            categoria.forEach((frente) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                const image = document.createElement('img');
-                image.src = frente.image;
-                image.alt = frente.name;
-                image.className = 'activity-image';
-
-                const title = document.createElement('h2');
-                title.textContent = frente.name;
-
-                const mainValues = document.createElement('p');
-                mainValues.innerHTML = `
-                    <strong>Real:</strong> ${frente.real}%<br>
-                    <strong>Planejado:</strong> ${frente.planned}%
-                `;
-
-                const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
-
-                const progressBarFill = document.createElement('div');
-                progressBarFill.className = 'progress-bar-fill';
-                progressBarFill.style.width = `${frente.real}%`;
-                progressBarFill.textContent = `${frente.real}%`;
-
-                if (frente.real >= frente.planned) {
-                    progressBarFill.style.backgroundColor = '#007D7A';
-                } else {
-                    progressBarFill.style.backgroundColor = 'red';
-                }
-
-                progressBar.appendChild(progressBarFill);
-
-                const subActivitiesContainer = document.createElement('div');
-                subActivitiesContainer.className = 'sub-activities-container';
-                subActivitiesContainer.style.display = 'none';
-
-                if (frente.sub_activities && frente.sub_activities.length > 0) {
-                    const subActivitiesList = document.createElement('ul');
-
-                    frente.sub_activities.forEach((subActivity) => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <strong>${subActivity.name}:</strong><br>
-                            <strong>Real:</strong> ${subActivity.real}%<br>
-                            <strong>Planejado:</strong> ${subActivity.planned}%
-                        `;
-
-                        if (subActivity.real !== subActivity.planned) {
-                            listItem.style.color = 'red';
-                        }
-
-                        subActivitiesList.appendChild(listItem);
-                    });
-
-                    subActivitiesContainer.appendChild(subActivitiesList);
-                }
-
-                card.addEventListener('click', () => {
-                    subActivitiesContainer.style.display =
-                        subActivitiesContainer.style.display === 'none' ? 'block' : 'none';
+    if (categoria && categoria.length > 0) {
+        categoria.forEach((frente) => {
+            // Se value e baseline forem 0, faz a média apenas das subcategorias preenchidas
+            let real = frente.real;
+            let planned = frente.planned;
+            if (
+                (real === 0 || isNaN(real)) &&
+                (planned === 0 || isNaN(planned)) &&
+                frente.sub_activities &&
+                frente.sub_activities.length > 0
+            ) {
+                let somaReal = 0;
+                let somaPlanned = 0;
+                let countReal = 0;
+                let countPlanned = 0;
+                frente.sub_activities.forEach(sub => {
+                    if (sub.real !== null && sub.real !== undefined && sub.real !== '' && !isNaN(sub.real) && Number(sub.real) !== 0) {
+                        somaReal += Number(sub.real);
+                        countReal++;
+                    }
+                    if (sub.planned !== null && sub.planned !== undefined && sub.planned !== '' && !isNaN(sub.planned) && Number(sub.planned) !== 0) {
+                        somaPlanned += Number(sub.planned);
+                        countPlanned++;
+                    }
                 });
+                if (countReal > 0) real = somaReal / countReal;
+                if (countPlanned > 0) planned = somaPlanned / countPlanned;
+            }
 
-                card.appendChild(image);
-                card.appendChild(title);
-                card.appendChild(mainValues);
-                card.appendChild(progressBar);
-                card.appendChild(subActivitiesContainer);
+            const card = document.createElement('div');
+            card.className = 'card';
 
-                container.appendChild(card);
+            const image = document.createElement('img');
+            image.src = frente.image;
+            image.alt = frente.name;
+            image.className = 'activity-image';
+
+            const title = document.createElement('h2');
+            title.textContent = frente.name;
+
+            const mainValues = document.createElement('p');
+            mainValues.innerHTML = `
+                <strong>Real:</strong> ${real}%<br>
+                <strong>Planejado:</strong> ${planned}%
+            `;
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+
+            const progressBarFill = document.createElement('div');
+            progressBarFill.className = 'progress-bar-fill';
+            progressBarFill.style.width = `${real}%`;
+            progressBarFill.textContent = `${real}%`;
+
+            if (real >= planned) {
+                progressBarFill.style.backgroundColor = '#007D7A';
+            } else {
+                progressBarFill.style.backgroundColor = 'red';
+            }
+
+            progressBar.appendChild(progressBarFill);
+
+            const subActivitiesContainer = document.createElement('div');
+            subActivitiesContainer.className = 'sub-activities-container';
+            subActivitiesContainer.style.display = 'none';
+
+            if (frente.sub_activities && frente.sub_activities.length > 0) {
+                const subActivitiesList = document.createElement('ul');
+
+                frente.sub_activities.forEach((subActivity) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${subActivity.name}:</strong><br>
+                        <strong>Real:</strong> ${subActivity.real}%<br>
+                        <strong>Planejado:</strong> ${subActivity.planned}%
+                    `;
+
+                    // Se o real for menor que o planejado, deixa em vermelho
+                    if (Number(subActivity.real) < Number(subActivity.planned)) {
+                        listItem.style.color = 'red';
+                    }
+
+                    subActivitiesList.appendChild(listItem);
+                });
+                subActivitiesContainer.appendChild(subActivitiesList);
+            }
+
+            card.addEventListener('click', () => {
+                subActivitiesContainer.style.display =
+                    subActivitiesContainer.style.display === 'none' ? 'block' : 'none';
             });
-        } else {
-            const emptyMessage = document.createElement('p');
-            emptyMessage.textContent = "Nenhuma frente de trabalho disponível.";
-            container.appendChild(emptyMessage);
-        }
+
+            card.appendChild(image);
+            card.appendChild(title);
+            card.appendChild(mainValues);
+            card.appendChild(progressBar);
+            card.appendChild(subActivitiesContainer);
+
+            container.appendChild(card);
+        });
+    } else {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = "Nenhuma frente de trabalho disponível.";
+        container.appendChild(emptyMessage);
     }
+}
 
     // Função para carregar frentes de trabalho
     async function loadFrentes(url, container) {
