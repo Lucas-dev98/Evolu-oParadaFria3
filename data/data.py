@@ -47,7 +47,7 @@ def processar_frentes(caminho_arquivo):
     return atividades
 
 # Caminho do arquivo CSV de entrada
-caminho_arquivo_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\Project\250528 - Report - PFBT1.csv'
+caminho_arquivo_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\Project\250529 - Report - PFBT1.csv'
 
 # Caminho do arquivo CSV de saída
 caminho_arquivo_saida = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\frentes_filtrado.csv'
