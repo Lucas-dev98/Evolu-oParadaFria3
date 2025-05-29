@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const mainValues = document.createElement('p');
             mainValues.innerHTML = `
-                <strong>Real:</strong> ${real}%<br>
-                <strong>Planejado:</strong> ${planned}%
+                <strong>Planejado:</strong> ${planned}%<br>
+                <strong>Real:</strong> ${real}%
             `;
 
             const progressBar = document.createElement('div');
@@ -124,8 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
                         <strong>${subActivity.name}:</strong><br>
-                        <strong>Real:</strong> ${subActivity.real}%<br>
                         <strong>Planejado:</strong> ${subActivity.planned}%
+                        <strong>Real:</strong> ${subActivity.real}%<br>
+                      
                     `;
 
                     // Se o real for menor que o planejado, deixa em vermelho

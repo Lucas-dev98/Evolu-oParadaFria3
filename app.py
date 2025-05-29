@@ -47,8 +47,8 @@ def load_frentes_from_csv(file_path):
                 
                 frentes.append({
                     "name": row["name"],
-                    "real": float(row["value"].replace(',', '.')),
                     "planned": float(row["baseline"].replace(',', '.')),
+                    "real": float(row["value"].replace(',', '.')),
                     "image": IMAGE_MAPPING.get(row["name"], "/static/images/default-placeholder.png"),
                     "sub_activities": sub_activities
                 })
