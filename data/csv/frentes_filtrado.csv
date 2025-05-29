@@ -1,4 +1,4 @@
-name,value,baseline,sub_activities
+name,baseline,value,sub_activities
 Pátio de Alimentação,"100,01","100,01",Cortar Produção do Pátio de Finos (Parar Pátio Vazio):100|100; Posicionar Recuperadora na Baliza para Limpeza (Fora da Área de Manutenção):100|100; Bloquear e Realizar Limpeza Geral 1PA11:100|100; Esvaziar e Limpar Chutes do Circuito de Alimentação (Transportadores de Correia e Chutes):100|100; Posicionar Emenda das Correias Conforme Necessidade:100|100; Desbloquear e Transladar 1PA11 para Baliza de Manutenção:100|100; Realizar Bloqueio da 1PA11:100|100; Realizar Bloqueio do Circuito do Pátio de Finos:100|100
 Secagem,100,100,Esvaziar Silo 1SM2SI:100|100; Esvaziar Secador 1SM5SC:100|100; Realizar Limpeza do Filtro de Manga 1SM20FM:100|100; Desligar e Resfriar Queimadores 1SM6GG:100|100; Realizar Purga do Gás do Queimador:100|100; Esvaziar Circuito da Secagem (Chutes de Trasnferência e Correias):100|100; Realizar Bloqueio da Secagem:100|100
 Torre de Resfriamento,"44,19","44,19","TR301TR (Forno / Ventiladores):44,19|44,19"

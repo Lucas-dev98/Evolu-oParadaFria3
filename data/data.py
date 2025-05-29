@@ -31,8 +31,8 @@ def processar_frentes(caminho_arquivo):
             # Inicializa uma nova atividade
             atividade_atual = {
                 'name': nome,
-                'value': linha['Porcentagem_Prev_LB'],  # Substituído 'real' por 'Número7'
-                'baseline': linha['Porcentagem_Prev_Real'],  # Substituído 'baseline' por 'Número8'
+                'value': linha['Porcentagem_Prev_Real'],  # Substituído 'real' por 'Número7'
+                'baseline': linha['Porcentagem_Prev_LB'],  # Substituído 'baseline' por 'Número8'
                 'sub_activities': []  # Inicializa a lista de subatividades
             }
         elif nivel == '4' and atividade_atual:  # Subatividade
