@@ -29,12 +29,12 @@ def load_frentes_from_csv(file_path):
                     sub_activities_raw = row["sub_activities"].split(";")
                     for sub_activity in sub_activities_raw:
                         try:
-                            # Expressão regular para capturar 'nome:real|planned'
-                            match = re.match(r"(.+):\s*(\d+)\|(\d+)", sub_activity.strip())
+                            # Expressão regular CORRIGIDA para capturar números decimais com vírgula
+                            match = re.match(r"(.+):\s*([0-9,\.]+)\|([0-9,\.]+)", sub_activity.strip())
                             if match:
                                 name = match.group(1).strip()
-                                real = int(match.group(2))
-                                planned = int(match.group(3))
+                                real = round(float(match.group(2).replace(',', '.')))
+                                planned = round(float(match.group(3).replace(',', '.')))
                                 sub_activities.append({
                                     "name": name,
                                     "real": real,
@@ -49,7 +49,7 @@ def load_frentes_from_csv(file_path):
                     "name": row["name"],
                     "planned": round(float(row["baseline"].replace(',', '.'))),
                     "real": round(float(row["value"].replace(',', '.'))),
-                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/default-placeholder.png"),
+                    "image": IMAGE_MAPPING.get(row["name"], "/static/images/frentes/default-placeholder.png"),
                     "sub_activities": sub_activities
                 })
     except FileNotFoundError:

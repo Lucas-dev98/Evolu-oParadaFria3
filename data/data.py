@@ -31,14 +31,16 @@ def processar_frentes(caminho_arquivo):
             # Inicializa uma nova atividade
             atividade_atual = {
                 'name': nome,
-                'value': linha['Porcentagem_Prev_Real'],  # Substituído 'real' por 'Número7'
-                'baseline': linha['Porcentagem_Prev_LB'],  # Substituído 'baseline' por 'Número8'
+                # CORREÇÃO: Valores estavam invertidos
+                'value': linha['Porcentagem_Prev_Real'],    # REAL (23,11)
+                'baseline': linha['Porcentagem_Prev_LB'],   # PLANEJADO (33,1)
                 'sub_activities': []  # Inicializa a lista de subatividades
             }
         elif nivel == '4' and atividade_atual:  # Subatividade
-            # Formata a subatividade no formato correto: Nome:Real|Planejado
-            subatividade = f"{nome}:{linha['Porcentagem_Prev_LB']}|{linha['Porcentagem_Prev_Real']}"
+            # CORREÇÃO: Ordem correta Real|Planejado
+            subatividade = f"{nome}:{linha['Porcentagem_Prev_Real']}|{linha['Porcentagem_Prev_LB']}"
             atividade_atual['sub_activities'].append(subatividade)
+
 
     # Adiciona a última atividade ao resultado, se tiver subatividades
     if atividade_atual and atividade_atual['sub_activities']:
@@ -47,7 +49,7 @@ def processar_frentes(caminho_arquivo):
     return atividades
 
 # Caminho do arquivo CSV de entrada
-caminho_arquivo_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\Project\250529 - Report - PFBT1.csv'
+caminho_arquivo_entrada = r'c:\Users\lobas\Downloads\PF1-Web\data\Project\250531 - Report - PFBT1.csv'
 
 # Caminho do arquivo CSV de saída
 caminho_arquivo_saida = r'c:\Users\lobas\Downloads\PF1-Web\data\csv\frentes_filtrado.csv'
