@@ -1,11 +1,11 @@
 name,value,baseline,sub_activities
-Pátio de Alimentação,"23,11","33,1","IE - Pátio de Alimentação:15,22|35,21; Manutenção PQ - Pátio de Alimentação:31|31; Pátio de Finos Disponível para Manutenção:32|35"
-Secagem,"22,7","22,7","Projeto Briquetagem - Secagem:24,4|24,4; Manutenção PQ - Secagem:21|21; Secagem Disponível para Manutenção:19|19"
-Torre de Resfriamento,"15,08","15,08","IE - Recuperação Civil - TR301TR - Torre de Resfriamento:18,29|18,29; Manutenção PQ - Torre de Resfriamento:12|12; TR301TR Disponível para Manutenção:12|12"
-Mistura,"39,19","40,87","Projeto Briquetagem - Mistura:45,55|45,55; IE - Mistura:42,07|47,09; Manutenção PQ - Mistura:30|30; Mistura Disponível para Manutentação:30|32"
-Briquetagem,"32,56","32,56","Projeto Briquetagem - Briquetagem:36,9|36,9; IE - Briquetagem:29,14|29,14; Manutenção PQ - Briquetagem:30|30; Briquetagem Disponível para Manutenção:31|32; Peneira de Rolos Disponível para Manutenção:31|31"
-Forno,"14,15","14,37","Manutenção do Meio do Forno:13,07|18,02; Manutenção do Meio do Forno:0|0; Substituição Viga do Quadro Móvel da Roda Abaixamento:0|0; Substituição Viga da Roda Abaixamento:0|0; Manutenção Região do Levantamento AH1:6,06|5,84; Manutenção Região do Levantamento AH1:0|0; IE - Forno:27,73|27,73; Manutenção PQ - Forno:9|6; Região Superior do Meio do Forno Disponível para Manutenção:17|19; Região Inferior do Meio do Forno Disponível para Manutenção:2|11; Estação de Levantamento Disponível para Manutenção:12|7; Estação de Abaixamento Disponível para Manutenção:22|26"
-Ventiladores,"25,04","34,11","IE - Ventiladores:21,29|38,01; Manutenção PQ - Ventiladores:29|30; AR81 Disponível para Manutenção:28|30; AH47 Disponível para Manutenção:24|24; AH 93 e AH94 Disponível para Manutenção:22|22; AH33 Disponível para Manutenção:28|30; AH34 Disponível para Manutenção:24|24; AH30 Disponível para Manutenção:23|23"
-Precipitadores,"15,15","24,54","Precipitador AR1:1,9|20,95; Precipitador AR40:5,29|19,04; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:38,35|40,75; Manutenção PQ - Precipitadores:23|23; Manutenção dos Precipitadores Concluída:0|0; AR80 Disponível para Manutenção:21|23; AR1 Disponível para Manutenção:23|23; AR40 Disponível para Manutenção:20|21"
-Peneiramento,"23,8","23,8",IE - Peneiramento:0|0; Manutenção PQ - Peneiramento:29|29; Circuito da Emergência Disponível para Manutenção:0|0; BH128  BH129  BH130 Disponível para Manutenção Finos de PQ:28|30; Peneira AH13PV Diponível para Manutenção:29|29
-Pátio de Briquete,"36,48","38,75","Projeto Briquetagem - Pátio de Briquete:38,29|38,29; IE - Pátio de Briquete:43,35|50,12; Manutenção PQ - Pátio de Briquete:28|28; Pátio de Pelotas Disponível para Manutenção:28|28"
+Pátio de Alimentação,"23,11","33,1","IE - Pátio de Alimentação:15,22|35,21; Manutenção PQ - Pátio de Alimentação:31|31"
+Secagem,"22,7","22,7","Projeto Briquetagem - Secagem:24,4|24,4; Manutenção PQ - Secagem:21|21"
+Torre de Resfriamento,"15,08","15,08","IE - Recuperação Civil - TR301TR - Torre de Resfriamento:18,29|18,29; Manutenção PQ - Torre de Resfriamento:12|12"
+Mistura,"39,19","40,87","Projeto Briquetagem - Mistura:45,55|45,55; IE - Mistura:42,07|47,09; Manutenção PQ - Mistura:30|30"
+Briquetagem,"32,56","32,56","Projeto Briquetagem - Briquetagem:36,9|36,9; IE - Briquetagem:29,14|29,14; Manutenção PQ - Briquetagem:30|30"
+Forno,"14,15","14,37","Manutenção do Meio do Forno:13,07|18,02; Substituição Viga do Quadro Móvel da Roda Abaixamento:0|0; Manutenção Região do Levantamento AH1:6,06|5,84; IE - Forno:27,73|27,73; Manutenção PQ - Forno:9|6"
+Ventiladores,"25,04","34,11","IE - Ventiladores:21,29|38,01; Manutenção PQ - Ventiladores:29|30"
+Precipitadores,"15,15","24,54","Precipitador AR1:1,9|20,95; Precipitador AR40:5,29|19,04; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:38,35|40,75; Manutenção PQ - Precipitadores:23|23"
+Peneiramento,"23,8","23,8",IE - Peneiramento:0|0; Manutenção PQ - Peneiramento:29|29
+Pátio de Briquete,"36,48","38,75","Projeto Briquetagem - Pátio de Briquete:38,29|38,29; IE - Pátio de Briquete:43,35|50,12; Manutenção PQ - Pátio de Briquete:28|28"
