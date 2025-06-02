@@ -33,8 +33,8 @@ def load_frentes_from_csv(file_path):
                             match = re.match(r"(.+):\s*([0-9,\.]+)\|([0-9,\.]+)", sub_activity.strip())
                             if match:
                                 name = match.group(1).strip()
-                                real = round(float(match.group(2).replace(',', '.')))
-                                planned = round(float(match.group(3).replace(',', '.')))
+                                real = min(100, round(float(match.group(2).replace(',', '.'))))
+                                planned = min(100, round(float(match.group(3).replace(',', '.'))))
                                 sub_activities.append({
                                     "name": name,
                                     "real": real,
@@ -47,8 +47,8 @@ def load_frentes_from_csv(file_path):
                 
                 frentes.append({
                     "name": row["name"],
-                    "planned": round(float(row["baseline"].replace(',', '.'))),
-                    "real": round(float(row["value"].replace(',', '.'))),
+                    "planned": min(100, round(float(row["baseline"].replace(',', '.')))),
+                    "real": min(100, round(float(row["value"].replace(',', '.')))),
                     "image": IMAGE_MAPPING.get(row["name"], "/static/images/frentes/default-placeholder.png"),
                     "sub_activities": sub_activities
                 })
