@@ -16,6 +16,9 @@ IMAGE_MAPPING = {
     "Peneiramento": "static/images/frentes/peneiramento.png",
     "Pátio de Briquete": "static/images/frentes/patioBriquete.png",
     "Retorno da Mistura": "static/images/frentes/retornoMistura.png",
+    "Retorno da Produção" : "static/images/frentes/retornoProducao.png",
+    "Teste Operacional dos Ventiladores" : "static/images/frentes/testeOperacionalVentiladores.png",
+    "Torre de Refriamento" : "static/images/frentes/TorreResfriamento.png"
 }
 
 def load_frentes_from_csv(file_path):
