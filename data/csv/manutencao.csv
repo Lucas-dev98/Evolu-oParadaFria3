@@ -1,11 +1,11 @@
 name,value,baseline,sub_activities
-Pátio de Alimentação,"46,83","54,7","IE - Pátio de Alimentação:37,67|53,39; Manutenção PQ - Pátio de Alimentação:56|56"
-Secagem,"40,18","44,2","Projeto Briquetagem - Secagem:42,34|50,37; Manutenção PQ - Secagem:38|38"
-Torre de Resfriamento,"35,81","35,81","IE - Recuperação Civil - TR301TR - Torre de Resfriamento:34,57|34,57; Manutenção PQ - Torre de Resfriamento:37|37"
-Mistura,"58,82","58,82","Projeto Briquetagem - Mistura:60,06|60,06; IE - Mistura:61,42|61,42; Manutenção PQ - Mistura:55|55"
-Briquetagem,"52,15","53,02","Projeto Briquetagem - Briquetagem:58,47|60,6; IE - Briquetagem:40,61|40,61; Manutenção PQ - Briquetagem:55|55"
-Forno,"34,69","34,13","Manutenção do Meio do Forno:43,86|48,81; Substituição Viga do Quadro Móvel da Roda Abaixamento:41,66|0; Manutenção Região do Levantamento AH1:23,11|24,99; IE - Forno:40,18|40,18; Manutenção PQ - Forno:32|29"
-Ventiladores,"46,55","54,64","IE - Ventiladores:39,48|55,25; Manutenção PQ - Ventiladores:54|54"
-Precipitadores,"31,82","54,85","Precipitador AR1:22,46|52,49; Precipitador AR40:20,39|53,47; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:40,01|72,75; Manutenção PQ - Precipitadores:47|47"
-Peneiramento,"43,91","43,91",IE - Peneiramento:0|0; Manutenção PQ - Peneiramento:54|54
-Pátio de Briquete,"56,08","56,08","Projeto Briquetagem - Pátio de Briquete:63,99|63,99; IE - Pátio de Briquete:51,47|51,47; Manutenção PQ - Pátio de Briquete:53|53"
+Pátio de Alimentação,"55,15","62,84","IE - Pátio de Alimentação:47,3|62,68; Manutenção PQ - Pátio de Alimentação:63|63"
+Secagem,"43,81","48,65","Projeto Briquetagem - Secagem:45,6|55,27; Manutenção PQ - Secagem:42|42"
+Torre de Resfriamento,"42,83","42,83","IE - Recuperação Civil - TR301TR - Torre de Resfriamento:42,65|42,65; Manutenção PQ - Torre de Resfriamento:43|43"
+Mistura,"66,11","66,11","Projeto Briquetagem - Mistura:68,77|68,77; IE - Mistura:68,59|68,59; Manutenção PQ - Mistura:61|61"
+Briquetagem,"57,48","58,54","Projeto Briquetagem - Briquetagem:62,86|65,45; IE - Briquetagem:46,56|46,56; Manutenção PQ - Briquetagem:61|61"
+Forno,"39,44","39,53","Manutenção do Meio do Forno:50,14|54,71; Substituição Viga do Quadro Móvel da Roda Abaixamento:41,66|0; Manutenção Região do Levantamento AH1:24|29,6; IE - Forno:46,86|46,86; Manutenção PQ - Forno:38|34"
+Ventiladores,"53,65","62,17","IE - Ventiladores:47,62|64,22; Manutenção PQ - Ventiladores:60|60"
+Precipitadores,"44,59","63,12","Precipitador AR1:47,21|61,97; Precipitador AR40:37,3|63,21; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:40,01|81,97; Manutenção PQ - Precipitadores:52|52"
+Peneiramento,"48,84","48,84",IE - Peneiramento:0|0; Manutenção PQ - Peneiramento:60|60
+Pátio de Briquete,"60,27","60,27","Projeto Briquetagem - Pátio de Briquete:70,58|70,58; IE - Pátio de Briquete:51,47|51,47; Manutenção PQ - Pátio de Briquete:59|59"
