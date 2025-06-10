@@ -68,6 +68,7 @@ header .Titulo {
     flex-grow: 1; /* Faz o título ocupar o espaço restante */
 }
 
+/* Estilo Curva S */
 .curva-image {
     align-items: center; /* Centraliza a imagem verticalmente */
     justify-content: center; /* Centraliza a imagem horizontalmente */
@@ -80,6 +81,24 @@ header .Titulo {
     border-radius: 8px; /* Adiciona bordas arredondadas */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra leve */
 }
+
+/* Estilo Atenção  */
+.atencao-image {
+    max-width: 100%;
+    height: auto;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.Informe {
+    display: flex;
+    flex-direction: column; /* Padrão: empilhadas verticalmente */
+    align-items: center;
+    gap: 20px; /* Espaçamento entre as imagens */
+    margin: 20px auto;
+}
+
 
 /* Estilo do body */
 body {
@@ -309,6 +328,28 @@ body::after {
         flex-wrap: nowrap;
         justify-content: space-evenly;
     }
+
+        /*Informe de Impactos  */
+     .Informe {
+        flex-direction: column; /* Mantém empilhado verticalmente */
+        align-items: center;
+        gap: 15px; /* Reduz o espaçamento */
+        margin: 15px auto;
+        max-width: 95%; /* Limita a largura do container */
+    }
+
+    .curva-image {
+        width: 90%; /* Define largura para curva S */
+        max-width: 320px; /* Limita tamanho máximo */
+        margin: 0; /* Remove margin auto */
+    }
+
+    .atencao-image {
+        width: 75%; /* Imagem atenção MENOR que curva S */
+        max-width: 240px; /* Limita tamanho máximo menor */
+        margin: 0; /* Remove margin auto */
+    }
+
     #dashboard {
         display: flex; /* Torna o dashboard um contêiner flexível */
         flex-direction: column; /* Empilha os cards verticalmente */
@@ -386,6 +427,27 @@ body::after {
         gap: 20px; /* Ajusta o espaçamento entre os cards */
     }
 
+    /* Atencao de impactos */
+    .Informe {
+        flex-direction: column; /* Mantém empilhado verticalmente */
+        align-items: center;
+        gap: 20px; /* Espaçamento padrão */
+        margin: 20px auto;
+        max-width: 90%; /* Limita largura do container */
+    }
+
+    .curva-image {
+        width: 85%; /* Define largura para curva S */
+        max-width: 450px; /* Limita tamanho máximo */
+        margin: 0; /* Remove margin auto */
+    }
+
+    .atencao-image {
+        width: 70%; /* Imagem atenção MENOR que curva S */
+        max-width: 350px; /* Limita tamanho máximo menor */
+        margin: 0; /* Remove margin auto */
+    }
+
     .card {
         width: 90%; /* Faz os cards ocuparem 90% da largura da tela */
         max-width: 300px; /* Limita a largura máxima dos cards */
@@ -450,6 +512,26 @@ body::after {
         gap: 30px; /* Aumenta o espaçamento entre os cards */
     }
 
+    .Informe {
+        flex-direction: column; /* Ainda empilhado */
+        align-items: center;
+        gap: 25px;
+        margin: 25px auto;
+        max-width: 85%;
+    }
+
+    .curva-image {
+        width: 80%; /* Define largura para curva S */
+        max-width: 550px; /* Limita tamanho máximo */
+        margin: 0;
+    }
+
+    .atencao-image {
+        width: 65%; /* Imagem atenção MENOR que curva S */
+        max-width: 400px; /* Limita tamanho máximo menor */
+        margin: 0;
+    }
+
     .card {
         width: 250px; /* Aumenta a largura dos cards */
         padding: 25px; /* Aumenta o padding dos cards */
@@ -499,8 +581,56 @@ body::after {
         top: -150px; /* Ajusta a posição da elipse verde */
     }
 }
+
+/* Para tablets maiores (máx. 1024px) */
+@media (max-width: 1024px) {
+    .Informe {
+        flex-direction: column; /* Ainda empilhado */
+        align-items: center;
+        gap: 25px;
+        margin: 25px auto;
+        max-width: 85%;
+    }
+
+    .curva-image {
+        width: 80%; /* Define largura para curva S */
+        max-width: 550px; /* Limita tamanho máximo */
+        margin: 0;
+    }
+
+    .atencao-image {
+        width: 65%; /* Imagem atenção MENOR que curva S */
+        max-width: 400px; /* Limita tamanho máximo menor */
+        margin: 0;
+    }
+}
+
+
 /* ---------- Super telas (2K, 4K, ultra-wide) ---------- */
 @media (min-width: 1440px) {
+
+  .Informe {
+        flex-direction: row; /* Muda para lado a lado */
+        justify-content: center; /* Centraliza horizontalmente */
+        gap: 40px; /* Aumenta o espaçamento entre as imagens */
+        max-width: 1200px; /* Limita a largura total */
+        margin: 40px auto; /* Centraliza o container */
+    }
+
+    .curva-image {
+        width: 45%; /* Ajusta para ocupar 45% da largura */
+        max-width: 500px; /* Limita o tamanho máximo */
+        margin: 0; /* Remove margin auto para não conflitar com flexbox */
+    }
+
+    .atencao-image {
+        width: 45%; /* Ajusta para ocupar 45% da largura */
+        max-width: 500px; /* Limita o tamanho máximo */
+        margin: 0; /* Remove margin auto */
+    }
+
+
+
     #dashboard {
         max-width: 1440px; /* Limita a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
@@ -569,6 +699,17 @@ body::after {
 }
 /* ---------- Monitores Full HD completos ---------- */
 @media (min-width: 1920px) {
+
+    .Informe {
+        gap: 60px; /* Mais espaçamento entre as imagens */
+        max-width: 1400px; /* Container maior */
+    }
+
+    .curva-image,
+    .atencao-image {
+        max-width: 600px; /* Permite imagens maiores */
+    }
+
     #dashboard {
         max-width: 1600px; /* Reduz ainda mais a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
@@ -638,6 +779,18 @@ body::after {
 
 /* ---------- Telas 2K, 4K e ultra-wide ---------- */
 @media (min-width: 2560px) {
+
+     .Informe {
+        gap: 80px; /* Ainda mais espaçamento */
+        max-width: 1800px; /* Container ainda maior */
+    }
+
+    .curva-image,
+    .atencao-image {
+        max-width: 700px; /* Imagens ainda maiores */
+    }
+
+
     #dashboard {
         max-width: 2200px; /* Aumenta a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */
@@ -706,6 +859,18 @@ body::after {
 }
 /* ---------- Telas ultra-wide ---------- */
 @media (min-width: 3840px) {
+
+        .Informe {
+        gap: 80px; /* Ainda mais espaçamento */
+        max-width: 2200px; /* Container ainda maior */
+    }
+
+    .curva-image,
+    .atencao-image {
+        max-width: 900px; /* Imagens ainda maiores */
+    }
+
+
     #dashboard {
         max-width: 2200px; /* Aumenta a largura máxima do dashboard */
         margin: 0 auto; /* Centraliza o dashboard horizontalmente */

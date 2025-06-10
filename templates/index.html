@@ -12,8 +12,10 @@
             <img src="static/images/icon/valeFavIcon.jpg" alt="Logo da Vale" class="logo">
             <h1 class="Titulo">Evolução da Parada Fria 1</h1>
             <br>
-            <img src="{{ url_for('static', filename='images/curva/' ~ imagem_curva) }}" alt="Curva S" class="curva-image">
-
+            <div class="Informe">
+                <img src="{{ url_for('static', filename='images/curva/' ~ imagem_curva) }}" alt="Curva S" class="curva-image">
+                <img src ="{{ url_for('static', filename='images/atencao/' ~ imagem_atencao) }}" alt="Atencao " class="atencao-image">
+            </div>    
         <div class="Frentes">Frentes de Trabalho</div>
         <br>
 

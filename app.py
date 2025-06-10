@@ -64,13 +64,23 @@ def load_frentes_from_csv(file_path):
 @app.route("/")
 def index():
     curva_dir = os.path.join('static', 'images', 'curva')
+    atencao_dir = os.path.join('static', 'images', 'atencao')
+    
     # Lista todos os arquivos da pasta curva
-    imagens = [f for f in os.listdir(curva_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    imagens_curva = [f for f in os.listdir(curva_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     # Ordena por data de modificação (mais recente por último)
-    imagens.sort(key=lambda x: os.path.getmtime(os.path.join(curva_dir, x)))
+    imagens_curva.sort(key=lambda x: os.path.getmtime(os.path.join(curva_dir, x)))
     # Pega a última imagem (mais recente)
-    imagem_curva = imagens[-1] if imagens else None
-    return render_template('index.html', imagem_curva=imagem_curva)
+    imagem_curva = imagens_curva[-1] if imagens_curva else None
+    
+    # Lista todos os arquivos da pasta atenção
+    imagens_atencao = [f for f in os.listdir(atencao_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    # Ordena por data de modificação (mais recente por último)
+    imagens_atencao.sort(key=lambda x: os.path.getmtime(os.path.join(atencao_dir, x)))
+    # Pega a última imagem (mais recente)
+    imagem_atencao = imagens_atencao[-1] if imagens_atencao else None
+    
+    return render_template('index.html', imagem_curva=imagem_curva, imagem_atencao=imagem_atencao)
 
 @app.route("/api/procedimento_parada")
 def get_procedimento_parada():
