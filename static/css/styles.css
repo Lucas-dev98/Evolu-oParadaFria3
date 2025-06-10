@@ -349,7 +349,12 @@ body::after {
         max-width: 240px; /* Limita tamanho máximo menor */
         margin: 0; /* Remove margin auto */
     }
-
+     .dropdown-title {
+        text-align: center; /* Centraliza o texto */
+        margin: 15px auto; /* Reduz a margem */
+        font-size: 20px; /* Reduz o tamanho da fonte */
+        padding: 0 15px; /* Adiciona padding lateral */
+    }
     #dashboard {
         display: flex; /* Torna o dashboard um contêiner flexível */
         flex-direction: column; /* Empilha os cards verticalmente */
@@ -448,6 +453,13 @@ body::after {
         margin: 0; /* Remove margin auto */
     }
 
+    .dropdown-title {
+        text-align: center; /* Centraliza o texto */
+        margin: 18px auto; /* Margem média */
+        font-size: 22px; /* Tamanho da fonte média */
+        padding: 0 20px; /* Padding lateral */
+    }
+
     .card {
         width: 90%; /* Faz os cards ocuparem 90% da largura da tela */
         max-width: 300px; /* Limita a largura máxima dos cards */
@@ -502,6 +514,8 @@ body::after {
         font-size: 14px; /* Aumenta o tamanho da fonte ao passar o mouse */
         font-weight: bold; /* Mantém o negrito ao passar o mouse */
     }
+
+
     }
 /* Responsividade para telas grandes (máx. 1200px) */
 /* ---------- Desktops grandes ---------- */
