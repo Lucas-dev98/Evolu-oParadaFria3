@@ -1,6 +1,6 @@
 Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Prev_LB;Porcentagem_Prev_Real
-0;0;0;0;Cronograma Operacional - PFBT01 2025;;62,87;60,37
-1;1;1;1;Parada Fria da Usina 1;;62,87;60,37
+0;0;0;0;Cronograma Operacional - PFBT01 2025;;66,65;63,69
+1;1;1;1;Parada Fria da Usina 1;;66,65;63,69
 98;2;1.1;2;Corte da Produção;;100;100
 474;3;1.2;2;Procedimentos de Parada;;100;100
 475;4;1.2.1;3;Pátio de Alimentação;;100,01;100,01
@@ -111,31 +111,31 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 438;109;1.2.11.1;4;Esvaziar Correias do Circuito, Realizar Limpezas dos Chutes do Circuito e Posicionar Correias para Manutenção (2P0TC até Pátio do Briquete);S;100;100
 437;110;1.2.11.2;4;Realizar Bloqueio Elétrico do Pátio do Briquete;S;100;100
 854;111;1.2.11.3;4;Limpar Máquina EP 2P2A;N;100;100
-476;112;1.3;2;Manutenção;;74,76;70,02
-607;113;1.3.1;3;Pátio de Alimentação;;84,81;76,42
-14155;114;1.3.1.1;4;IE - Pátio de Alimentação;S;81,62;64,84
-13723;115;1.3.1.1.1;5;IE - Substituir Rotulas da 1PA13;;73,09;0
+476;112;1.3;2;Manutenção;;81,94;76,31
+607;113;1.3.1;3;Pátio de Alimentação;;93,11;83,74
+14155;114;1.3.1.1;4;IE - Pátio de Alimentação;S;92,22;73,47
+13723;115;1.3.1.1.1;5;IE - Substituir Rotulas da 1PA13;;89,03;0
 13724;116;1.3.1.1.1.1;6;BLOQUEIO;;100;0
 13725;117;1.3.1.1.1.2;6;DISTENSIONAMENTO DE CONTRA-PESO;;100;0
 13726;118;1.3.1.1.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;0
 13727;119;1.3.1.1.1.4;6;DESMONTAGEM DE RAC07;;100;0
-13728;120;1.3.1.1.1.5;6;RECUPERAÇÃO METÁLICA;;78;0
+13728;120;1.3.1.1.1.5;6;RECUPERAÇÃO METÁLICA;;98;0
 13729;121;1.3.1.1.1.6;6;MONTAGEM DE RAC 07;;0;0
 13730;122;1.3.1.1.1.7;6;TENSIONAMENTO DE CONTRA-PESO;;0;0
 13731;123;1.3.1.1.1.8;6;RETIRADA DE BLOQUEIO;;0;0
-13733;124;1.3.1.1.2;5;IE - Recuperação Estrutural Treliça 1PA12;;84,07;67,12
+13733;124;1.3.1.1.2;5;IE - Recuperação Estrutural Treliça 1PA12;;93,08;74,82
 13734;125;1.3.1.1.2.1;6;BLOQUEIO;;100;100
 13735;126;1.3.1.1.2.2;6;LIMPEZA;;100;100
 13736;127;1.3.1.1.2.3;6;DISTENSIONAMENTO DE CONTRA-PESO;;100;100
 13737;128;1.3.1.1.2.4;6;MONTAGEM DE ANDAIME;;100;100
 13738;129;1.3.1.1.2.5;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13739;130;1.3.1.1.2.6;6;DESMONTAGEM DE RAC07;;100;100
-13740;131;1.3.1.1.2.7;6;RECUPERAÇÃO METÁLICA;;90;68
-13741;132;1.3.1.1.2.8;6;MONTAGEM DE RAC 07;;0;0
+13740;131;1.3.1.1.2.7;6;RECUPERAÇÃO METÁLICA;;100;78
+13741;132;1.3.1.1.2.8;6;MONTAGEM DE RAC 07;;75;0
 13742;133;1.3.1.1.2.9;6;DESMONTAGEM DE ANDAIME;;0;0
 13743;134;1.3.1.1.2.10;6;TENSIONAMENTO DE CONTRA-PESO;;0;0
 13744;135;1.3.1.1.2.11;6;RETIRADA DE BLOQUEIO;;0;0
-13746;136;1.3.1.1.3;5;IE - Substituir Estrutura Chute Emerg 1PA5;;89,76;89,76
+13746;136;1.3.1.1.3;5;IE - Substituir Estrutura Chute Emerg 1PA5;;99,99;99,99
 13747;137;1.3.1.1.3.1;6;BLOQUEIO;;100;100
 13748;138;1.3.1.1.3.2;6;LIMPEZA;;100;100
 13749;139;1.3.1.1.3.3;6;DISTENSIONAMENTO DE CONTRA-PESO;;100;100
@@ -143,80 +143,80 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13751;141;1.3.1.1.3.5;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13752;142;1.3.1.1.3.6;6;DESMONTAGEM DE RAC07;;100;100
 13753;143;1.3.1.1.3.7;6;GUINDASTE;;100;100
-13754;144;1.3.1.1.3.8;6;RECUPERAÇÃO METÁLICA;;98;98
-13755;145;1.3.1.1.3.9;6;MONTAGEM DE RAC 07;;0;0
-13756;146;1.3.1.1.3.10;6;DESMONTAGEM DE ANDAIME;;0;0
-13757;147;1.3.1.1.3.11;6;TENSIONAMENTO DE CONTRA-PESO;;0;0
-13758;148;1.3.1.1.3.12;6;RETIRADA DE BLOQUEIO;;0;0
-13761;149;1.3.1.1.4;5;IE - Rec Estrutural - Coluna 446A/ Substi. Apoio 448G / 448G - 1PR2TC;;81,99;71,23
+13754;144;1.3.1.1.3.8;6;RECUPERAÇÃO METÁLICA;;100;100
+13755;145;1.3.1.1.3.9;6;MONTAGEM DE RAC 07;;100;100
+13756;146;1.3.1.1.3.10;6;DESMONTAGEM DE ANDAIME;;100;100
+13757;147;1.3.1.1.3.11;6;TENSIONAMENTO DE CONTRA-PESO;;100;100
+13758;148;1.3.1.1.3.12;6;RETIRADA DE BLOQUEIO;;100;100
+13761;149;1.3.1.1.4;5;IE - Rec Estrutural - Coluna 446A/ Substi. Apoio 448G / 448G - 1PR2TC;;91,91;78,68
 13762;150;1.3.1.1.4.1;6;BLOQUEIO;;100;100
 13763;151;1.3.1.1.4.2;6;MONTAGEM DE ANDAIME;;100;100
 13764;152;1.3.1.1.4.3;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13765;153;1.3.1.1.4.4;6;DESMONTAGEM DE RAC07;;100;100
-13766;154;1.3.1.1.4.5;6;RECUPERAÇÃO METÁLICA;;85;72
+13766;154;1.3.1.1.4.5;6;RECUPERAÇÃO METÁLICA;;97;81
 13767;155;1.3.1.1.4.6;6;MONTAGEM DE RAC 07;;0;0
 13768;156;1.3.1.1.4.7;6;DESMONTAGEM DE ANDAIME;;0;0
 13769;157;1.3.1.1.4.8;6;RETIRADA DE BLOQUEIO;;0;0
-13771;158;1.3.1.1.5;5;IE - Recuperação Estrutural 1PR1TC;;51,48;93,55
+13771;158;1.3.1.1.5;5;IE - Recuperação Estrutural 1PR1TC;;77,29;93,55
 13772;159;1.3.1.1.5.1;6;BLOQUEIO;;100;100
 13773;160;1.3.1.1.5.2;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13774;161;1.3.1.1.5.3;6;DESMONTAGEM DE RAC07;;100;100
-13775;162;1.3.1.1.5.4;6;RECUPERAÇÃO METÁLICA;;36;100
-13776;163;1.3.1.1.5.5;6;MONTAGEM DE RAC 07;;0;100
+13775;162;1.3.1.1.5.4;6;RECUPERAÇÃO METÁLICA;;100;100
+13776;163;1.3.1.1.5.5;6;MONTAGEM DE RAC 07;;16;100
 13777;164;1.3.1.1.5.6;6;RETIRADA DE BLOQUEIO;;0;0
-13780;165;1.3.1.1.6;5;IE - Substituir Vigas EL 5.700-Prédio 1PR4;;84,21;44,79
+13780;165;1.3.1.1.6;5;IE - Substituir Vigas EL 5.700-Prédio 1PR4;;92,59;53,16
 13781;166;1.3.1.1.6.1;6;BLOQUEIO;;100;100
 13782;167;1.3.1.1.6.2;6;DISTENSIONAMENTO DE CONTRAPESO;;100;100
 13783;168;1.3.1.1.6.3;6;MONTAGEM DE ANDAIME;;100;100
 13784;169;1.3.1.1.6.4;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13785;170;1.3.1.1.6.5;6;DESMONTAGEM DE RAC07;;100;100
 13786;171;1.3.1.1.6.6;6;GUINDASTE;;100;100
-13787;172;1.3.1.1.6.7;6;RECUPERAÇÃO METÁLICA;;100;35
-13788;173;1.3.1.1.6.8;6;MONTAGEM DE RAC 07;;75;0
-13789;174;1.3.1.1.6.9;6;DESMONTAGEM DE ANDAIME;;0;0
+13787;172;1.3.1.1.6.7;6;RECUPERAÇÃO METÁLICA;;100;50
+13788;173;1.3.1.1.6.8;6;MONTAGEM DE RAC 07;;100;0
+13789;174;1.3.1.1.6.9;6;DESMONTAGEM DE ANDAIME;;87;0
 13790;175;1.3.1.1.6.10;6;TENSIONAMENTO DE CONTRAPESO;;0;0
 13791;176;1.3.1.1.6.11;6;RETIRADA DE BLOQUEIO;;0;0
-13794;177;1.3.1.1.7;5;IE - Tratamento Anticorrosivo 1PR2TC;;83,72;58,45
+13794;177;1.3.1.1.7;5;IE - Tratamento Anticorrosivo 1PR2TC;;92,59;67,21
 13795;178;1.3.1.1.7.1;6;BLOQUEIO;;100;100
 13796;179;1.3.1.1.7.2;6;MOBILIZAÇÃO;;100;100
 13797;180;1.3.1.1.7.3;6;DESMONTAGEM DE RAC07;;100;100
 13798;181;1.3.1.1.7.4;6;LIMPEZA;;100;100
 13799;182;1.3.1.1.7.5;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
 13800;183;1.3.1.1.7.6;6;MONTAGEM DE ANDAIME;;100;100
-13801;184;1.3.1.1.7.7;6;TRATAMENTO ANTICORROSIVO;;97;48
-13802;185;1.3.1.1.7.8;6;MONTAGEM DE RAC 07;;0;0
-13803;186;1.3.1.1.7.9;6;DESMONTAGEM DE ANDAIME;;0;0
+13801;184;1.3.1.1.7.7;6;TRATAMENTO ANTICORROSIVO;;100;65
+13802;185;1.3.1.1.7.8;6;MONTAGEM DE RAC 07;;100;0
+13803;186;1.3.1.1.7.9;6;DESMONTAGEM DE ANDAIME;;37;0
 13804;187;1.3.1.1.7.10;6;RETIRADA DE BLOQUEIO;;0;0
-13806;188;1.3.1.1.8;5;IE - Tratamento Anticorrosivo 1PR9TC;;83,72;66,18
+13806;188;1.3.1.1.8;5;IE - Tratamento Anticorrosivo 1PR9TC;;92,59;80,11
 13807;189;1.3.1.1.8.1;6;BLOQUEIO;;100;100
 13808;190;1.3.1.1.8.2;6;MOBILIZAÇÃO;;100;100
 13809;191;1.3.1.1.8.3;6;DESMONTAGEM DE RAC07;;100;100
 13810;192;1.3.1.1.8.4;6;LIMPEZA;;100;100
 13811;193;1.3.1.1.8.5;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
 13812;194;1.3.1.1.8.6;6;MONTAGEM DE ANDAIME;;100;100
-13813;195;1.3.1.1.8.7;6;TRATAMENTO ANTICORROSIVO;;97;63
-13814;196;1.3.1.1.8.8;6;MONTAGEM DE RAC 07;;0;0
-13815;197;1.3.1.1.8.9;6;DESMONTAGEM DE ANDAIME;;0;0
+13813;195;1.3.1.1.8.7;6;TRATAMENTO ANTICORROSIVO;;100;90
+13814;196;1.3.1.1.8.8;6;MONTAGEM DE RAC 07;;100;0
+13815;197;1.3.1.1.8.9;6;DESMONTAGEM DE ANDAIME;;37;0
 13816;198;1.3.1.1.8.10;6;RETIRADA DE BLOQUEIO;;0;0
-13819;199;1.3.1.1.9;5;IE - Tratamento Anticorrosivo Prédio 1PR4;;83,4;83,4
+13819;199;1.3.1.1.9;5;IE - Tratamento Anticorrosivo Prédio 1PR4;;91,92;91,92
 13820;200;1.3.1.1.9.1;6;MOBILIZAÇÃO;;100;100
 13821;201;1.3.1.1.9.2;6;LIMPEZA;;100;100
 13822;202;1.3.1.1.9.3;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
-13823;203;1.3.1.1.9.4;6;TRATAMENTO ANTICORROSIVO;;83;83
+13823;203;1.3.1.1.9.4;6;TRATAMENTO ANTICORROSIVO;;93;93
 13824;204;1.3.1.1.9.5;6;RETIRADA DE BLOQUEIO;;0;0
-13827;205;1.3.1.1.10;5;IE - Subst. Terças, Tap Lat, Venezianas - 1PR4;;74,07;64,7
+13827;205;1.3.1.1.10;5;IE - Subst. Terças, Tap Lat, Venezianas - 1PR4;;88,74;79,63
 13828;206;1.3.1.1.10.1;6;BLOQUEIO;;100;100
 13829;207;1.3.1.1.10.2;6;MOBILIZAÇÃO;;100;100
 13830;208;1.3.1.1.10.3;6;DESMONTAGEM DE TELHA DO TAPAMENTO LATERAL;;100;100
-13831;209;1.3.1.1.10.4;6;EXECUÇÃO DE RECUPERAÇÃO ESTRUTURAL;;100;77
-13832;210;1.3.1.1.10.5;6;MONTAGEM DE TELHA DO TAPAMENTO LATERAL;;0;0
+13831;209;1.3.1.1.10.4;6;EXECUÇÃO DE RECUPERAÇÃO ESTRUTURAL;;100;100
+13832;210;1.3.1.1.10.5;6;MONTAGEM DE TELHA DO TAPAMENTO LATERAL;;66;25
 13833;211;1.3.1.1.10.6;6;RETIRADA DE BLOQUEIO;;0;0
-14154;212;1.3.1.2;4;Manutenção PQ - Pátio de Alimentação;S;88;88
-608;213;1.3.1.3;4;Pátio de Finos Disponível para Manutenção;N;89;86
+14154;212;1.3.1.2;4;Manutenção PQ - Pátio de Alimentação;S;94;94
+608;213;1.3.1.3;4;Pátio de Finos Disponível para Manutenção;N;95;92
 609;214;1.3.2;3;Manutenção do Pátio de Alimentação Concluída;;0;0
-614;215;1.3.3;3;Secagem;;66,83;68
-14186;216;1.3.3.1;4;Projeto Briquetagem - Secagem;S;74,62;76,96
-13967;217;1.3.3.1.1;5;BT1 - Substituição das 4 Válvulas Duplo Pêndulo;;62,8;62,8
+614;215;1.3.3;3;Secagem;;71,8;71,92
+14186;216;1.3.3.1;4;Projeto Briquetagem - Secagem;S;79,55;79,79
+13967;217;1.3.3.1.1;5;BT1 - Substituição das 4 Válvulas Duplo Pêndulo;;66,61;66,61
 13968;218;1.3.3.1.1.1;6;Desmontagem das 4 Válvulas Duplo Pêndulo;;99,99;99,99
 13969;219;1.3.3.1.1.1.1;7;VÁLVULA 1;;99,99;99,99
 13970;220;1.3.3.1.1.1.1.1;8;Abertura da caixa de proteção da válvula ;;100;100
@@ -274,7 +274,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14022;272;1.3.3.1.1.1.4.11;8;Sucateamento da válvula para o caminho de rolamento;;100;100
 14023;273;1.3.3.1.1.1.4.12;8;Remoção das sucatas com auxílio da gaiola para içamento com o apoio do guindaste;;100;100
 14024;274;1.3.3.1.1.1.4.13;8;Limpeza mecânica;;100;100
-14025;275;1.3.3.1.1.2;6;Montagem das 4 Válvulas Duplo Pêndulo;;67,86;67,86
+14025;275;1.3.3.1.1.2;6;Montagem das 4 Válvulas Duplo Pêndulo;;75,02;75,02
 14026;276;1.3.3.1.1.2.1;7;VÁLVULA 1;;100,01;100,01
 14027;277;1.3.3.1.1.2.1.1;8;Deslocamento da válvula nova para o caminho de rolamento;;100;100
 14028;278;1.3.3.1.1.2.1.2;8;Montagem do flange superior;;100;100
@@ -299,7 +299,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14047;297;1.3.3.1.1.2.1.21;8;Interlição dos tubes da válvula;;100;100
 14048;298;1.3.3.1.1.2.1.22;8;Montagem dos guarda corpos ;;100;100
 14049;299;1.3.3.1.1.2.1.23;8;Montagem do wind fance ;;100;100
-14050;300;1.3.3.1.1.2.2;7;VÁLVULA 2;;36,27;36,27
+14050;300;1.3.3.1.1.2.2;7;VÁLVULA 2;;50,47;50,47
 14051;301;1.3.3.1.1.2.2.1;8;Deslocamento da válvula nova para o caminho de rolamento;;100;100
 14052;302;1.3.3.1.1.2.2.2;8;Montagem do flange superior;;100;100
 14053;303;1.3.3.1.1.2.2.3;8;Montagem dos parafusos;;100;100
@@ -310,10 +310,10 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14058;308;1.3.3.1.1.2.2.8;8;Montagem das dupla flaps;;100;100
 14059;309;1.3.3.1.1.2.2.9;8;Montagem dos parafusos;;100;100
 14060;310;1.3.3.1.1.2.2.10;8;Torque dos parafusos conforme o fabricante;;100;100
-14061;311;1.3.3.1.1.2.2.11;8;Montagem do flange inferior;;0;0
-14062;312;1.3.3.1.1.2.2.12;8;Montagem dos parafusos;;0;0
-14063;313;1.3.3.1.1.2.2.13;8;Torque dos parafusos conforme o fabricante;;0;0
-14064;314;1.3.3.1.1.2.2.14;8;Ajuste dos flanges;;0;0
+14061;311;1.3.3.1.1.2.2.11;8;Montagem do flange inferior;;100;100
+14062;312;1.3.3.1.1.2.2.12;8;Montagem dos parafusos;;100;100
+14063;313;1.3.3.1.1.2.2.13;8;Torque dos parafusos conforme o fabricante;;100;100
+14064;314;1.3.3.1.1.2.2.14;8;Ajuste dos flanges;;37;37
 14065;315;1.3.3.1.1.2.2.15;8;Montagem da infraestrutura das válvulas;;0;0
 14066;316;1.3.3.1.1.2.2.16;8;Desmontagem do caminho de rolamento;;0;0
 14067;317;1.3.3.1.1.2.2.17;8;Desmontagem de andaimes;;0;0
@@ -347,7 +347,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14095;345;1.3.3.1.1.2.3.21;8;Interlição dos tubes da válvula;;100;100
 14096;346;1.3.3.1.1.2.3.22;8;Montagem dos guarda corpos ;;100;100
 14097;347;1.3.3.1.1.2.3.23;8;Montagem do wind fance ;;100;100
-14098;348;1.3.3.1.1.2.4;7;VÁLVULA 4;;36,27;36,27
+14098;348;1.3.3.1.1.2.4;7;VÁLVULA 4;;50,47;50,47
 14099;349;1.3.3.1.1.2.4.1;8;Deslocamento da válvula nova para o caminho de rolamento;;100;100
 14100;350;1.3.3.1.1.2.4.2;8;Montagem do flange superior;;100;100
 14101;351;1.3.3.1.1.2.4.3;8;Montagem dos parafusos;;100;100
@@ -358,10 +358,10 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14106;356;1.3.3.1.1.2.4.8;8;Montagem das dupla flaps;;100;100
 14107;357;1.3.3.1.1.2.4.9;8;Montagem dos parafusos;;100;100
 14108;358;1.3.3.1.1.2.4.10;8;Torque dos parafusos conforme o fabricante;;100;100
-14109;359;1.3.3.1.1.2.4.11;8;Montagem do flange inferior;;0;0
-14110;360;1.3.3.1.1.2.4.12;8;Montagem dos parafusos;;0;0
-14111;361;1.3.3.1.1.2.4.13;8;Torque dos parafusos conforme o fabricante;;0;0
-14112;362;1.3.3.1.1.2.4.14;8;Ajuste dos flanges;;0;0
+14109;359;1.3.3.1.1.2.4.11;8;Montagem do flange inferior;;100;100
+14110;360;1.3.3.1.1.2.4.12;8;Montagem dos parafusos;;100;100
+14111;361;1.3.3.1.1.2.4.13;8;Torque dos parafusos conforme o fabricante;;100;100
+14112;362;1.3.3.1.1.2.4.14;8;Ajuste dos flanges;;37;37
 14113;363;1.3.3.1.1.2.4.15;8;Montagem da infraestrutura das válvulas;;0;0
 14114;364;1.3.3.1.1.2.4.16;8;Desmontagem do caminho de rolamento;;0;0
 14115;365;1.3.3.1.1.2.4.17;8;Desmontagem de andaimes;;0;0
@@ -377,7 +377,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14125;375;1.3.3.1.1.4;6;Comissionamento;;0;0
 14126;376;1.3.3.1.1.4.1;7;Comissionamento;;0;0
 14127;377;1.3.3.1.1.4.2;7;Desbloqueio;;0;0
-14176;378;1.3.3.1.2;5;BT1 - Chapa Defletora 1SM20;;92,73;98,67
+14176;378;1.3.3.1.2;5;BT1 - Chapa Defletora 1SM20;;99,4;100
 14177;379;1.3.3.1.2.1;6;Bloqueio 1SM20FM;;100;100
 14178;380;1.3.3.1.2.2;6;Mobilização;;100;100
 14179;381;1.3.3.1.2.3;6;Montagem de andaime;;100;100
@@ -385,26 +385,26 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14181;383;1.3.3.1.2.5;6;Retirada da chapa defletora existente;;100;100
 14182;384;1.3.3.1.2.6;6;Montagem da chapa defletora nova;;100;100
 14183;385;1.3.3.1.2.7;6;Montagem das mangas/gaiola;;100;100
-14184;386;1.3.3.1.2.8;6;Desmontagem de andaime;;91;100
-14185;387;1.3.3.1.2.9;6;Desbloqueio 1SM20FM;;0;80
-14156;388;1.3.3.2;4;Manutenção PQ - Secagem;S;59;59
-7772;389;1.3.3.3;4;Secagem Disponível para Manutenção;N;53;53
+14184;386;1.3.3.1.2.8;6;Desmontagem de andaime;;100;100
+14185;387;1.3.3.1.2.9;6;Desbloqueio 1SM20FM;;91;100
+14156;388;1.3.3.2;4;Manutenção PQ - Secagem;S;64;64
+7772;389;1.3.3.3;4;Secagem Disponível para Manutenção;N;57;57
 7770;390;1.3.4;3;Manutenção da Secagem Concluída;;0;0
-7758;391;1.3.5;3;Torre de Resfriamento;;63,49;63,49
-14157;392;1.3.5.1;4;IE - Recuperação Civil - TR301TR - Torre de Resfriamento;S;58,82;58,82
+7758;391;1.3.5;3;Torre de Resfriamento;;71,02;71,02
+14157;392;1.3.5.1;4;IE - Recuperação Civil - TR301TR - Torre de Resfriamento;S;66,9;66,9
 13956;393;1.3.5.1.1;5;LIMPEZA;;100;100
 13957;394;1.3.5.1.2;5;MOBILIZAÇÃO;;100;100
 13958;395;1.3.5.1.3;5;BLOQUEIO;;100;100
 13959;396;1.3.5.1.4;5;MONTAGEM DE ANDAIME;;100;100
-13960;397;1.3.5.1.5;5;RECUPEÇÃO CIVIL;;54;54
+13960;397;1.3.5.1.5;5;RECUPEÇÃO CIVIL;;66;66
 13961;398;1.3.5.1.6;5;DESMONTAGEM DE ANDAIME;;0;0
 13962;399;1.3.5.1.7;5;RETIRADA DE BLOQUEIO;;0;0
-14158;400;1.3.5.2;4;Manutenção PQ - Torre de Resfriamento;S;68;68
-13117;401;1.3.5.3;4;TR301TR Disponível para Manutenção;N;68;68
+14158;400;1.3.5.2;4;Manutenção PQ - Torre de Resfriamento;S;75;75
+13117;401;1.3.5.3;4;TR301TR Disponível para Manutenção;N;75;75
 686;402;1.3.6;3;Manutenção das Torres de Resfriamento Concluída;;0;0
-685;403;1.3.7;3;Mistura;;83,96;83,96
-14238;404;1.3.7.1;4;Projeto Briquetagem - Mistura;S;82,94;82,94
-14221;405;1.3.7.1.1;5;Enclausuramento do Transportador BV40 - 26m TR;;85,94;85,94
+685;403;1.3.7;3;Mistura;;90,85;90,56
+14238;404;1.3.7.1;4;Projeto Briquetagem - Mistura;S;90,29;90,29
+14221;405;1.3.7.1.1;5;Enclausuramento do Transportador BV40 - 26m TR;;92,94;92,94
 14222;406;1.3.7.1.1.1;6;BLOQUEIO;;100;100
 14223;407;1.3.7.1.1.2;6;MONTAGEM DE ANDAIME LADO DIREITO SENTIDO FLUXO;;100;100
 14224;408;1.3.7.1.1.3;6;RETIRAR PROTEÇÃO DE RAC7;;100;100
@@ -416,13 +416,13 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14230;414;1.3.7.1.1.9;6;MONTAGEM DAS BORRACHAS LATERAIS DE VEDAÇÃO;;100;100
 14231;415;1.3.7.1.1.10;6;MONTAGEM DAS TAMPAS;;100;100
 14232;416;1.3.7.1.1.11;6;CONFERÊNCIA DOS PARAFUSOS;;100;100
-14233;417;1.3.7.1.1.12;6;AJUSTE DAS CHAVES DE EMERGÊNCIA;;66;66
-14234;418;1.3.7.1.1.13;6;AJUSTE DAS CORDOALHAS;;0;0
-14235;419;1.3.7.1.1.14;6;MONTAGEM DE RAC7;;0;0
-14236;420;1.3.7.1.1.15;6;DESMONTAGEM DOS ANDAIMES;;0;0
+14233;417;1.3.7.1.1.12;6;AJUSTE DAS CHAVES DE EMERGÊNCIA;;100;100
+14234;418;1.3.7.1.1.13;6;AJUSTE DAS CORDOALHAS;;100;100
+14235;419;1.3.7.1.1.14;6;MONTAGEM DE RAC7;;100;100
+14236;420;1.3.7.1.1.15;6;DESMONTAGEM DOS ANDAIMES;;12;12
 14237;421;1.3.7.1.1.16;6;DESBLOQUEIO;;0;0
-14241;422;1.3.7.1.2;5;Enclausuramento do transportador AZ04 / AV40;;77,66;77,66
-14242;423;1.3.7.1.2.1;6;AV40;;78,62;78,62
+14241;422;1.3.7.1.2;5;Enclausuramento do transportador AZ04 / AV40;;87,38;87,38
+14242;423;1.3.7.1.2.1;6;AV40;;90,29;90,29
 14243;424;1.3.7.1.2.1.1;7;Bloqueio;;100;100
 14244;425;1.3.7.1.2.1.2;7;MONTAGEM DE ANDAIME LADO DIREITO SENTIDO FLUXO;;100;100
 14245;426;1.3.7.1.2.1.3;7;RETIRAR PROTEÇÃO DE RAC7;;100;100
@@ -432,28 +432,28 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14249;430;1.3.7.1.2.1.7;7;MONTAGEM DAS GUIAS LATERAIS;;100;100
 14250;431;1.3.7.1.2.1.8;7;MONTAGEM DAS CHAPAS DE POLIETILENO;;100;100
 14251;432;1.3.7.1.2.1.9;7;MONTAGEM DAS BORRACHAS LATERAIS DE VEDAÇÃO;;100;100
-14252;433;1.3.7.1.2.1.10;7;MONTAGEM DAS TAMPAS;;33;33
-14253;434;1.3.7.1.2.1.11;7;CONFERÊNCIA DOS PARAFUSOS;;0;0
-14254;435;1.3.7.1.2.1.12;7;AJUSTE DAS CHAVES DE EMERGÊNCIA;;0;0
-14255;436;1.3.7.1.2.1.13;7;AJUSTE DAS CORDOALHAS;;0;0
-14256;437;1.3.7.1.2.1.14;7;MONTAGEM DE RAC7;;0;0
+14252;433;1.3.7.1.2.1.10;7;MONTAGEM DAS TAMPAS;;100;100
+14253;434;1.3.7.1.2.1.11;7;CONFERÊNCIA DOS PARAFUSOS;;100;100
+14254;435;1.3.7.1.2.1.12;7;AJUSTE DAS CHAVES DE EMERGÊNCIA;;100;100
+14255;436;1.3.7.1.2.1.13;7;AJUSTE DAS CORDOALHAS;;50;50
+14256;437;1.3.7.1.2.1.14;7;MONTAGEM DE RAC7;;33;33
 14257;438;1.3.7.1.2.1.15;7;DESMONTAGEM DOS ANDAIMES;;0;0
-14258;439;1.3.7.1.2.2;6;AZ04;;76,7;76,7
+14258;439;1.3.7.1.2.2;6;AZ04;;84,47;84,47
 14259;440;1.3.7.1.2.2.1;7;RETIRAR PROTEÇÃO DE RAC7;;100;100
 14260;441;1.3.7.1.2.2.2;7;RETIRADA DE INTERFERÊNCIA (TUBULAÇÕES E ESTRUTURAS OBSOLETAS);;100;100
 14261;442;1.3.7.1.2.2.3;7;ADEQUAÇÃO DO SUPORTE METÁLICO DE RAC7 (PROLONGAMENTO);;100;100
 14262;443;1.3.7.1.2.2.4;7;MONTAGEM DOS SUPORTES DAS GUIAS;;100;100
 14263;444;1.3.7.1.2.2.5;7;MONTAGEM DAS GUIAS LATERAIS;;100;100
 14264;445;1.3.7.1.2.2.6;7;MONTAGEM DAS CHAPAS DE POLIETILENO;;100;100
-14265;446;1.3.7.1.2.2.7;7;MONTAGEM DAS BORRACHAS LATERAIS DE VEDAÇÃO;;50;50
-14266;447;1.3.7.1.2.2.8;7;MONTAGEM DAS TAMPAS;;0;0
+14265;446;1.3.7.1.2.2.7;7;MONTAGEM DAS BORRACHAS LATERAIS DE VEDAÇÃO;;100;100
+14266;447;1.3.7.1.2.2.8;7;MONTAGEM DAS TAMPAS;;50;50
 14267;448;1.3.7.1.2.2.9;7;CONFERÊNCIA DOS PARAFUSOS;;0;0
 14268;449;1.3.7.1.2.2.10;7;AJUSTE DAS CHAVES DE EMERGÊNCIA;;0;0
 14269;450;1.3.7.1.2.2.11;7;AJUSTE DAS CORDOALHAS;;0;0
 14270;451;1.3.7.1.2.2.12;7;MONTAGEM DE RAC7;;0;0
 14271;452;1.3.7.1.2.2.13;7;Desbloqueio;;0;0
-14279;453;1.3.7.1.3;5;Relocação das Balanças 1PI33 para BZ202;;85,36;85,36
-14280;454;1.3.7.1.3.1;6;Serviço;;93,11;93,11
+14279;453;1.3.7.1.3;5;Relocação das Balanças 1PI33 para BZ202;;90,68;90,68
+14280;454;1.3.7.1.3.1;6;Serviço;;100;100
 14281;455;1.3.7.1.3.1.1;7;Bloqueio;;100;100
 14282;456;1.3.7.1.3.1.2;7;Desmontagem Balança 1PI33;;100;100
 14283;457;1.3.7.1.3.1.3;7;Reposicionamento da Balança - BZ202;;100;100
@@ -461,89 +461,89 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14285;459;1.3.7.1.3.1.5;7;Infra elétrica;;100;100
 14286;460;1.3.7.1.3.1.6;7;Montagem do desvio da tubulação;;100;100
 14287;461;1.3.7.1.3.1.7;7;Fixação da balança;;100;100
-14288;462;1.3.7.1.3.1.8;7;Calibração da Balança - Schenck (6h);;25;25
-14289;463;1.3.7.1.3.2;6;Automação e testes;;78,43;78,43
+14288;462;1.3.7.1.3.1.8;7;Calibração da Balança - Schenck (6h);;100;100
+14289;463;1.3.7.1.3.2;6;Automação e testes;;82,35;82,35
 14290;464;1.3.7.1.3.2.1;7;Alteração de lógica - Linha 1 / 2;;100;100
-14291;465;1.3.7.1.3.2.2;7;Testes sem carga - BZ202 (2h);;0;0
+14291;465;1.3.7.1.3.2.2;7;Testes sem carga - BZ202 (2h);;100;100
 14292;466;1.3.7.1.3.2.3;7;Testes de interlok (4h);;0;0
 14293;467;1.3.7.1.3.2.4;7;Testes com carga (4h);;0;0
 14294;468;1.3.7.1.3.2.5;7;Desbloqueio;;0;0
-14159;469;1.3.7.2;4;IE - Mistura;S;82,93;82,93
-13931;470;1.3.7.2.1;5;IE - Recuperar Estrutura Metálica AV2TC;;82,93;82,93
+14159;469;1.3.7.2;4;IE - Mistura;S;90,27;89,38
+13931;470;1.3.7.2.1;5;IE - Recuperar Estrutura Metálica AV2TC;;90,27;89,38
 13932;471;1.3.7.2.1.1;6;BLOQUEIO;;100;100
 13933;472;1.3.7.2.1.2;6;MONTAGEM DE ANDAIME;;100;100
 13934;473;1.3.7.2.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13935;474;1.3.7.2.1.4;6;DESMONTAGEM DE RAC07;;100;100
-13936;475;1.3.7.2.1.5;6;RECUPERAÇÃO METÁLICA;;91;91
-13937;476;1.3.7.2.1.6;6;MONTAGEM DE RAC 07;;0;0
+13936;475;1.3.7.2.1.5;6;RECUPERAÇÃO METÁLICA;;100;100
+13937;476;1.3.7.2.1.6;6;MONTAGEM DE RAC 07;;25;0
 13938;477;1.3.7.2.1.7;6;DESMONTAGEM DE ANDAIME;;0;0
 13939;478;1.3.7.2.1.8;6;RETIRADA DE BLOQUEIO;;0;0
-14160;479;1.3.7.3;4;Manutenção PQ - Mistura;S;86;86
-684;480;1.3.7.4;4;Mistura Disponível para Manutentação;N;86;84
+14160;479;1.3.7.3;4;Manutenção PQ - Mistura;S;92;92
+684;480;1.3.7.4;4;Mistura Disponível para Manutentação;N;92;90
 683;481;1.3.8;3;Manutenção da Mistura Concluída;;0;0
-693;482;1.3.9;3;Briquetagem;;77,26;72,1
-14161;483;1.3.9.1;4;Projeto Briquetagem - Briquetagem;S;75,82;72,66
-14128;484;1.3.9.1.1;5;Briquetadeira AG71RB;;100;88,46
+693;482;1.3.9;3;Briquetagem;;84,71;77,33
+14161;483;1.3.9.1;4;Projeto Briquetagem - Briquetagem;S;79,08;76,1
+14128;484;1.3.9.1.1;5;Briquetadeira AG71RB;;100;92,19
 14129;485;1.3.9.1.1.1;6;MANUTENÇÃO NA UNIDADE HIDRÁULICA;;100;100
-14130;486;1.3.9.1.1.2;6;ELÉTRICA/INSTRUMENTAÇÃO;;100;95
-14131;487;1.3.9.1.1.3;6;SERVIÇOS FINAIS;;100;0
-14132;488;1.3.9.1.1.4;6;TESTAR;;100;0
+14130;486;1.3.9.1.1.2;6;ELÉTRICA/INSTRUMENTAÇÃO;;100;100
+14131;487;1.3.9.1.1.3;6;SERVIÇOS FINAIS;;100;100
+14132;488;1.3.9.1.1.4;6;TESTAR;;100;7
 14133;489;1.3.9.1.2;5;Transportador AG70/AG71;;100;100
 14134;490;1.3.9.1.2.1;6;MECÂNICA;;100;100
 14135;491;1.3.9.1.2.2;6;ELÉTRICA;;100;100
-14137;492;1.3.9.1.3;5;Transportador AG77/AG76;;63,49;58,49
-14138;493;1.3.9.1.3.1;6;MECÂNICA;;65;60
-14139;494;1.3.9.1.3.2;6;ELÉTRICA;;62;57
-14140;495;1.3.9.1.4;5; Briquetadeira AG77RB;;64,32;62,56
+14137;492;1.3.9.1.3;5;Transportador AG77/AG76;;68,49;62,49
+14138;493;1.3.9.1.3.1;6;MECÂNICA;;70;64
+14139;494;1.3.9.1.3.2;6;ELÉTRICA;;67;61
+14140;495;1.3.9.1.4;5; Briquetadeira AG77RB;;66,68;64,91
 14141;496;1.3.9.1.4.1;6;DESMONTAGEM - PREPARAÇÃO E MOBILIZAÇÃO;;100;100
 14142;497;1.3.9.1.4.2;6;DESMONTAGEM - RETIRAR OS ROLOS;;100;100
 14143;498;1.3.9.1.4.3;6;DESMONTAGEM - TROCA DE REVESTIMENTO CHUTE DE DESCARGA AG77RB;;100;100
 14145;499;1.3.9.1.4.4;6;MONTAGEM - INSTALAR OS ROLOS;;0;0
 14146;500;1.3.9.1.4.5;6;MONTAGEM - UNIDADE HIDRAULICA;;100;100
-14150;501;1.3.9.1.4.6;6;MONTAGEM - ELÉTRICA/INSTRUMENTAÇÃO;;63;60
+14150;501;1.3.9.1.4.6;6;MONTAGEM - ELÉTRICA/INSTRUMENTAÇÃO;;67;64
 14151;502;1.3.9.1.4.7;6;MONTAGEM - AJUSTAR SINCRONISMO ROLO;;0;0
 14152;503;1.3.9.1.4.8;6;MONTAGEM - AJUSTAR O GAP;;0;0
 14147;504;1.3.9.1.4.9;6;MONTAGEM - SERVIÇOS FINAIS;;0;0
 14148;505;1.3.9.1.4.10;6;MONTAGEM - TESTAR;;0;0
-14203;506;1.3.9.1.5;5;4º Briquetadora - Parada Fria;;79,29;79,29
+14203;506;1.3.9.1.5;5;4º Briquetadora - Parada Fria;;84,55;84,55
 14204;507;1.3.9.1.5.1;6;Silo AG104SI - Rotina;;100;100
 14205;508;1.3.9.1.5.1.1;7;Manutenção no SILO AG104SI - ROTINA;;100;100
-14206;509;1.3.9.1.5.2;6;Transportador - AG81TC - Rotina;;68,26;68,26
+14206;509;1.3.9.1.5.2;6;Transportador - AG81TC - Rotina;;73,35;73,35
 14207;510;1.3.9.1.5.2.1;7;Desmontagem dos componentes - Transportador BG78;;100;100
 14208;511;1.3.9.1.5.2.2;7;Recebimento de estruturas e componentes - AG81TC;;100;100
 14209;512;1.3.9.1.5.2.3;7;PONTE - Mobilização do transportador para o local de instalação;;100;100
 14210;513;1.3.9.1.5.2.4;7;Obras Civis do Transportador (abertura da AG81 para AG35);;100;100
-14211;514;1.3.9.1.5.2.5;7;Montagem do Transportador;;14;14
-14212;515;1.3.9.1.5.2.6;7;Montagem elétrica / instrumentação;;62;62
-14213;516;1.3.9.1.5.3;6;Transportador - AG35TC - Parada;;81,92;81,92
+14211;514;1.3.9.1.5.2.5;7;Montagem do Transportador;;28;28
+14212;515;1.3.9.1.5.2.6;7;Montagem elétrica / instrumentação;;68;68
+14213;516;1.3.9.1.5.3;6;Transportador - AG35TC - Parada;;90,48;90,48
 14214;517;1.3.9.1.5.3.1;7;Recebimento - Rolos, Cavaletes, Guias;;100;100
 14215;518;1.3.9.1.5.3.2;7;PONTE - Mobilização dos equipamentos para o local de instalação;;100;100
-14216;519;1.3.9.1.5.3.3;7;Adequação em campo Transp AG35TC;;81;81
-14217;520;1.3.9.1.5.3.4;7;Montagem elétrica / instrumentação;;81;81
-14162;521;1.3.9.2;4;IE - Briquetagem;S;71,52;58,45
-13881;522;1.3.9.2.1;5;IE - Recuperar Pés de Decks AG35TC;;51,64;0
+14216;519;1.3.9.1.5.3.3;7;Adequação em campo Transp AG35TC;;90;90
+14217;520;1.3.9.1.5.3.4;7;Montagem elétrica / instrumentação;;90;90
+14162;521;1.3.9.2;4;IE - Briquetagem;S;85,2;64,39
+13881;522;1.3.9.2.1;5;IE - Recuperar Pés de Decks AG35TC;;82,18;0
 13882;523;1.3.9.2.1.1;6;BLOQUEIO;;100;0
 13883;524;1.3.9.2.1.2;6;LIMPEZA;;100;0
 13884;525;1.3.9.2.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;0
 13885;526;1.3.9.2.1.4;6;DESMONTAGEM DE RAC07;;100;0
-13886;527;1.3.9.2.1.5;6;RECUPERAÇÃO METÁLICA;;46;0
+13886;527;1.3.9.2.1.5;6;RECUPERAÇÃO METÁLICA;;88;0
 13887;528;1.3.9.2.1.6;6;MONTAGEM DE RAC 07;;0;0
 13888;529;1.3.9.2.1.7;6;RETIRADA DE BLOQUEIO;;0;0
-13892;530;1.3.9.2.2;5;IE - Tratamento Anticorrosivo PELO1;;78,26;78,26
+13892;530;1.3.9.2.2;5;IE - Tratamento Anticorrosivo PELO1;;86,22;86,22
 13893;531;1.3.9.2.2.1;6;BLOQUEIO;;100;100
 13894;532;1.3.9.2.2.2;6;MOBILIZAÇÃO;;100;100
 13895;533;1.3.9.2.2.3;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
 13896;534;1.3.9.2.2.4;6;MONTAGEM DE ANDAIME;;100;100
-13897;535;1.3.9.2.2.5;6;TRATAMENTO ANTICORROSIVO;;79;79
+13897;535;1.3.9.2.2.5;6;TRATAMENTO ANTICORROSIVO;;93;93
 13898;536;1.3.9.2.2.6;6;DESMONTAGEM DE ANDAIME;;0;0
 13899;537;1.3.9.2.2.7;6;RETIRADA DE BLOQUEIO;;0;0
-14163;538;1.3.9.3;4;Manutenção PQ - Briquetagem;S;85;85
-692;539;1.3.9.4;4;Briquetagem Disponível para Manutenção;N;86;85
-13080;540;1.3.9.5;4;Peneira de Rolos Disponível para Manutenção;N;85;85
+14163;538;1.3.9.3;4;Manutenção PQ - Briquetagem;S;92;92
+692;539;1.3.9.4;4;Briquetagem Disponível para Manutenção;N;92;91
+13080;540;1.3.9.5;4;Peneira de Rolos Disponível para Manutenção;N;91;91
 691;541;1.3.10;3;Manutenção da Briquetagem Concluída;;0;0
-690;542;1.3.11;3;Forno;;61,3;52,79
-13134;543;1.3.11.1;4;Manutenção do Meio do Forno;S;82,34;65,07
-13135;544;1.3.11.1.1;5;Substituição dos Trilhos Retos superiores;;100;78,5
+690;542;1.3.11;3;Forno;;70,1;57,14
+13134;543;1.3.11.1;4;Manutenção do Meio do Forno;S;91,72;69,08
+13135;544;1.3.11.1.1;5;Substituição dos Trilhos Retos superiores;;100;85,04
 13136;545;1.3.11.1.1.1;6;Instalar Iluminação ao Longo do Forno (Ambos os Lados da Grelha);;100;100
 13137;546;1.3.11.1.1.2;6;Instalar Andaime de proteção na longitudinal do forno do lado esquerdo e direito da coluna A3 ate U1 ate para Vedação do piso;;100;100
 13138;547;1.3.11.1.1.3;6;Desmontagem dos Trilhos Retos Superiores;;100;100
@@ -572,13 +572,13 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13161;570;1.3.11.1.1.4.3.1;8;Pré Montar e Alinhar Trilho no Centro da Viga Deixando Folga de 3 mm nas Dilatações;;100;100
 13162;571;1.3.11.1.1.4.3.2;8;Montar Todos os Parafusos e fazer Torquear (duas vezes para cada trilho);;100;100
 13163;572;1.3.11.1.1.4.3.3;8;Alinhamento e nivelamento resfriamento;;100;100
-13164;573;1.3.11.1.1.5;6;Correção de Alinhamento e Nivelamento dos Trilhos;;100;23,93
+13164;573;1.3.11.1.1.5;6;Correção de Alinhamento e Nivelamento dos Trilhos;;100;47,07
 13165;574;1.3.11.1.1.5.1;7;Região da Secagem - LD e LE  - Da coluna L1 até A3 (01 Trilho LD e 01 Trilho LE);;100;0
 13166;575;1.3.11.1.1.5.1.1;8;Correção mecanica  do alinhamento e nivelamento;;100;0
 13167;576;1.3.11.1.1.5.1.2;8;Verificação final da topografia;;100;0
-13168;577;1.3.11.1.1.5.2;7;Região da Queima - LD e LE - Da coluna L1 até L25 ( 12 Trilhos LD e 12 Trilhos LE);;99,99;30,5
-13169;578;1.3.11.1.1.5.2.1;8;Correção mecanica  do alinhamento e nivelamento;;100;32
-13170;579;1.3.11.1.1.5.2.2;8;Verificação final da topografia;;100;29
+13168;577;1.3.11.1.1.5.2;7;Região da Queima - LD e LE - Da coluna L1 até L25 ( 12 Trilhos LD e 12 Trilhos LE);;99,99;59,99
+13169;578;1.3.11.1.1.5.2.1;8;Correção mecanica  do alinhamento e nivelamento;;100;60
+13170;579;1.3.11.1.1.5.2.2;8;Verificação final da topografia;;100;60
 13171;580;1.3.11.1.1.5.3;7;Região do Resfriamento  - LD e LE - Da coluna L25 até U2  (02 Trilhos LD e 02 Trilhos LE);;100;0
 13172;581;1.3.11.1.1.5.3.1;8;Correção mecanica  do alinhamento e nivelamento;;100;0
 13173;582;1.3.11.1.1.5.3.2;8;Verificação final da topografia;;100;0
@@ -601,7 +601,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13190;599;1.3.11.1.2.3.3;7;Esmerilhar / Limpar Vigas de Apoio;;100;100
 13191;600;1.3.11.1.2.3.4;7;Montar Selagem com a Tubulação de Lubrificação e Torquear Selagem Inferior Nova (Verificar Alinhamento a cada 6 Metros);;100;100
 13192;601;1.3.11.1.2.3.5;7;Montar Tubo de Lubrificação;;100;100
-13193;602;1.3.11.1.3;5;Substituição dos Trilhos Retos Inferiores;;94,86;66,15
+13193;602;1.3.11.1.3;5;Substituição dos Trilhos Retos Inferiores;;100;71,28
 13194;603;1.3.11.1.3.1;6;Instalar Iluminação ao Longo do Forno (Ambos os Lados da Grelha);;100;100
 13195;604;1.3.11.1.3.2;6;Instalar Andaime de proteção na longitudinal do forno do lado esquerdo e direito da coluna A3 ate U1 ate para Vedação do piso;;100;100
 13196;605;1.3.11.1.3.3;6;Desmontagem dos Trilhos Retos Inferiores;;99,99;99,99
@@ -630,60 +630,60 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13219;628;1.3.11.1.3.4.3.1;8;Pré Montar e Alinhar Trilho no Centro da Viga Deixando Folga de 3 mm nas Dilatações;;100;100
 13220;629;1.3.11.1.3.4.3.2;8;Montar Todos os Parafusos e fazer Torquear (duas vezes para cada trilho);;100;100
 13221;630;1.3.11.1.3.4.3.3;8;Alinhamento e nivelamento secagem;;100;100
-13222;631;1.3.11.1.3.5;6;Correção de Alinhamento e Nivelamento dos Trilhos;;84,83;0
+13222;631;1.3.11.1.3.5;6;Correção de Alinhamento e Nivelamento dos Trilhos;;100,01;15,17
 13223;632;1.3.11.1.3.5.1;7;Região do Resfriamento  - LD e LE - Da coluna L25 até U2  (02 Trilhos LD e 02 Trilhos LE);;100;0
 13224;633;1.3.11.1.3.5.1.1;8;Correção mecanica  do alinhamento e nivelamento;;100;0
 13225;634;1.3.11.1.3.5.1.2;8;Verificação final da topografia;;100;0
-13226;635;1.3.11.1.3.5.2;7;Região da Queima - LD e LE - Da coluna L25 até L1 ( 12 Trilhos LD e 12 Trilhos LE);;86,01;0
-13227;636;1.3.11.1.3.5.2.1;8;Correção mecanica  do alinhamento e nivelamento;;86;0
-13228;637;1.3.11.1.3.5.2.2;8;Verificação final da topografia;;86;0
-13229;638;1.3.11.1.3.5.3;7;Região da Secagem - LD e LE  - Da coluna L1 até A3 (01 Trilho LD e 01 Trilho LE);;0;0
-13230;639;1.3.11.1.3.5.3.1;8;Correção mecanica  do alinhamento e nivelamento;;0;0
-13231;640;1.3.11.1.3.5.3.2;8;Verificação final da topografia;;0;0
-13232;641;1.3.11.1.4;5;Substituição das Selagens Basculante;;32,38;43,49
-14406;642;1.3.11.1.4.1;6;Primeira Bateria;;55,56;66,68
+13226;635;1.3.11.1.3.5.2;7;Região da Queima - LD e LE - Da coluna L25 até L1 ( 12 Trilhos LD e 12 Trilhos LE);;100,01;18
+13227;636;1.3.11.1.3.5.2.1;8;Correção mecanica  do alinhamento e nivelamento;;100;18
+13228;637;1.3.11.1.3.5.2.2;8;Verificação final da topografia;;100;18
+13229;638;1.3.11.1.3.5.3;7;Região da Secagem - LD e LE  - Da coluna L1 até A3 (01 Trilho LD e 01 Trilho LE);;100,22;0
+13230;639;1.3.11.1.3.5.3.1;8;Correção mecanica  do alinhamento e nivelamento;;100;0
+13231;640;1.3.11.1.3.5.3.2;8;Verificação final da topografia;;100;0
+13232;641;1.3.11.1.4;5;Substituição das Selagens Basculante;;59,43;43,49
+14406;642;1.3.11.1.4.1;6;Primeira Bateria;;100,01;66,68
 13233;643;1.3.11.1.4.1.1;7;Montar andaime;;100;100
 13234;644;1.3.11.1.4.1.2;7;Retirar selagem basculante;;100;100
 13235;645;1.3.11.1.4.1.3;7;Sucatear todas as selagem basculante;;100;100
 13236;646;1.3.11.1.4.1.4;7;Inspecionar e recuperar/ substituir tubo de de apoio, parafusos de fixação, trincas ;;100;100
-13237;647;1.3.11.1.4.1.5;7;Recuperar vigas longitudinais quanto a desgaste;;0;100
-13238;648;1.3.11.1.4.1.6;7;Montar selagem basculante E FAZER AJUSTES CONFORME DX;;0;0
-14407;649;1.3.11.1.4.2;6;Segunda Bateria;;0;11,11
-14408;650;1.3.11.1.4.2.1;7;Montar andaime;;0;100
+13237;647;1.3.11.1.4.1.5;7;Recuperar vigas longitudinais quanto a desgaste;;100;100
+13238;648;1.3.11.1.4.1.6;7;Montar selagem basculante E FAZER AJUSTES CONFORME DX;;100;0
+14407;649;1.3.11.1.4.2;6;Segunda Bateria;;2,78;11,11
+14408;650;1.3.11.1.4.2.1;7;Montar andaime;;25;100
 14409;651;1.3.11.1.4.2.2;7;Montar tubo de fixação da selagem basculante;;0;0
 14410;652;1.3.11.1.4.2.3;7;Montagem da selagem basculante;;0;0
 14412;653;1.3.11.1.4.2.4;7;Recuperar vigas longitudinais quanto a desgaste;;0;0
-13239;654;1.3.11.1.5;5;Manutenção das Caixas de Vento;;51,76;20,84
-13240;655;1.3.11.1.5.1;6;Caixa de Vento 1;;82,99;20,83
+13239;654;1.3.11.1.5;5;Manutenção das Caixas de Vento;;82,57;25
+13240;655;1.3.11.1.5.1;6;Caixa de Vento 1;;99,99;24,99
 13241;656;1.3.11.1.5.1.1;7;Isolar a Área;;100;100
 13244;657;1.3.11.1.5.1.2;7;Montar Andaime;;100;100
 13242;658;1.3.11.1.5.1.3;7;Abrir Janela;;100;100
-13243;659;1.3.11.1.5.1.4;7;Instalar Iluminação;;100;0
-13245;660;1.3.11.1.5.1.5;7;Recuperar Chapas Avariadas;;87;0
-13246;661;1.3.11.1.5.1.6;7;Desmontar Andaime;;0;0
-13247;662;1.3.11.1.5.1.7;7;Fechar janela;;0;0
-13248;663;1.3.11.1.5.2;6;Caixa de Vento 2;;0;20,84
-13249;664;1.3.11.1.5.2.1;7;Isolar a Área;;0;100
-13252;665;1.3.11.1.5.2.2;7;Montar Andaime;;0;100
-13250;666;1.3.11.1.5.2.3;7;Abrir Janela;;0;100
-13251;667;1.3.11.1.5.2.4;7;Instalar Iluminação;;0;0
-13253;668;1.3.11.1.5.2.5;7;Recuperar Chapas Avariadas;;0;0
+13243;659;1.3.11.1.5.1.4;7;Instalar Iluminação;;100;100
+13245;660;1.3.11.1.5.1.5;7;Recuperar Chapas Avariadas;;100;0
+13246;661;1.3.11.1.5.1.6;7;Desmontar Andaime;;100;0
+13247;662;1.3.11.1.5.1.7;7;Fechar janela;;100;0
+13248;663;1.3.11.1.5.2;6;Caixa de Vento 2;;53,68;25,01
+13249;664;1.3.11.1.5.2.1;7;Isolar a Área;;100;100
+13252;665;1.3.11.1.5.2.2;7;Montar Andaime;;100;100
+13250;666;1.3.11.1.5.2.3;7;Abrir Janela;;100;100
+13251;667;1.3.11.1.5.2.4;7;Instalar Iluminação;;100;100
+13253;668;1.3.11.1.5.2.5;7;Recuperar Chapas Avariadas;;43;0
 13254;669;1.3.11.1.5.2.6;7;Desmontar Andaime;;0;0
 13255;670;1.3.11.1.5.2.7;7;Fechar janela;;0;0
 13256;671;1.3.11.2;4;Manutenção do Meio do Forno;N;0;0
-13257;672;1.3.11.3;4;Substituição Viga do Quadro Móvel da Roda Abaixamento;S;71,75;41,66
+13257;672;1.3.11.3;4;Substituição Viga do Quadro Móvel da Roda Abaixamento;S;100;41,66
 13258;673;1.3.11.3.1;5;Lado direito;;99,98;41,66
 13259;674;1.3.11.3.1.1;6;Montar dispositivo/ talha para remoção da viga ;;100;100
 13260;675;1.3.11.3.1.2;6;Retirar viga;;100;100
 13261;676;1.3.11.3.1.3;6;Montar viga;;100;0
 13262;677;1.3.11.3.1.4;6;Soldar viga;;100;0
-13263;678;1.3.11.3.2;5;Lado esquerdo;;58,33;41,67
+13263;678;1.3.11.3.2;5;Lado esquerdo;;100;41,67
 13264;679;1.3.11.3.2.1;6;Montar dispositivo/ talha para remoção da viga ;;100;100
 13265;680;1.3.11.3.2.2;6;Retirar viga;;100;100
-13266;681;1.3.11.3.2.3;6;Montar viga;;50;0
-13267;682;1.3.11.3.2.4;6;Soldar viga;;0;0
-13268;683;1.3.11.4;4;Substituição Viga da Roda Abaixamento;N;0;0
-13269;684;1.3.11.5;4;Manutenção Região do Levantamento AH1;S;45,43;34,75
+13266;681;1.3.11.3.2.3;6;Montar viga;;100;0
+13267;682;1.3.11.3.2.4;6;Soldar viga;;100;0
+13268;683;1.3.11.4;4;Substituição Viga da Roda Abaixamento;N;100;0
+13269;684;1.3.11.5;4;Manutenção Região do Levantamento AH1;S;54,92;38,98
 13270;685;1.3.11.5.1;5;Desmontagem da proteção do tambor da  Carambola;;135,48;135,48
 13271;686;1.3.11.5.1.1;6;Preparação para verificação topográfica da linha de centro do eixo;;100,03;100,03
 13272;687;1.3.11.5.1.1.1;7;Montagem de andaime p/ retirada da tampa central lado acoplado e do mancal lado livre;;100;100
@@ -747,24 +747,24 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13528;745;1.3.11.5.1.8.5;7;Posicionar talha eletrica com o dispositivo para remocao da comporta e  vigas e trilhos parte superior  ;;100;100
 13529;746;1.3.11.5.1.8.6;7;Desmontagem da estrutura e do trilho reto forjado e da comporta (parte superior);;100;100
 13530;747;1.3.11.5.1.8.7;7;Desmontagem da estrutura e trilho reto forjado parte central ate no trilho ferroviario superior;;100;100
-13523;748;1.3.11.5.2;5;Substituição dos Trilhos Curvos;;0;25,8
-13524;749;1.3.11.5.2.1;6;Desmontagem;;0;100
-13531;750;1.3.11.5.2.1.1;7; Desmontagem da estrutura e dos Trilhos Curvos externos parte central até o trilho ferroviário LD/LE;;0;99,98
-13532;751;1.3.11.5.2.1.1.1;8;Desmontagem da estrutura e dos trilhos curvos forjados central até o trilho ferroviário;;0;100
+13523;748;1.3.11.5.2;5;Substituição dos Trilhos Curvos;;1,92;28,08
+13524;749;1.3.11.5.2.1;6;Desmontagem;;10,38;100
+13531;750;1.3.11.5.2.1.1;7; Desmontagem da estrutura e dos Trilhos Curvos externos parte central até o trilho ferroviário LD/LE;;21,75;99,98
+13532;751;1.3.11.5.2.1.1.1;8;Desmontagem da estrutura e dos trilhos curvos forjados central até o trilho ferroviário;;29;100
 13533;752;1.3.11.5.2.1.1.2;8;Esmerilhamento dos suportes;;0;100
 13534;753;1.3.11.5.2.1.1.3;8;Verificação com liquido penetrante de trincas dos suportes;;0;100
 13535;754;1.3.11.5.2.1.2;7; Desmontagem da estrutura e dos Trilhos Curvos internos LD/LE;;0;100
 13536;755;1.3.11.5.2.1.2.1;8;Desmontagem da estrutura e dos trilhos curvos forjados central e inferior;;0;100
 13537;756;1.3.11.5.2.1.2.2;8;Esmerilhamento dos suportes;;0;100
 13538;757;1.3.11.5.2.1.2.3;8;Verificação com liquido penetrante de trincas dos suportes;;0;100
-13539;758;1.3.11.5.2.2;6; Montagem trilho interno;;0;40,47
-13540;759;1.3.11.5.2.2.1;7; Montagem LD;;0;40,47
+13539;758;1.3.11.5.2.2;6; Montagem trilho interno;;0;53,12
+13540;759;1.3.11.5.2.2.1;7; Montagem LD;;0;53,12
 13541;760;1.3.11.5.2.2.1.1;8;Transportar e posicionar de  trilho ate local de montagem;;0;100
-13542;761;1.3.11.5.2.2.1.2;8;Pré-montagem conjunto do trilho curvo forjado parte central e inferior ;;0;73
+13542;761;1.3.11.5.2.2.1.2;8;Pré-montagem conjunto do trilho curvo forjado parte central e inferior ;;0;100
 13543;762;1.3.11.5.2.2.1.3;8;Montagem da viga superior sob comporta e Ajuste do diametro primitivo;;0;0
-13544;763;1.3.11.5.2.2.2;7; Montagem  LE;;0;40,46
+13544;763;1.3.11.5.2.2.2;7; Montagem  LE;;0;53,12
 13545;764;1.3.11.5.2.2.2.1;8;Transportar e posicionar de  trilho ate local de montagem;;0;100
-13546;765;1.3.11.5.2.2.2.2;8;Montagem conjunto do trilho reto forjado parte central e inferior ;;0;73
+13546;765;1.3.11.5.2.2.2.2;8;Montagem conjunto do trilho reto forjado parte central e inferior ;;0;100
 13547;766;1.3.11.5.2.2.2.3;8;Montagem da viga superior sob comporta e Ajuste do diametro primitivo;;0;0
 13548;767;1.3.11.5.2.3;6; Montagem trilho externo;;0;0
 13549;768;1.3.11.5.2.3.1;7; Montagem LD / LE;;0;0
@@ -773,8 +773,8 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13552;771;1.3.11.5.2.3.2;7; Montagem da comporta e complemento do trilho reto forjado LE / LD;;0;0
 13553;772;1.3.11.5.2.3.2.1;8;Transportar e posicionar o conjunto do trilho reto de complemento da comporta LD / LE ;;0;0
 13554;773;1.3.11.5.2.3.2.2;8;Montagem conjunto do trilho reto forjado de complemneto da comporta LD / LE;;0;0
-13325;774;1.3.11.5.3;5; Substituição dos Segmentos Dentados da Roda de Levantamento;;62,18;2,79
-13326;775;1.3.11.5.3.1;6; Substituição do Segmento de 3 Dentes (LD e LE);;99,99;25
+13325;774;1.3.11.5.3;5; Substituição dos Segmentos Dentados da Roda de Levantamento;;84,87;11,17
+13326;775;1.3.11.5.3.1;6; Substituição do Segmento de 3 Dentes (LD e LE);;99,99;99,99
 13329;776;1.3.11.5.3.1.1;7;Topografia = Verificar index do segmento antigo;;100;100
 13330;777;1.3.11.5.3.1.2;7;Montar Dispositivo para Remoção do Segmento Dentado ;;100;100
 13331;778;1.3.11.5.3.1.3;7;Verificar o GAP 0,3 mm Antes da Desmontagem do Segmento Existente;;100;100
@@ -782,25 +782,25 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13333;780;1.3.11.5.3.1.5;7;Montar Dispositivo e sacar as 04 Buchas Elásticas;;100;100
 13334;781;1.3.11.5.3.1.6;7;Retirar Segmentos e Transportar para o Local de Descarte;;100;100
 13335;782;1.3.11.5.3.1.7;7;Executar limpeza mecanica  na roda para montagem do novo segmento;;100;100
-13336;783;1.3.11.5.3.1.8;7;Preparação para içamento do segmento;;100;0
-13337;784;1.3.11.5.3.1.9;7;Fazer içamento do segmento e fazer pré-montagem no tambor da roda elevadora ;;100;0
-13338;785;1.3.11.5.3.1.10;7;Montar Parafusos de Fixação e Torquear (Verificar Folga de 0,3 mm entre o Segmento Novo e Antigo);;100;0
-13339;786;1.3.11.5.3.1.11;7;Verificar Folga entre o Assentamento do Segmento e Tambor da Roda Fixa (0,0 a 0,2 mm);;100;0
-13340;787;1.3.11.5.3.1.12;7;Verificar INDEX com a Topografia do segmento novo;;100;0
-13341;788;1.3.11.5.3.1.13;7;Abertura dos furos (LD e LE);;99,96;0
-13342;789;1.3.11.5.3.1.13.1;8;Montar dispositivo e Reabrir 1° furo  ;;100;0
-13343;790;1.3.11.5.3.1.13.2;8;Montar dispositivo e Reabrir 2° furo  ;;100;0
-13344;791;1.3.11.5.3.1.13.3;8;Montar dispositivo e Reabrir 3° furo  ;;100;0
-13345;792;1.3.11.5.3.1.13.4;8;Montar dispositivo e Reabrir 4° furo  ;;100;0
-13346;793;1.3.11.5.3.1.13.5;8;Limpeza das limalhas e do segmento dentado;;100;0
-13347;794;1.3.11.5.3.1.14;7;Montagem das buchas elasticas e torque dos parafusos;;100;0
-13348;795;1.3.11.5.3.1.14.1;8;Montagem da 1° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
-13349;796;1.3.11.5.3.1.14.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
-13350;797;1.3.11.5.3.1.14.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
-13351;798;1.3.11.5.3.1.14.4;8;Montagem da 4° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
-13352;799;1.3.11.5.3.1.14.5;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;100;0
-13353;800;1.3.11.5.3.1.14.6;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;100;0
-13354;801;1.3.11.5.3.1.14.7;8;Bloqueio chave A3;;100;0
+13336;783;1.3.11.5.3.1.8;7;Preparação para içamento do segmento;;100;100
+13337;784;1.3.11.5.3.1.9;7;Fazer içamento do segmento e fazer pré-montagem no tambor da roda elevadora ;;100;100
+13338;785;1.3.11.5.3.1.10;7;Montar Parafusos de Fixação e Torquear (Verificar Folga de 0,3 mm entre o Segmento Novo e Antigo);;100;100
+13339;786;1.3.11.5.3.1.11;7;Verificar Folga entre o Assentamento do Segmento e Tambor da Roda Fixa (0,0 a 0,2 mm);;100;100
+13340;787;1.3.11.5.3.1.12;7;Verificar INDEX com a Topografia do segmento novo;;100;100
+13341;788;1.3.11.5.3.1.13;7;Abertura dos furos (LD e LE);;99,96;99,96
+13342;789;1.3.11.5.3.1.13.1;8;Montar dispositivo e Reabrir 1° furo  ;;100;100
+13343;790;1.3.11.5.3.1.13.2;8;Montar dispositivo e Reabrir 2° furo  ;;100;100
+13344;791;1.3.11.5.3.1.13.3;8;Montar dispositivo e Reabrir 3° furo  ;;100;100
+13345;792;1.3.11.5.3.1.13.4;8;Montar dispositivo e Reabrir 4° furo  ;;100;100
+13346;793;1.3.11.5.3.1.13.5;8;Limpeza das limalhas e do segmento dentado;;100;100
+13347;794;1.3.11.5.3.1.14;7;Montagem das buchas elasticas e torque dos parafusos;;100;100
+13348;795;1.3.11.5.3.1.14.1;8;Montagem da 1° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;100
+13349;796;1.3.11.5.3.1.14.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;100
+13350;797;1.3.11.5.3.1.14.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;100
+13351;798;1.3.11.5.3.1.14.4;8;Montagem da 4° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;100
+13352;799;1.3.11.5.3.1.14.5;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;100;100
+13353;800;1.3.11.5.3.1.14.6;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;100;100
+13354;801;1.3.11.5.3.1.14.7;8;Bloqueio chave A3;;100;100
 13355;802;1.3.11.5.3.2;6; Substituição do 1º Segmento de 2 Dentes (LD e LE);;99,88;0
 13356;803;1.3.11.5.3.2.1;7;Montar Dispositivo de bloqueio mecanico para Travamento da Roda e bloquear conforme procedimento Pro xxx;;100;0
 13357;804;1.3.11.5.3.2.2;7;Posicionar Talha Elétrica e Montar Dispositivo para Remoção do Segmento Dentado ;;100;0
@@ -921,7 +921,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13472;919;1.3.11.5.3.6.13.4;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;100;0
 13473;920;1.3.11.5.3.6.13.5;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;100;0
 13474;921;1.3.11.5.3.6.13.6;8;Bloqueio chave A3;;100;0
-13475;922;1.3.11.5.3.7;6; Substituição do 6º Segmento de 2 Dentes (LD e LE);;37,5;0
+13475;922;1.3.11.5.3.7;6; Substituição do 6º Segmento de 2 Dentes (LD e LE);;100;0
 13476;923;1.3.11.5.3.7.1;7;Montar Dispositivo de bloqueio mecanico para Travamento da Roda e bloquear conforme procedimento Pro xxx;;100;0
 13477;924;1.3.11.5.3.7.2;7;Posicionar Talha Elétrica e Montar Dispositivo para Remoção do Segmento Dentado ;;100;0
 13478;925;1.3.11.5.3.7.3;7;Verificar o GAP 0,3 mm Antes da Desmontagem do Segmento Existente;;100;0
@@ -938,37 +938,37 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13489;936;1.3.11.5.3.7.12.2;8;Montar dispositivo e Reabrir 2° furo  ;;100;0
 13490;937;1.3.11.5.3.7.12.3;8;Montar dispositivo e Reabrir 3° furo  ;;100;0
 13491;938;1.3.11.5.3.7.12.4;8;Limpeza das limalhas e do segmento dentado;;100;0
-13492;939;1.3.11.5.3.7.13;7;Montagem das buchas elasticas e torque dos parafusos;;16,67;0
+13492;939;1.3.11.5.3.7.13;7;Montagem das buchas elasticas e torque dos parafusos;;100;0
 13493;940;1.3.11.5.3.7.13.1;8;Montagem da 1° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
-13494;941;1.3.11.5.3.7.13.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;0;0
-13495;942;1.3.11.5.3.7.13.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;0;0
-13496;943;1.3.11.5.3.7.13.4;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;0;0
-13497;944;1.3.11.5.3.7.13.5;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;0;0
-13498;945;1.3.11.5.3.7.13.6;8;Bloqueio chave A3;;0;0
-13499;946;1.3.11.5.3.8;6; Substituição do 7º Segmento de 2 Dentes (LD e LE);;0;0
-13500;947;1.3.11.5.3.8.1;7;Montar Dispositivo de bloqueio mecanico para Travamento da Roda e bloquear conforme procedimento Pro xxx;;0;0
-13501;948;1.3.11.5.3.8.2;7;Posicionar Talha Elétrica e Montar Dispositivo para Remoção do Segmento Dentado ;;0;0
-13502;949;1.3.11.5.3.8.3;7;Verificar o GAP 0,3 mm Antes da Desmontagem do Segmento Existente;;0;0
-13503;950;1.3.11.5.3.8.4;7;Cortar e Retirar Parafusos Guias e de Fixação;;0;0
-13504;951;1.3.11.5.3.8.5;7;Montar Dispositivo e sacar as 03 Buchas Elásticas;;0;0
-13505;952;1.3.11.5.3.8.6;7;Retirar Segmentos e Transportar para o Local de Descarte;;0;0
-13506;953;1.3.11.5.3.8.7;7;Executar limpeza mecanica  na roda para montagem do novo segmento;;0;0
-13507;954;1.3.11.5.3.8.8;7;Preparação para içamento do segmento;;0;0
-13508;955;1.3.11.5.3.8.9;7;Fazer içamento do segmento e fazer pré-montagem no tambor da roda elevadora va Tarefa>;;0;0
-13509;956;1.3.11.5.3.8.10;7;Montar Parafusos de Fixação e Torquear (Verificar Folga de 0,3 mm entre o Segmento Novo e Antigo);;0;0
-13510;957;1.3.11.5.3.8.11;7;Verificar Folga entre o Assentamento do Segmento e Tambor da Roda Fixa (0,0 a 0,2 mm);;0;0
-13511;958;1.3.11.5.3.8.12;7;Abertura dos furos (LD e LE);;0;0
-13512;959;1.3.11.5.3.8.12.1;8;Montar dispositivo e Reabrir 1° furo  ;;0;0
-13513;960;1.3.11.5.3.8.12.2;8;Montar dispositivo e Reabrir 2° furo  ;;0;0
-13514;961;1.3.11.5.3.8.12.3;8;Montar dispositivo e Reabrir 3° furo  ;;0;0
-13515;962;1.3.11.5.3.8.12.4;8;Limpeza das limalhas e do segmento dentado;;0;0
-13516;963;1.3.11.5.3.8.13;7;Montagem das buchas elasticas e torque dos parafusos;;0;0
-13517;964;1.3.11.5.3.8.13.1;8;Montagem da 1° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;0;0
-13518;965;1.3.11.5.3.8.13.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;0;0
-13519;966;1.3.11.5.3.8.13.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;0;0
-13520;967;1.3.11.5.3.8.13.4;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;0;0
-13521;968;1.3.11.5.3.8.13.5;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;0;0
-13522;969;1.3.11.5.3.8.13.6;8;Bloqueio chave A3;;0;0
+13494;941;1.3.11.5.3.7.13.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
+13495;942;1.3.11.5.3.7.13.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
+13496;943;1.3.11.5.3.7.13.4;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;100;0
+13497;944;1.3.11.5.3.7.13.5;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;100;0
+13498;945;1.3.11.5.3.7.13.6;8;Bloqueio chave A3;;100;0
+13499;946;1.3.11.5.3.8;6; Substituição do 7º Segmento de 2 Dentes (LD e LE);;99,9;0
+13500;947;1.3.11.5.3.8.1;7;Montar Dispositivo de bloqueio mecanico para Travamento da Roda e bloquear conforme procedimento Pro xxx;;100;0
+13501;948;1.3.11.5.3.8.2;7;Posicionar Talha Elétrica e Montar Dispositivo para Remoção do Segmento Dentado ;;100;0
+13502;949;1.3.11.5.3.8.3;7;Verificar o GAP 0,3 mm Antes da Desmontagem do Segmento Existente;;100;0
+13503;950;1.3.11.5.3.8.4;7;Cortar e Retirar Parafusos Guias e de Fixação;;100;0
+13504;951;1.3.11.5.3.8.5;7;Montar Dispositivo e sacar as 03 Buchas Elásticas;;100;0
+13505;952;1.3.11.5.3.8.6;7;Retirar Segmentos e Transportar para o Local de Descarte;;100;0
+13506;953;1.3.11.5.3.8.7;7;Executar limpeza mecanica  na roda para montagem do novo segmento;;100;0
+13507;954;1.3.11.5.3.8.8;7;Preparação para içamento do segmento;;100;0
+13508;955;1.3.11.5.3.8.9;7;Fazer içamento do segmento e fazer pré-montagem no tambor da roda elevadora va Tarefa>;;100;0
+13509;956;1.3.11.5.3.8.10;7;Montar Parafusos de Fixação e Torquear (Verificar Folga de 0,3 mm entre o Segmento Novo e Antigo);;100;0
+13510;957;1.3.11.5.3.8.11;7;Verificar Folga entre o Assentamento do Segmento e Tambor da Roda Fixa (0,0 a 0,2 mm);;100;0
+13511;958;1.3.11.5.3.8.12;7;Abertura dos furos (LD e LE);;100;0
+13512;959;1.3.11.5.3.8.12.1;8;Montar dispositivo e Reabrir 1° furo  ;;100;0
+13513;960;1.3.11.5.3.8.12.2;8;Montar dispositivo e Reabrir 2° furo  ;;100;0
+13514;961;1.3.11.5.3.8.12.3;8;Montar dispositivo e Reabrir 3° furo  ;;100;0
+13515;962;1.3.11.5.3.8.12.4;8;Limpeza das limalhas e do segmento dentado;;100;0
+13516;963;1.3.11.5.3.8.13;7;Montagem das buchas elasticas e torque dos parafusos;;99,9;0
+13517;964;1.3.11.5.3.8.13.1;8;Montagem da 1° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
+13518;965;1.3.11.5.3.8.13.2;8;Montagem da 2° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
+13519;966;1.3.11.5.3.8.13.3;8;Montagem da 3° bucha elastica = montar dispositivo, Montar bucha, montar parafuso de fixação e torquear;;100;0
+13520;967;1.3.11.5.3.8.13.4;8;Desbloqueiar e retirar Dispositivo de bloqueio mecanico para Travamento da Roda;;100;0
+13521;968;1.3.11.5.3.8.13.5;8;Solicitar operador para desbloqueio chave A3, girar e posicionar a roda elevadora para proximo segmento;;100;0
+13522;969;1.3.11.5.3.8.13.6;8;Bloqueio chave A3;;100;0
 13555;970;1.3.11.5.3.9;6;Ajustes do diametro primitivo do trilho externo LD/LE;;0;0
 13556;971;1.3.11.5.3.9.1;7;Diametro primitivo parte inferior na posição de 180º;;0;0
 13557;972;1.3.11.5.3.9.1.1;8;Retirar bloqueio da chave A3;;0;0
@@ -1050,93 +1050,93 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13633;1048;1.3.11.5.3.12.2;7;Montagem dos paineis frontal;;0;0
 13634;1049;1.3.11.5.3.12.3;7;Desmontagem de andaimes;;0;0
 13635;1050;1.3.11.6;4;Manutenção Região do Levantamento AH1;N;0;0
-14165;1051;1.3.11.7;4;IE - Forno;S;63,44;55,34
-13838;1052;1.3.11.7.1;5;IE - Recuperação Estrutural AH222SI ( Abaixamento );;41,5;0
-13839;1053;1.3.11.7.1.1;6;BLOQUEIO;;100;0
+14165;1051;1.3.11.7;4;IE - Forno;S;71,31;59,97
+13838;1052;1.3.11.7.1;5;IE - Recuperação Estrutural AH222SI ( Abaixamento );;65,34;2,41
+13839;1053;1.3.11.7.1.1;6;BLOQUEIO;;100;100
 13840;1054;1.3.11.7.1.2;6;MONTAGEM DE ANDAIME;;100;0
 13841;1055;1.3.11.7.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;0
 13842;1056;1.3.11.7.1.4;6;DESMONTAGEM DE RAC07;;100;0
-13843;1057;1.3.11.7.1.5;6;RECUPERAÇÃO METÁLICA;;15;0
+13843;1057;1.3.11.7.1.5;6;RECUPERAÇÃO METÁLICA;;61;0
 13844;1058;1.3.11.7.1.6;6;MONTAGEM DE RAC 07;;0;0
 13845;1059;1.3.11.7.1.7;6;DESMONTAGEM DE ANDAIME;;0;0
 13846;1060;1.3.11.7.1.8;6;RETIRADA DE BLOQUEIO;;0;0
-13851;1061;1.3.11.7.2;5;IE - Tratamento Anticorrosivo AH222SI ( Abaixamento );;100;95,53
+13851;1061;1.3.11.7.2;5;IE - Tratamento Anticorrosivo AH222SI ( Abaixamento );;100;97,06
 13852;1062;1.3.11.7.2.1;6;BLOQUEIO;;100;100
 13853;1063;1.3.11.7.2.2;6;LIMPEZA;;100;100
 13854;1064;1.3.11.7.2.3;6;MOBILIZAÇÃO;;100;100
 13855;1065;1.3.11.7.2.4;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
-13856;1066;1.3.11.7.2.5;6;TRATAMENTO ANTICORROSIVO;;100;98
+13856;1066;1.3.11.7.2.5;6;TRATAMENTO ANTICORROSIVO;;100;100
 13857;1067;1.3.11.7.2.6;6;RETIRADA DE BLOQUEIO;;100;0
-13861;1068;1.3.11.7.3;5;IE - Recuperação Lajes US1-Forno 1;;54,31;54,31
+13861;1068;1.3.11.7.3;5;IE - Recuperação Lajes US1-Forno 1;;60,9;60,9
 13862;1069;1.3.11.7.3.1;6;MOBILIZAÇÃO;;100;100
 13863;1070;1.3.11.7.3.2;6;BLOQUEIO;;100;100
-13864;1071;1.3.11.7.3.3;6;MONTAGEM DE ANDAIME;;53;53
+13864;1071;1.3.11.7.3.3;6;MONTAGEM DE ANDAIME;;60;60
 13865;1072;1.3.11.7.3.4;6;RETIRADA DE BLOQUEIO;;0;0
-14164;1073;1.3.11.8;4;Manutenção PQ - Forno;S;57;61
-698;1074;1.3.11.9;4;Região Superior do Meio do Forno Disponível para Manutenção;N;77;75
-13081;1075;1.3.11.10;4;Região Inferior do Meio do Forno Disponível para Manutenção;N;73;63
-696;1076;1.3.11.11;4;Estação de Levantamento Disponível para Manutenção;N;71;76
-695;1077;1.3.11.12;4;Estação de Abaixamento Disponível para Manutenção;N;80;77
+14164;1073;1.3.11.8;4;Manutenção PQ - Forno;S;63;66
+698;1074;1.3.11.9;4;Região Superior do Meio do Forno Disponível para Manutenção;N;83;81
+13081;1075;1.3.11.10;4;Região Inferior do Meio do Forno Disponível para Manutenção;N;79;70
+696;1076;1.3.11.11;4;Estação de Levantamento Disponível para Manutenção;N;79;83
+695;1077;1.3.11.12;4;Estação de Abaixamento Disponível para Manutenção;N;86;83
 688;1078;1.3.12;3;Manutenção do Forno Concluída;;0;0
-710;1079;1.3.13;3;Ventiladores;;82,06;76,31
-14167;1080;1.3.13.1;4;IE - Ventiladores;S;80,22;69,01
-13869;1081;1.3.13.1.1;5;IE - Substituir Suporte do Duto AH34VT;;69,57;69,57
+710;1079;1.3.13;3;Ventiladores;;89,41;84,05
+14167;1080;1.3.13.1;4;IE - Ventiladores;S;88,85;78,4
+13869;1081;1.3.13.1.1;5;IE - Substituir Suporte do Duto AH34VT;;77,59;77,59
 13870;1082;1.3.13.1.1.1;6;BLOQUEIO;;100;100
 13871;1083;1.3.13.1.1.2;6;MONTAGEM DE ANDAIME;;100;100
 13872;1084;1.3.13.1.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13873;1085;1.3.13.1.1.4;6;DESMONTAGEM DE RAC07;;100;100
-13874;1086;1.3.13.1.1.5;6;RECUPERAÇÃO METÁLICA;;74;74
+13874;1086;1.3.13.1.1.5;6;RECUPERAÇÃO METÁLICA;;88;88
 13875;1087;1.3.13.1.1.6;6;MONTAGEM DE RAC 07;;0;0
 13876;1088;1.3.13.1.1.7;6;DESMONTAGEM DE ANDAIME;;0;0
 13877;1089;1.3.13.1.1.8;6;RETIRADA DE BLOQUEIO;;0;0
-13917;1090;1.3.13.1.2;5;IE - Recuperação Estrutural Sup. Duto AH215 ( AH33 );;90,76;68,45
+13917;1090;1.3.13.1.2;5;IE - Recuperação Estrutural Sup. Duto AH215 ( AH33 );;100;79,19
 13918;1091;1.3.13.1.2.1;6;BLOQUEIO;;100;100
 13919;1092;1.3.13.1.2.2;6;LIMPEZA;;100;100
 13920;1093;1.3.13.1.2.3;6;MONTAGEM DE ANDAIME;;100;100
 13921;1094;1.3.13.1.2.4;6;POSICIONAMENTO DE LUMINARIAS;;100;100
 13922;1095;1.3.13.1.2.5;6;DESMONTAGEM DE RAC07;;100;100
-13923;1096;1.3.13.1.2.6;6;RECUPERAÇÃO METÁLICA;;97;70
-13924;1097;1.3.13.1.2.7;6;MONTAGEM DE RAC 07;;0;0
-13925;1098;1.3.13.1.2.8;6;DESMONTAGEM DE ANDAIME;;0;0
-13926;1099;1.3.13.1.2.9;6;RETIRADA DE BLOQUEIO;;0;0
-14168;1100;1.3.13.2;4;Manutenção PQ - Ventiladores;S;84;84
-706;1101;1.3.13.3;4;AR81 Disponível para Manutenção;N;84;82
-713;1102;1.3.13.4;4;AH47 Disponível para Manutenção;N;78;78
-711;1103;1.3.13.5;4;AH 93 e AH94 Disponível para Manutenção;N;76;76
-719;1104;1.3.13.6;4;AH33 Disponível para Manutenção;N;84;83
-715;1105;1.3.13.7;4;AH34 Disponível para Manutenção;N;78;78
-708;1106;1.3.13.8;4;AH30 Disponível para Manutenção;N;77;77
+13923;1096;1.3.13.1.2.6;6;RECUPERAÇÃO METÁLICA;;100;83
+13924;1097;1.3.13.1.2.7;6;MONTAGEM DE RAC 07;;100;0
+13925;1098;1.3.13.1.2.8;6;DESMONTAGEM DE ANDAIME;;100;0
+13926;1099;1.3.13.1.2.9;6;RETIRADA DE BLOQUEIO;;100;0
+14168;1100;1.3.13.2;4;Manutenção PQ - Ventiladores;S;90;90
+706;1101;1.3.13.3;4;AR81 Disponível para Manutenção;N;90;88
+713;1102;1.3.13.4;4;AH47 Disponível para Manutenção;N;84;84
+711;1103;1.3.13.5;4;AH 93 e AH94 Disponível para Manutenção;N;82;82
+719;1104;1.3.13.6;4;AH33 Disponível para Manutenção;N;90;89
+715;1105;1.3.13.7;4;AH34 Disponível para Manutenção;N;84;84
+708;1106;1.3.13.8;4;AH30 Disponível para Manutenção;N;83;83
 705;1107;1.3.14;3;Manutenção dos Ventiladores Concluída;;0;0
-725;1108;1.3.15;3;Precipitadores;;87,01;69,23
-13651;1109;1.3.15.1;4;Precipitador AR1;S;89,09;78,26
-13652;1110;1.3.15.1.1;5;Chaparia da Carcaça, Tremonha, Teto, Funil de entrada e saída e Estruturas internas;;89,09;78,26
+725;1108;1.3.15;3;Precipitadores;;91,32;74,73
+13651;1109;1.3.15.1;4;Precipitador AR1;S;93,84;86,16
+13652;1110;1.3.15.1.1;5;Chaparia da Carcaça, Tremonha, Teto, Funil de entrada e saída e Estruturas internas;;93,84;86,16
 13654;1111;1.3.15.1.1.1;6;Montar Andaime Interno;05/06/2024 11:00:00;100;100
 13655;1112;1.3.15.1.1.2;6;"Abrir janelas de visita permanente no cortinado de distribuição de gases para acesso ao duto de entrada;";;100;100
 13656;1113;1.3.15.1.1.3;6;"Abrir janelas de visita permanente no cortinado de distribuição de gases para acesso ao duto de saída;";;100;100
-13657;1114;1.3.15.1.1.4;6;Trocar seção da chaparia do precipitador;05/06/2024 11:00:00;96;100
+13657;1114;1.3.15.1.1.4;6;Trocar seção da chaparia do precipitador;05/06/2024 11:00:00;100;100
 13658;1115;1.3.15.1.1.5;6;Trocar contraventamentos internos;;100;100
-13659;1116;1.3.15.1.1.6;6;Reparo de caldeiraria das Defletoras de Gases no Duto de Entrada;;100;64
+13659;1116;1.3.15.1.1.6;6;Reparo de caldeiraria das Defletoras de Gases no Duto de Entrada;;100;100
 13660;1117;1.3.15.1.1.7;6;Reparo de caldeiraria das Defletoras de Gases no Duto de Saída;;100;100
-13661;1118;1.3.15.1.1.8;6;"Instalar escadas de 5m x 05m para acesso ao duto de entrada;";06/06/2024 11:00:00;83;100
-13662;1119;1.3.15.1.1.9;6;"Instalar escadas de 5m x 05m para acesso ao duto de saída;";;83;100
-13663;1120;1.3.15.1.1.10;6;Reparo nas janelas internas.;;83;100
-13664;1121;1.3.15.1.1.11;6;Fazer Reparo de Caldeiraria em duto de Despoeiramento;;100;70
-13665;1122;1.3.15.1.1.12;6;Dar manutenção nas portas de visita;07/06/2024 11:00:00;0;0
-13666;1123;1.3.15.1.1.13;6;Desmontagem de andaime interno;;86;66
+13661;1118;1.3.15.1.1.8;6;"Instalar escadas de 5m x 05m para acesso ao duto de entrada;";06/06/2024 11:00:00;100;100
+13662;1119;1.3.15.1.1.9;6;"Instalar escadas de 5m x 05m para acesso ao duto de saída;";;100;100
+13663;1120;1.3.15.1.1.10;6;Reparo nas janelas internas.;;100;100
+13664;1121;1.3.15.1.1.11;6;Fazer Reparo de Caldeiraria em duto de Despoeiramento;;100;71
+13665;1122;1.3.15.1.1.12;6;Dar manutenção nas portas de visita;07/06/2024 11:00:00;66;0
+13666;1123;1.3.15.1.1.13;6;Desmontagem de andaime interno;;96;83
 13667;1124;1.3.15.1.1.14;6;Limpeza e fechamento das portas;;0;0
 13668;1125;1.3.15.1.1.15;6;Desbloqueio AR1;;0;0
-13669;1126;1.3.15.2;4;Precipitador AR40;S;87,59;72,39
-13670;1127;1.3.15.2.1;5;Chaparia da Carcaça, Tremonha, Teto, Funil de entrada e saída e Estruturas internas;;87,59;72,39
+13669;1126;1.3.15.2;4;Precipitador AR40;S;92,54;78,55
+13670;1127;1.3.15.2.1;5;Chaparia da Carcaça, Tremonha, Teto, Funil de entrada e saída e Estruturas internas;;92,54;78,55
 13673;1128;1.3.15.2.1.1;6;Montar Andaime Interno;05/06/2024 11:00:00;100;100
-13674;1129;1.3.15.2.1.2;6;A troca completa da defletora de gás no funil de entrada;05/06/2024 11:00:00;100;66
-13675;1130;1.3.15.2.1.3;6;Trocar seção da chaparia do precipitador;05/06/2024 11:00:00;95;81
+13674;1129;1.3.15.2.1.2;6;A troca completa da defletora de gás no funil de entrada;05/06/2024 11:00:00;100;100
+13675;1130;1.3.15.2.1.3;6;Trocar seção da chaparia do precipitador;05/06/2024 11:00:00;100;82
 13676;1131;1.3.15.2.1.4;6;"Abrir janelas de visita permanente no cortinado de distribuição de gases para acesso ao duto de saída;";;100;100
-13677;1132;1.3.15.2.1.5;6;Fazer reparo de caldeiraria em duto de despoeiramento;06/06/2024 11:00:00;100;75
-13678;1133;1.3.15.2.1.6;6;Instalar escadas de 5m x 05m para acesso ao duto de entrada;06/06/2024 11:00:00;37;100
+13677;1132;1.3.15.2.1.5;6;Fazer reparo de caldeiraria em duto de despoeiramento;06/06/2024 11:00:00;100;76
+13678;1133;1.3.15.2.1.6;6;Instalar escadas de 5m x 05m para acesso ao duto de entrada;06/06/2024 11:00:00;100;100
 13679;1134;1.3.15.2.1.7;6;"Abrir janelas de visita permanente no cortinado de distribuição de gases para acesso ao duto de entrada;";;100;100
 13680;1135;1.3.15.2.1.8;6;"Instalar escadas de 5m x 05m para acesso ao duto de saída;";;100;100
 13681;1136;1.3.15.2.1.9;6;Dar manutenção nas portas de visita;07/06/2024 11:00:00;100;0
-13682;1137;1.3.15.2.1.10;6;Desmontagem de andaime interno;;81;80
+13682;1137;1.3.15.2.1.10;6;Desmontagem de andaime interno;;92;89
 13683;1138;1.3.15.2.1.11;6;Limpeza e fechamento das portas;;0;0
 13684;1139;1.3.15.2.1.12;6;Desbloqueio AR40;;0;0
 14190;1140;1.3.15.3;4;Projeto Briquetagem - Balanceamento AR80 - Precipitadores;S;100;40,01
@@ -1150,47 +1150,47 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14198;1148;1.3.15.3.3;5;Medição (Dumper 100%);;100;98,55
 14199;1149;1.3.15.3.3.1;6;Medição placas de orifício;;100;100
 14200;1150;1.3.15.3.3.2;6;Desbloqueio AR80;;100;0
-14169;1151;1.3.15.4;4;Manutenção PQ - Precipitadores;S;76;76
+14169;1151;1.3.15.4;4;Manutenção PQ - Precipitadores;S;82;82
 722;1152;1.3.15.5;4;Manutenção dos Precipitadores Concluída;N;0;0
-723;1153;1.3.15.6;4;AR80 Disponível para Manutenção;N;76;74
-727;1154;1.3.15.7;4;AR1 Disponível para Manutenção;N;76;76
-724;1155;1.3.15.8;4;AR40 Disponível para Manutenção;N;75;73
-721;1156;1.3.16;3;Peneiramento;;70,32;70,32
-14170;1157;1.3.16.1;4;IE - Peneiramento;S;9,98;9,98
-13686;1158;1.3.16.1.1;5;IE - Recuperação Estrutural AH17TC;;0;0
-13687;1159;1.3.16.1.1.1;6;BLOQUEIO;;0;0
-13688;1160;1.3.16.1.1.2;6;MONTAGEM DE ANDAIME;;0;0
-13689;1161;1.3.16.1.1.3;6;POSICIONAMENTO DE LUMINARIAS;;0;0
-13690;1162;1.3.16.1.1.4;6;DESMONTAGEM DE RAC07;;0;0
-13691;1163;1.3.16.1.1.5;6;RECUPERAÇÃO METÁLICA;;0;0
+723;1153;1.3.15.6;4;AR80 Disponível para Manutenção;N;82;80
+727;1154;1.3.15.7;4;AR1 Disponível para Manutenção;N;82;82
+724;1155;1.3.15.8;4;AR40 Disponível para Manutenção;N;81;79
+721;1156;1.3.16;3;Peneiramento;;78,94;82,63
+14170;1157;1.3.16.1;4;IE - Peneiramento;S;30,6;51,17
+13686;1158;1.3.16.1.1;5;IE - Recuperação Estrutural AH17TC;;29,19;0
+13687;1159;1.3.16.1.1.1;6;BLOQUEIO;;100;0
+13688;1160;1.3.16.1.1.2;6;MONTAGEM DE ANDAIME;;100;0
+13689;1161;1.3.16.1.1.3;6;POSICIONAMENTO DE LUMINARIAS;;100;0
+13690;1162;1.3.16.1.1.4;6;DESMONTAGEM DE RAC07;;100;0
+13691;1163;1.3.16.1.1.5;6;RECUPERAÇÃO METÁLICA;;19;0
 13692;1164;1.3.16.1.1.6;6;MONTAGEM DE RAC 07;;0;0
 13693;1165;1.3.16.1.1.7;6;DESMONTAGEM DE ANDAIME;;0;0
 13694;1166;1.3.16.1.1.8;6;RETIRADA DE BLOQUEIO;;0;0
-13699;1167;1.3.16.1.2;5;IE - Trat Anticorrosivo Transport AH105TC;;12,18;12,18
+13699;1167;1.3.16.1.2;5;IE - Trat Anticorrosivo Transport AH105TC;;29,96;65,34
 13700;1168;1.3.16.1.2.1;6;BLOQUEIO;;100;100
-13701;1169;1.3.16.1.2.2;6;MOBILIZAÇÃO;;87;87
-13702;1170;1.3.16.1.2.3;6;DESMONTAGEM DE RAC07;;0;0
-13703;1171;1.3.16.1.2.4;6;LIMPEZA;;0;0
-13704;1172;1.3.16.1.2.5;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;0;0
-13705;1173;1.3.16.1.2.6;6;TRATAMENTO ANTICORROSIVO;;0;0
+13701;1169;1.3.16.1.2.2;6;MOBILIZAÇÃO;;100;100
+13702;1170;1.3.16.1.2.3;6;DESMONTAGEM DE RAC07;;100;100
+13703;1171;1.3.16.1.2.4;6;LIMPEZA;;87;100
+13704;1172;1.3.16.1.2.5;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;0;100
+13705;1173;1.3.16.1.2.6;6;TRATAMENTO ANTICORROSIVO;;0;60
 13706;1174;1.3.16.1.2.7;6;MONTAGEM DE RAC 07;;0;0
 13707;1175;1.3.16.1.2.8;6;RETIRADA DE BLOQUEIO;;0;0
-13712;1176;1.3.16.1.3;5;IE - Tratamento Anticorrosivo AH20TC;;13,05;13,05
+13712;1176;1.3.16.1.3;5;IE - Tratamento Anticorrosivo AH20TC;;32;64
 13713;1177;1.3.16.1.3.1;6;BLOQUEIO;;100;100
-13714;1178;1.3.16.1.3.2;6;MOBILIZAÇÃO;;87;87
-13715;1179;1.3.16.1.3.3;6;DESMONTAGEM DE RAC07;;0;0
-13716;1180;1.3.16.1.3.4;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;0;0
-13717;1181;1.3.16.1.3.5;6;TRATAMENTO ANTICORROSIVO;;0;0
+13714;1178;1.3.16.1.3.2;6;MOBILIZAÇÃO;;100;100
+13715;1179;1.3.16.1.3.3;6;DESMONTAGEM DE RAC07;;100;100
+13716;1180;1.3.16.1.3.4;6;ISOLAMENTO DE BANDEJAMENTOS ELÉTRICOS, SENSORES E ACESSÓRIOS ELETRONICOS;;100;100
+13717;1181;1.3.16.1.3.5;6;TRATAMENTO ANTICORROSIVO;;6;62
 13718;1182;1.3.16.1.3.6;6;MONTAGEM DE RAC 07;;0;0
 13719;1183;1.3.16.1.3.7;6;RETIRADA DE BLOQUEIO;;0;0
-14171;1184;1.3.16.2;4;Manutenção PQ - Peneiramento;S;84;84
-4321;1185;1.3.16.3;4;Circuito da Emergência Disponível para Manutenção;N;31;31
-13029;1186;1.3.16.4;4;"BH128; BH129; BH130 Disponível para Manutenção (Finos de PQ)";N;84;82
-13027;1187;1.3.16.5;4;Peneira AH13PV Diponível para Manutenção;N;83;83
+14171;1184;1.3.16.2;4;Manutenção PQ - Peneiramento;S;90;90
+4321;1185;1.3.16.3;4;Circuito da Emergência Disponível para Manutenção;N;42;42
+13029;1186;1.3.16.4;4;"BH128; BH129; BH130 Disponível para Manutenção (Finos de PQ)";N;90;88
+13027;1187;1.3.16.5;4;Peneira AH13PV Diponível para Manutenção;N;89;89
 729;1188;1.3.17;3;Manutenção do Peneiramento Concluída;;0;0
-728;1189;1.3.18;3;Pátio de Briquete;;79,28;73,85
-14295;1190;1.3.18.1;4;Projeto Briquetagem - Pátio de Briquete;S;87,22;87,22
-14299;1191;1.3.18.1.1;5;CP. 218 - 2P4 - Atividades de B06;;87,22;87,22
+728;1189;1.3.18;3;Pátio de Briquete;;87,12;77,5
+14295;1190;1.3.18.1;4;Projeto Briquetagem - Pátio de Briquete;S;92,16;92,16
+14299;1191;1.3.18.1.1;5;CP. 218 - 2P4 - Atividades de B06;;92,16;92,16
 14300;1192;1.3.18.1.1.1;6;PREMISSAS PARA EXECUÇÃO DAS ATIVIDADES;;100,02;100,02
 14301;1193;1.3.18.1.1.1.1;7;MONTAGEM DE TABLADO PARA AUXILIO A LIMPEZA;;100;100
 14302;1194;1.3.18.1.1.1.2;7;LIMPEZA GERAL DOS EQUIPAMENTOS E PISO ANTES;;100;100
@@ -1267,20 +1267,20 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14373;1265;1.3.18.1.1.4.5;7;LIGAÇÃO DE CABOS DA REGIÃO DA 2P4 PARA SALA AUX 03 OU CASA NORTE;;100;100
 14374;1266;1.3.18.1.1.4.6;7;MONTAGEM DE RAC 7 AO LONGO DA 2P1 E TRAVAMENTO AUTOBROCANTE E CORDOALHAS;;100;100
 14375;1267;1.3.18.1.1.4.7;7;TESTE DE CONTINUIDADE ( PONTO A PONTO);;100;100
-14376;1268;1.3.18.1.1.5;6;ETAPA 02 B6 PARADA - BLOQUEIO - RETIRADA DO ENCLAUSURAMENTO E MONTAGEM DA BOTA, GUIAS E RAC7;;42,08;42,08
-14377;1269;1.3.18.1.1.5.1;7;BLOQUEIO  B6;;62,96;62,96
+14376;1268;1.3.18.1.1.5;6;ETAPA 02 B6 PARADA - BLOQUEIO - RETIRADA DO ENCLAUSURAMENTO E MONTAGEM DA BOTA, GUIAS E RAC7;;76,6;76,6
+14377;1269;1.3.18.1.1.5.1;7;BLOQUEIO  B6;;100;100
 14378;1270;1.3.18.1.1.5.1.1;8;REALIZAR BLOQUEIO DOS EQUIPAMENTO B6;;100;100
 14379;1271;1.3.18.1.1.5.1.2;8;CONFERENCIA TOPOGRAFICA;;100;100
 14380;1272;1.3.18.1.1.5.1.3;8;SOLDA DE REFOÇOS DOS CHUTES EXISTENTES;;100;100
 14381;1273;1.3.18.1.1.5.1.4;8;CORTE E RETIRADA DO CHUTE INTERMEDIARIO;;100;100
 14382;1274;1.3.18.1.1.5.1.5;8;SOLDA DOS OLHAIS DE APOIO;;100;100
-14383;1275;1.3.18.1.1.5.1.6;8;ENSAIO LP INSPEÇÃO VISUAL;;0;0
-14384;1276;1.3.18.1.1.5.1.7;8;EFETUAR LIMPEZA MECANICA;;0;0
-14385;1277;1.3.18.1.1.5.1.8;8;MONTAGEM DE DO CHUTE INTERMEDIARIO ;;0;0
-14386;1278;1.3.18.1.1.5.1.9;8;MONTAGEM DE VEDAÇÃO E ELEMENTOS DE FIXAÇÃO .;;0;0
-14387;1279;1.3.18.1.1.5.2;7;AJUSTE E DESMONTAGEM DE ANDAIMES;;0;0
-14388;1280;1.3.18.1.1.5.2.1;8;RETIRAR  ENCLAUSURAMENTO E AJUSTAR PARA PLATAFORMA DE ANDAIMES B6 PARA AUXILIAR MONTAGEM DO CHUTE - BOTA;;0;0
-14389;1281;1.3.18.1.1.5.2.2;8;MONTAGEM DO CHUTE BOTA.;;0;0
+14383;1275;1.3.18.1.1.5.1.6;8;ENSAIO LP INSPEÇÃO VISUAL;;100;100
+14384;1276;1.3.18.1.1.5.1.7;8;EFETUAR LIMPEZA MECANICA;;100;100
+14385;1277;1.3.18.1.1.5.1.8;8;MONTAGEM DE DO CHUTE INTERMEDIARIO ;;100;100
+14386;1278;1.3.18.1.1.5.1.9;8;MONTAGEM DE VEDAÇÃO E ELEMENTOS DE FIXAÇÃO .;;100;100
+14387;1279;1.3.18.1.1.5.2;7;AJUSTE E DESMONTAGEM DE ANDAIMES;;38,89;38,89
+14388;1280;1.3.18.1.1.5.2.1;8;RETIRAR  ENCLAUSURAMENTO E AJUSTAR PARA PLATAFORMA DE ANDAIMES B6 PARA AUXILIAR MONTAGEM DO CHUTE - BOTA;;100;100
+14389;1281;1.3.18.1.1.5.2.2;8;MONTAGEM DO CHUTE BOTA.;;20;20
 14390;1282;1.3.18.1.1.5.2.3;8;MONTAGEM DE VEDAÇÃO E ELEMENTOS DE FIXAÇÃO .;;0;0
 14391;1283;1.3.18.1.1.5.2.4;8;MONTAGEM DE SUPORTES DA GUIAS;;0;0
 14392;1284;1.3.18.1.1.5.2.5;8;MONTAGEM DAS GUIAS  ( NOVAS OU PERMUTAS) VERIFICAR COM A FISCALIZAÇÃO;;0;0
@@ -1297,7 +1297,7 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 14403;1295;1.3.18.1.1.6.5;7;"DESMONTAGEM DE ANDAIME;";;0;0
 14404;1296;1.3.18.1.1.7;6;RETOQUE PINTURAS;;0;0
 14405;1297;1.3.18.1.1.7.1;7;RETOQUE E PINTURA GERAL  REGIÃO DA ESCADA;;0;0
-14172;1298;1.3.18.2;4;IE - Pátio de Briquete;S;67,75;51,47
+14172;1298;1.3.18.2;4;IE - Pátio de Briquete;S;80,29;51,47
 13904;1299;1.3.18.2.1;5;IE - Substituir Perfil Chute BV3TC_ZM;;100;100
 13905;1300;1.3.18.2.1.1;6;BLOQUEIO;;100;100
 13906;1301;1.3.18.2.1.2;6;LIMPEZA;;100;100
@@ -1308,16 +1308,16 @@ Id_exclusiva;Id;EDT;Nível_da_estrutura_de_tópicos;Nome;Dashboard;Porcentagem_Pre
 13911;1306;1.3.18.2.1.7;6;MONTAGEM DE RAC 07;;100;100
 13912;1307;1.3.18.2.1.8;6;DESMONTAGEM DE ANDAIME;;100;100
 13913;1308;1.3.18.2.1.9;6;RETIRADA DE BLOQUEIO;;100;100
-13944;1309;1.3.18.2.2;5;IE - Colunas Descarga 1T0_1TC_ZM;;33,54;0
+13944;1309;1.3.18.2.2;5;IE - Colunas Descarga 1T0_1TC_ZM;;59,38;0
 13945;1310;1.3.18.2.2.1;6;BLOQUEIO;;100;0
 13946;1311;1.3.18.2.2.2;6;POSICIONAMENTO DE LUMINARIAS;;100;0
 13947;1312;1.3.18.2.2.3;6;DESMONTAGEM DE RAC07;;100;0
 13948;1313;1.3.18.2.2.4;6;ELÉTRICA;;100;0
-13949;1314;1.3.18.2.2.5;6;RECUPERAÇÃO METÁLICA;;17;0
+13949;1314;1.3.18.2.2.5;6;RECUPERAÇÃO METÁLICA;;59;0
 13950;1315;1.3.18.2.2.6;6;MONTAGEM DE RAC 07;;0;0
 13951;1316;1.3.18.2.2.7;6;RETIRADA DE BLOQUEIO;;0;0
-14173;1317;1.3.18.3;4;Manutenção PQ - Pátio de Briquete;S;83;83
-740;1318;1.3.18.4;4;Pátio de Pelotas Disponível para Manutenção;N;83;83
+14173;1317;1.3.18.3;4;Manutenção PQ - Pátio de Briquete;S;89;89
+740;1318;1.3.18.4;4;Pátio de Pelotas Disponível para Manutenção;N;89;89
 734;1319;1.3.19;3;Manutenção do Pátio de Briquete Concluída;;0;0
 514;1320;1.4;2;Procedimentos de Partida;;0;0
 513;1321;1.4.1;3;Pátio de Alimentação;;0;0
