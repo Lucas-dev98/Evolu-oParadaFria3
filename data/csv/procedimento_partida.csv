@@ -1,5 +1,5 @@
 name,value,baseline,sub_activities
-Pátio de Alimentação,0,0,Retirar Bloqueio Elétrico do Pátio de Finos:0|0; Realizar Calibração de Equipamentos:0|0; Realizar Teste Operacional do Pátio de Finos:0|0; Encher Silo 1SM2SI:0|0
+Pátio de Alimentação,0,"6,45",Retirar Bloqueio Elétrico do Pátio de Finos:0|100; Realizar Calibração de Equipamentos:0|0; Realizar Teste Operacional do Pátio de Finos:0|0; Encher Silo 1SM2SI:0|0
 Torre de Refriamento,0,0,Retirar Bloqueio da Torre TR301TR Forno  Ventiladores:0|0; Remover Mangotes de Água da Alimentação do Supervisório do CCO 1 e 4:0|0; Encher Torre TR301TR Forno  Ventiladores:0|0
 Secagem,0,0,Retirar Bloqueio Elétrico da Secagem:0|0; Realizar Testes Operacionais nos Filtros de Manga:0|0; Realizar Testes Operacionais nos Queimadores GGQ:0|0
 Mistura,0,0,Retirar Bloqueio Elétrico da Mistura:0|0; Realizar Calibração das Balanças da Mistura:0|0; Realizar Teste Operacional da Mistura:0|0
