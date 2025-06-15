@@ -9,25 +9,25 @@ Ventiladores,100,100,Realizar Bloqueio Elétrico AR81 (Ambiental):100|100; Reali
 Precipitadores,100,100,AR80:100|100; AR1:100|100; AR40:100|100
 Peneiramento,100,100,Realizar Limpeza através do Circuito da Emergência (AH17; AH19; AH20; AH103; AH104; AH105):100|100; Bloquear Circuito de Limpeza do Forno e da Emergência (AH17; AH19; AH20; AH103; AH104; AH105):100|100; Realizar Bloqueio Elétrico do Circuito de Finos de PQ (BH128; BH129; BH130):100|100; Esvaziar Peneira AH13PV:100|100; Realizar Bloqueio Elétrico da Peneira AH13PV:100|100
 Pátio de Briquete,100,100,"Esvaziar Correias do Circuito, Realizar Limpezas dos Chutes do Circuito e Posicionar Correias para Manutenção (2P0TC até Pátio do Briquete):100|100; Realizar Bloqueio Elétrico do Pátio do Briquete:100|100"
-Pátio de Alimentação,"93,82",100,"IE - Pátio de Alimentação:87,64|100; Manutenção PQ - Pátio de Alimentação:100|100"
-Secagem,"81,3","81,3","Projeto Briquetagem - Secagem:86,56|86,56; Manutenção PQ - Secagem:76|76"
-Torre de Resfriamento,"92,43","92,43","IE - Recuperação Civil - TR301TR - Torre de Resfriamento:91,84|91,84; Manutenção PQ - Torre de Resfriamento:93|93"
-Mistura,"99,73",100,"Projeto Briquetagem - Mistura:99,18|100; IE - Mistura:100|100; Manutenção PQ - Mistura:100|100"
-Briquetagem,"93,69","95,2","Projeto Briquetagem - Briquetagem:84,54|88,24; IE - Briquetagem:100|100; Manutenção PQ - Briquetagem:100|100"
-Forno,"82,12","83,84","Manutenção do Meio do Forno:94,71|100; Substituição Viga do Quadro Móvel da Roda Abaixamento:100|100; Manutenção Região do Levantamento AH1:66,94|68,75; IE - Forno:83,67|87,59; Manutenção PQ - Forno:84|80"
-Ventiladores,"94,89",100,"IE - Ventiladores:90,04|100; Manutenção PQ - Ventiladores:100|100"
-Precipitadores,"84,46",100,"Precipitador AR1:93,69|100; Precipitador AR40:88,5|100; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:40,01|100; Manutenção PQ - Precipitadores:100|100"
-Peneiramento,"95,24","98,02","IE - Peneiramento:73,46|88,97; Manutenção PQ - Peneiramento:100|100"
-Pátio de Briquete,"92,02",100,"Projeto Briquetagem - Pátio de Briquete:100|100; IE - Pátio de Briquete:76,11|100; Manutenção PQ - Pátio de Briquete:100|100"
-Pátio de Alimentação,0,"83,61",Retirar Bloqueio Elétrico do Pátio de Finos:0|100; Realizar Calibração de Equipamentos:0|100; Realizar Teste Operacional do Pátio de Finos:0|83; Encher Silo 1SM2SI:0|0
-Torre de Refriamento,0,0,Retirar Bloqueio da Torre TR301TR (Forno / Ventiladores):0|0; Remover Mangotes de Água da Alimentação do Supervisório do CCO 1 e 4:0|0; Encher Torre TR301TR (Forno / Ventiladores):0|0
+Pátio de Alimentação,"94,49",100,"IE - Pátio de Alimentação:88,98|100; Manutenção PQ - Pátio de Alimentação:100|100"
+Secagem,"85,45","85,45","Projeto Briquetagem - Secagem:89,87|89,87; Manutenção PQ - Secagem:81|81"
+Torre de Resfriamento,100,100,IE - Recuperação Civil - TR301TR - Torre de Resfriamento:100|100; Manutenção PQ - Torre de Resfriamento:100|100
+Mistura,"99,82",100,"Projeto Briquetagem - Mistura:99,47|100; IE - Mistura:100|100; Manutenção PQ - Mistura:100|100"
+Briquetagem,"94,84","96,41","Projeto Briquetagem - Briquetagem:87,36|91,2; IE - Briquetagem:100|100; Manutenção PQ - Briquetagem:100|100"
+Forno,"85,01","87,36","Manutenção do Meio do Forno:95,38|100; Substituição Viga do Quadro Móvel da Roda Abaixamento:100|100; Manutenção Região do Levantamento AH1:69,08|73,45; IE - Forno:87,4|90,89; Manutenção PQ - Forno:89|86"
+Ventiladores,"95,68",100,"IE - Ventiladores:91,57|100; Manutenção PQ - Ventiladores:100|100"
+Precipitadores,"85,87",100,"Precipitador AR1:95,6|100; Precipitador AR40:91,78|100; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:40,01|100; Manutenção PQ - Precipitadores:100|100"
+Peneiramento,"96,26",100,"IE - Peneiramento:79,12|100; Manutenção PQ - Peneiramento:100|100"
+Pátio de Briquete,"95,11",100,"Projeto Briquetagem - Pátio de Briquete:100|100; IE - Pátio de Briquete:85,37|100; Manutenção PQ - Pátio de Briquete:100|100"
+Pátio de Alimentação,0,100,Retirar Bloqueio Elétrico do Pátio de Finos:0|100; Realizar Calibração de Equipamentos:0|100; Realizar Teste Operacional do Pátio de Finos:0|100; Encher Silo 1SM2SI:0|100
+Torre de Refriamento,"7,69","7,69",Retirar Bloqueio da Torre TR301TR (Forno / Ventiladores):50|50; Remover Mangotes de Água da Alimentação do Supervisório do CCO 1 e 4:0|0; Encher Torre TR301TR (Forno / Ventiladores):0|0
 Secagem,0,0,Retirar Bloqueio Elétrico da Secagem:0|0; Realizar Testes Operacionais nos Filtros de Manga:0|0; Realizar Testes Operacionais nos Queimadores (GGQ):0|0
 Mistura,0,100,Retirar Bloqueio Elétrico da Mistura:0|100; Realizar Calibração das Balanças da Mistura:0|100; Realizar Teste Operacional da Mistura:0|100
 Briquetagem,0,0,Retirar Bloqueio Elétrico da Briquetagem:0|0; Conferir Alinhamento dos Rolos :0|0; Calibrar GAP dos Rolos de Briquetagem:0|0; Realizar Zero dos Silos AG100SI / AG101SI / AG102SI:0|0; Realizar Calibração das Balanças das Briquetadoras (AG70BD; AG73BD; AG76BD):0|0; Realizar Calibração do Circuito de Produção (AG31 e AG35):0|0; Teste Operacional da Briquetagem em Vazio:0|0
 Forno,0,0,Retirar Bloqueios do Forno:0|0; Recolocar Carros de Grelha na Região Superior (58 Carros):0|0; Recolocar Carros de Grelha na Região Inferior (71):0|0; Reposicionar Proteções Laterais / Corrimão ao Longo do Forno e Baixar Selagens Superiores (Selagem Móvel):0|0; Rodar Circuito da Grelha Vazia (1 Voltas) - Realizar Forces Necessários para a Atividade:0|0
 Retorno da Produção,0,0,Retornar Produção da Mistura (BV100SI; BV101SI; AZ101SI; AZ102SI):0|0; Encher Silos AG100SI / AG101SI / AG102SI e Retornar a Produção de Briquete para Encher a Grelha:0|0; Preencher a Grelha para Iniciar Aquecimento (2 briquetadeiras e circuito da emergência disponível):0|0; Realizar Procedimento para Retorno da NR20 na Região do Forno:0|0; Ligar Queimador (GGQ) e Realizar Aquecimento do Secador:0|0; Retornar Produção do Secador:0|0; Realizar Aquecimento até 490 °C:0|0
-Ventiladores,"16,67","34,72","AH33 - Queima para Secagem Descendente:100|100; AH30 - Resfriamento:0|83,33; AH93 e AH94 - Atomizadores:0|25; AR81 - Ambiental:0|0; AH34 - Secagem Descendente para PP AR1:0|0; AH47 - Secagem Ascendente para PP AR40:0|0"
+Ventiladores,"16,67",50,AH33 - Queima para Secagem Descendente:100|100; AH30 - Resfriamento:0|100; AH93 e AH94 - Atomizadores:0|100; AR81 - Ambiental:0|0; AH34 - Secagem Descendente para PP AR1:0|0; AH47 - Secagem Ascendente para PP AR40:0|0
 Teste Operacional dos Ventiladores,0,0,Teste Operacional AR81:0|0; Teste Operacional AH93 e AH94:0|0; Teste Operacional AH30:0|0; Teste Operacional AH33:0|0; Teste Operacional AH34:0|0; Teste Operacional AH47:0|0
-Precipitadores,0,"2,78","AR80:0|2,78; AR40:0|2,78; AR1:0|2,78"
+Precipitadores,0,"42,22","AR80:0|80; AR40:0|33,33; AR1:0|33,33"
 Peneiramento,0,"61,54",Retirar Bloqueio do Circuito de Emergência:0|0; Retirar Bloqueio do Circuito de Finos:0|100; Retirar Bloqueio da Peneira AH13PV:0|100; Realizar Teste da Peneira AH13PV:0|0
-Pátio de Briquete,0,"49,43",Retirar Bloqueio do Pátio de Briquete:0|100; Calibrar Balança:0|100; Teste Operacional do Circuito do Pátio de Briquete:0|41
+Pátio de Briquete,0,"92,29",Retirar Bloqueio do Pátio de Briquete:0|100; Calibrar Balança:0|100; Teste Operacional do Circuito do Pátio de Briquete:0|91
