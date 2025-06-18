@@ -1,11 +1,11 @@
 name,value,baseline,sub_activities
-Pátio de Alimentação,"96,94",100,"IE - Pátio de Alimentação:93,87|100; Manutenção PQ - Pátio de Alimentação:100|100"
-Secagem,"95,25","95,25","Projeto Briquetagem - Secagem:96,49|96,49; Manutenção PQ - Secagem:94|94"
+Pátio de Alimentação,"98,07",100,"IE - Pátio de Alimentação:96,15|100; Manutenção PQ - Pátio de Alimentação:100|100"
+Secagem,"98,36","98,36","Projeto Briquetagem - Secagem:98,72|98,72; Manutenção PQ - Secagem:98|98"
 Torre de Resfriamento,100,100,IE - Recuperação Civil - TR301TR - Torre de Resfriamento:100|100; Manutenção PQ - Torre de Resfriamento:100|100
-Mistura,"99,93",100,"Projeto Briquetagem - Mistura:99,79|100; IE - Mistura:100|100; Manutenção PQ - Mistura:100|100"
-Briquetagem,"98,08","99,81","Projeto Briquetagem - Briquetagem:95,29|99,53; IE - Briquetagem:100|100; Manutenção PQ - Briquetagem:100|100"
-Forno,"92,31","95,32","Manutenção do Meio do Forno:97,94|100; Substituição Viga do Quadro Móvel da Roda Abaixamento:100|100; Manutenção Região do Levantamento AH1:77,59|87,7; IE - Forno:94,73|94,73; Manutenção PQ - Forno:100|100"
+Mistura,100,100,Projeto Briquetagem - Mistura:100|100; IE - Mistura:100|100; Manutenção PQ - Mistura:100|100
+Briquetagem,"99,09",100,"Projeto Briquetagem - Briquetagem:97,78|100; IE - Briquetagem:100|100; Manutenção PQ - Briquetagem:100|100"
+Forno,"95,48","97,55","Manutenção do Meio do Forno:99,63|100; Substituição Viga do Quadro Móvel da Roda Abaixamento:100|100; Manutenção Região do Levantamento AH1:84,94|92,68; IE - Forno:98,03|98,03; Manutenção PQ - Forno:100|100"
 Ventiladores,"98,76",100,"IE - Ventiladores:97,57|100; Manutenção PQ - Ventiladores:100|100"
-Precipitadores,"88,44",100,"Precipitador AR1:99,53|100; Precipitador AR40:97,33|100; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:40,01|100; Manutenção PQ - Precipitadores:100|100"
-Peneiramento,"98,47",100,"IE - Peneiramento:91,48|100; Manutenção PQ - Peneiramento:100|100"
-Pátio de Briquete,"96,71",100,"Projeto Briquetagem - Pátio de Briquete:100|100; IE - Pátio de Briquete:90,15|100; Manutenção PQ - Pátio de Briquete:100|100"
+Precipitadores,"94,18",100,"Precipitador AR1:100|100; Precipitador AR40:99,89|100; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:67,53|100; Manutenção PQ - Precipitadores:100|100"
+Peneiramento,"99,67",100,"IE - Peneiramento:98,13|100; Manutenção PQ - Peneiramento:100|100"
+Pátio de Briquete,100,100,Projeto Briquetagem - Pátio de Briquete:100|100; IE - Pátio de Briquete:100|100; Manutenção PQ - Pátio de Briquete:100|100
