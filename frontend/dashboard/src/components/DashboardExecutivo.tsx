@@ -28,12 +28,22 @@ interface DashboardExecutivoProps {
   categorias: CategoriaCronograma[];
   resumo: ResumoCronograma;
   onVerDetalhes: () => void;
+  onAtrasadasClick?: () => void;
+  onCriticasClick?: () => void;
+  onConcluidasClick?: () => void;
+  onEmAndamentoClick?: () => void;
+  onPendentesClick?: () => void;
 }
 
 const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
   categorias,
   resumo,
   onVerDetalhes,
+  onAtrasadasClick,
+  onCriticasClick,
+  onConcluidasClick,
+  onEmAndamentoClick,
+  onPendentesClick,
 }) => {
   const { isDark } = useTheme();
   const themeClasses = useThemeClasses();
@@ -59,22 +69,16 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
     return iconMap[nomeCategoria] || <Activity className="w-6 h-6" />;
   };
 
-  // Calcular métricas executivas
-  const atividadesAtrasadas = categorias.filter(
-    (cat) => cat.statusPrazo && cat.statusPrazo.atrasadas > 0
-  ).length;
+  // Calcular métricas executivas usando dados do resumo
+  const statusDados = resumo?.statusGeral;
 
-  const atividadesCriticas = categorias.filter(
-    (cat) => cat.statusPrazo && cat.statusPrazo.criticas > 0
-  ).length;
+  const atividadesAtrasadas = statusDados?.atividadesAtrasadas || 0;
+  const atividadesCriticas = statusDados?.atividadesCriticas || 0;
+  const atividadesEmDia = statusDados?.atividadesEmDia || 0;
+  const atividadesAdiantadas = statusDados?.atividadesAdiantadas || 0;
 
-  const atividadesConcluidas = categorias.filter(
-    (cat) => cat.progresso === 100
-  ).length;
-
-  const progressoMedio = Math.round(
-    categorias.reduce((acc, cat) => acc + cat.progresso, 0) / categorias.length
-  );
+  const atividadesConcluidas = resumo?.tarefasConcluidas || 0;
+  const progressoMedio = statusDados?.progressoMedio || 0;
 
   // Status geral do projeto
   const getStatusGeral = () => {
@@ -188,7 +192,7 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
         </div>
 
         {/* Métricas Principais com gradientes e animações */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {/* Progresso Geral */}
           <div
             className={`
@@ -224,8 +228,10 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
 
           {/* Atividades Concluídas */}
           <div
+            onClick={atividadesConcluidas > 0 ? onConcluidasClick : undefined}
             className={`
             text-center rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1
+            ${atividadesConcluidas > 0 && onConcluidasClick ? 'cursor-pointer hover:scale-105' : ''}
             ${
               isDark
                 ? 'bg-gradient-to-br from-green-900/50 to-green-800/50 border-green-700'
@@ -254,8 +260,10 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
 
           {/* Atividades Críticas */}
           <div
+            onClick={atividadesCriticas > 0 ? onCriticasClick : undefined}
             className={`
             text-center rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1
+            ${atividadesCriticas > 0 && onCriticasClick ? 'cursor-pointer hover:scale-105' : ''}
             ${
               isDark
                 ? 'bg-gradient-to-br from-orange-900/50 to-orange-800/50 border-orange-700'
@@ -284,8 +292,10 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
 
           {/* Atividades Atrasadas */}
           <div
+            onClick={atividadesAtrasadas > 0 ? onAtrasadasClick : undefined}
             className={`
             text-center rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1
+            ${atividadesAtrasadas > 0 && onAtrasadasClick ? 'cursor-pointer hover:scale-105' : ''}
             ${
               isDark
                 ? 'bg-gradient-to-br from-red-900/50 to-red-800/50 border-red-700'
@@ -309,6 +319,66 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
             </div>
             <div className="flex justify-center mt-2">
               <Zap className="w-5 h-5 text-red-500 dark:text-red-400" />
+            </div>
+          </div>
+
+          {/* Atividades Em Dia */}
+          <div
+            className={`
+            text-center rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1
+            ${
+              isDark
+                ? 'bg-gradient-to-br from-blue-900/50 to-blue-800/50 border-blue-700'
+                : 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200'
+            }
+          `}
+          >
+            <div className="relative">
+              <CheckCircle className="w-10 h-10 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
+              {atividadesEmDia > 0 && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+              )}
+            </div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2">
+              {atividadesEmDia}
+            </div>
+            <div
+              className={`text-sm font-medium ${themeClasses.textSecondary}`}
+            >
+              Em Dia
+            </div>
+            <div className="flex justify-center mt-2">
+              <Target className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+            </div>
+          </div>
+
+          {/* Atividades Adiantadas */}
+          <div
+            className={`
+            text-center rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1
+            ${
+              isDark
+                ? 'bg-gradient-to-br from-cyan-900/50 to-cyan-800/50 border-cyan-700'
+                : 'bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200'
+            }
+          `}
+          >
+            <div className="relative">
+              <TrendingUp className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3" />
+              {atividadesAdiantadas > 0 && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+              )}
+            </div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-700 bg-clip-text text-transparent mb-2">
+              {atividadesAdiantadas}
+            </div>
+            <div
+              className={`text-sm font-medium ${themeClasses.textSecondary}`}
+            >
+              Adiantadas
+            </div>
+            <div className="flex justify-center mt-2">
+              <Activity className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
             </div>
           </div>
         </div>
@@ -545,10 +615,34 @@ const DashboardExecutivo: React.FC<DashboardExecutivoProps> = ({
                 {resumo.totalTarefas}
               </span>
             </div>
-            <div className="flex justify-between items-center bg-white/50 rounded-lg p-3">
+            <div
+              onClick={
+                resumo.tarefasEmAndamento > 0 ? onEmAndamentoClick : undefined
+              }
+              className={`flex justify-between items-center bg-white/50 rounded-lg p-3 transition-all duration-300 ${
+                resumo.tarefasEmAndamento > 0 && onEmAndamentoClick
+                  ? 'cursor-pointer hover:bg-white/70 hover:scale-105'
+                  : ''
+              }`}
+            >
               <span className="text-gray-600 font-medium">Em Andamento:</span>
               <span className="font-bold text-indigo-700">
                 {resumo.tarefasEmAndamento}
+              </span>
+            </div>
+            <div
+              onClick={
+                resumo.tarefasPendentes > 0 ? onPendentesClick : undefined
+              }
+              className={`flex justify-between items-center bg-white/50 rounded-lg p-3 transition-all duration-300 ${
+                resumo.tarefasPendentes > 0 && onPendentesClick
+                  ? 'cursor-pointer hover:bg-white/70 hover:scale-105'
+                  : ''
+              }`}
+            >
+              <span className="text-gray-600 font-medium">Pendentes:</span>
+              <span className="font-bold text-indigo-700">
+                {resumo.tarefasPendentes}
               </span>
             </div>
           </div>

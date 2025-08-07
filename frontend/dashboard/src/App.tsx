@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  RefreshCw,
-  Wifi,
-  WifiOff,
-  Upload,
-  Calendar,
-  Database,
-  Trash2,
-} from 'lucide-react';
+import { RefreshCw, Upload, Calendar, Trash2 } from 'lucide-react';
 import AreaCard from './components/AreaCard';
 import SummaryCards from './components/SummaryCards';
 import EvolutionChart from './components/EvolutionChart';
@@ -18,14 +10,18 @@ import ResumoCardsCronograma from './components/ResumoCardsCronograma';
 import ListaCronograma from './components/ListaCronograma';
 import DashboardExecutivo from './components/DashboardExecutivo';
 import WelcomeScreen from './components/WelcomeScreen';
-import ThemeToggle from './components/ThemeToggle';
+import Header from './components/Header';
+import AdminPanel from './components/AdminPanel';
+import LoadingScreen from './components/LoadingScreen';
 import {
   ThemeProvider,
   useTheme,
   useThemeClasses,
 } from './contexts/ThemeContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { dashboardAPI } from './services/api';
 import { EventArea, DashboardSummary, EvolutionData } from './types';
+import { getMockData } from './utils/mockData';
 import {
   CategoriaCronograma,
   ResumoCronograma,
@@ -41,6 +37,7 @@ import './App.css';
 function AppContent() {
   const { isDark } = useTheme();
   const themeClasses = useThemeClasses();
+  const { isAuthenticated, isAdmin, user } = useAuth();
 
   const [areas, setAreas] = useState<EventArea[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -48,13 +45,17 @@ function AppContent() {
   const [selectedArea, setSelectedArea] = useState<EventArea | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingStep, setLoadingStep] = useState<
+    'local' | 'csv' | 'backend' | 'mock'
+  >('csv');
   const [isOnline, setIsOnline] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [showUpload, setShowUpload] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   // Estados para cronograma
-  const [modoCronograma, setModoCronograma] = useState(true); // Iniciar em modo cronograma por padrão
-  const [visualizacaoExecutiva, setVisualizacaoExecutiva] = useState(true); // Nova visualização executiva por padrão
+  const [modoCronograma, setModoCronograma] = useState(true);
+  const [visualizacaoExecutiva, setVisualizacaoExecutiva] = useState(true);
   const [categoriasCronograma, setCategoriasCronograma] = useState<
     CategoriaCronograma[]
   >([]);
@@ -62,6 +63,15 @@ function AppContent() {
     useState<ResumoCronograma | null>(null);
   const [tarefaSelecionada, setTarefaSelecionada] =
     useState<TarefaCronograma | null>(null);
+
+  // Estados para filtros especiais
+  const [mostrarApenasAtrasadas, setMostrarApenasAtrasadas] = useState(false);
+  const [mostrarApenasCriticas, setMostrarApenasCriticas] = useState(false);
+  const [mostrarApenasConcluidas, setMostrarApenasConcluidas] = useState(false);
+  const [mostrarApenasEmAndamento, setMostrarApenasEmAndamento] =
+    useState(false);
+  const [mostrarApenasPendentes, setMostrarApenasPendentes] = useState(false);
+  const [mostrarApenasEmDia, setMostrarApenasEmDia] = useState(false);
 
   // Função para carregar dados salvos localmente
   const carregarDadosSalvos = () => {
@@ -87,20 +97,13 @@ function AppContent() {
 
   // Função para carregar todos os dados
   const loadData = async () => {
-    console.log('🔄 loadData iniciado - Estado atual:', {
-      modoCronograma,
-      visualizacaoExecutiva,
-      existeDadosLocais: existeCronogramaLocal(),
-      categoriasCronograma: categoriasCronograma.length,
-      resumoCronograma: resumoCronograma ? 'presente' : 'ausente',
-    });
-
     try {
       setIsLoading(true);
 
       // Primeiro, tentar carregar dados salvos localmente
       if (existeCronogramaLocal()) {
-        console.log('🔄 Tentando carregar dados salvos localmente...');
+        setLoadingStep('local');
+        console.log('📁 Verificando dados salvos localmente...');
         const dadosSalvosCarregados = carregarDadosSalvos();
         if (dadosSalvosCarregados) {
           setLastUpdate(new Date());
@@ -110,64 +113,77 @@ function AppContent() {
       }
 
       // Se não há dados salvos de cronograma, tentar carregar o CSV diretamente
-      console.log('🔍 Tentando carregar cronograma CSV diretamente...');
+      setLoadingStep('csv');
       try {
+        console.log('📄 Tentando carregar cronograma.csv...');
         const response = await fetch('/cronograma.csv');
-        console.log('📄 CSV Response status:', response.status, response.ok);
         if (response.ok) {
+          console.log('✅ CSV encontrado! Processando dados...');
           const csvContent = await response.text();
-          console.log(
-            '📊 CSV carregado, tamanho:',
-            csvContent.length,
-            'caracteres'
-          );
-
           const { processarCronogramaRealCSV } = await import(
             './utils/cronogramaProcessor'
           );
-          const { categorias, resumo } = processarCronogramaRealCSV(csvContent);
+          const { categorias, resumo, evolucao } =
+            processarCronogramaRealCSV(csvContent);
 
-          console.log('🎯 Dados processados do CSV:', {
+          console.log('📊 Dados processados com sucesso:', {
             categorias: categorias.length,
-            resumo,
+            totalTarefas: resumo.totalTarefas,
+            progresso: resumo.progressoGeral,
+            evolucao: evolucao ? evolucao.length : 0,
+            evolucaoDetalhes: evolucao?.map((e) => ({
+              nome: e.name,
+              pontos: e.data?.length,
+            })),
           });
 
-          // Definir dados do cronograma
+          console.log('🔍 Detalhes dos dados de evolução:', evolucao);
+
           setCategoriasCronograma(categorias);
           setResumoCronograma(resumo);
+          setEvolution(evolucao || []);
           setModoCronograma(true);
           setVisualizacaoExecutiva(true);
           setIsOnline(true);
           setLastUpdate(new Date());
           setIsLoading(false);
           return;
+        } else {
+          console.log('⚠️ cronograma.csv não encontrado no servidor');
         }
       } catch (csvError) {
         console.error('❌ Erro ao carregar CSV:', csvError);
       }
 
       // Se falhou o CSV, tentar carregar do backend
+      setLoadingStep('backend');
       try {
+        console.log('🔗 Tentando conectar ao backend...');
         const [areasData, summaryData, evolutionData] = await Promise.all([
           dashboardAPI.getAreas(),
           dashboardAPI.getSummary(),
           dashboardAPI.getEvolution(),
         ]);
 
-        console.log('Dados recebidos do backend:', {
-          areasData,
-          summaryData,
-          evolutionData,
-        });
+        console.log('✅ Dados do backend carregados com sucesso');
         setAreas(areasData);
         setSummary(summaryData);
         setEvolution(evolutionData);
         setIsOnline(true);
         setLastUpdate(new Date());
-        setModoCronograma(false); // Modo dashboard quando vem do backend
+        setModoCronograma(false);
       } catch (backendError) {
         console.error('❌ Erro ao carregar dados do backend:', backendError);
+
+        // Como fallback, usar dados mockados para demonstração
+        setLoadingStep('mock');
+        console.log('🔄 Carregando dados de demonstração...');
+        const mockData = getMockData();
+        setAreas(mockData.areas);
+        setSummary(mockData.summary);
+        setEvolution(mockData.evolution);
         setIsOnline(false);
+        setModoCronograma(false);
       }
     } finally {
       setIsLoading(false);
@@ -176,23 +192,21 @@ function AppContent() {
 
   // Carregar dados iniciais
   useEffect(() => {
-    console.log('🚀 useEffect inicial - forçando carregamento de dados');
     loadData();
   }, []);
 
-  // Atualização automática a cada 30 segundos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadData();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
+  // Atualização automática desabilitada para evitar refreshs desnecessários
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     loadData();
+  //   }, 30000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // Função para alternar entre dashboard e cronograma
   const toggleMode = () => {
     setModoCronograma(!modoCronograma);
-    setVisualizacaoExecutiva(true); // Reset para visualização executiva
+    setVisualizacaoExecutiva(true);
   };
 
   // Função para abrir modal de detalhes
@@ -212,8 +226,86 @@ function AppContent() {
     loadData();
   };
 
-  // Função para limpar dados salvos
+  // Função para obter atividades críticas
+  const getAtividadesCriticas = (): TarefaCronograma[] => {
+    const todasTarefas: TarefaCronograma[] = [];
+    categoriasCronograma.forEach((categoria) => {
+      todasTarefas.push(...categoria.tarefas);
+    });
+
+    const hoje = new Date();
+    return todasTarefas.filter((tarefa) => {
+      if (tarefa.percentualCompleto === 100) return false;
+
+      const fimPrevisto = new Date(tarefa.fim);
+      const diasParaFim = Math.ceil(
+        (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      return diasParaFim <= 3 && diasParaFim >= 0;
+    });
+  };
+
+  // Função para obter atividades atrasadas
+  const getAtividadesAtrasadas = (): TarefaCronograma[] => {
+    const todasTarefas: TarefaCronograma[] = [];
+    categoriasCronograma.forEach((categoria) => {
+      todasTarefas.push(...categoria.tarefas);
+    });
+
+    const hoje = new Date();
+    return todasTarefas.filter((tarefa) => {
+      if (tarefa.percentualCompleto === 100) return false;
+
+      const fimPrevisto = new Date(tarefa.fim);
+      const fimBaseline = new Date(tarefa.fimBaseline);
+      const diasParaFim = Math.ceil(
+        (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      return diasParaFim < 0 || fimPrevisto > fimBaseline;
+    });
+  };
+
+  // Função para obter atividades concluídas
+  const getAtividadesConcluidas = (): TarefaCronograma[] => {
+    const todasTarefas: TarefaCronograma[] = [];
+    categoriasCronograma.forEach((categoria) => {
+      todasTarefas.push(...categoria.tarefas);
+    });
+
+    return todasTarefas.filter((tarefa) => tarefa.percentualCompleto === 100);
+  };
+
+  // Função para obter atividades em andamento
+  const getAtividadesEmAndamento = (): TarefaCronograma[] => {
+    const todasTarefas: TarefaCronograma[] = [];
+    categoriasCronograma.forEach((categoria) => {
+      todasTarefas.push(...categoria.tarefas);
+    });
+
+    return todasTarefas.filter(
+      (tarefa) =>
+        tarefa.percentualCompleto > 0 && tarefa.percentualCompleto < 100
+    );
+  };
+
+  // Função para obter atividades pendentes
+  const getAtividadesPendentes = (): TarefaCronograma[] => {
+    const todasTarefas: TarefaCronograma[] = [];
+    categoriasCronograma.forEach((categoria) => {
+      todasTarefas.push(...categoria.tarefas);
+    });
+
+    return todasTarefas.filter((tarefa) => tarefa.percentualCompleto === 0);
+  };
+
+  // Função para limpar dados salvos - apenas para administradores autenticados
   const limparDados = () => {
+    if (!isAuthenticated || !isAdmin) {
+      alert('Acesso negado. Apenas administradores podem limpar dados.');
+      return;
+    }
     limparCronogramaLocal();
     setCategoriasCronograma([]);
     setResumoCronograma(null);
@@ -227,7 +319,6 @@ function AppContent() {
     setAreas(uploadedAreas);
     setShowUpload(false);
     setModoCronograma(false);
-    // Atualizar dados
     loadData();
   };
 
@@ -248,53 +339,27 @@ function AppContent() {
       className={`min-h-screen transition-colors duration-200 ${themeClasses.bgApp}`}
     >
       {/* Header */}
-      <header
-        className={`${themeClasses.bgPrimary} shadow-lg border-b ${themeClasses.border}`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <Header lastUpdate={lastUpdate} />
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Controles de Interface - visível para todos */}
+        <div
+          className={`mb-6 p-4 rounded-lg border ${themeClasses.card} ${themeClasses.shadow}`}
+        >
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <Database className={`h-8 w-8 ${themeClasses.textPrimary}`} />
-                <div>
-                  <h1
-                    className={`text-xl font-bold ${themeClasses.textPrimary}`}
-                  >
-                    Dashboard PFUS3
-                  </h1>
-                  <p className={`text-sm ${themeClasses.textSecondary}`}>
-                    Monitoramento de Atividades da Preparação
-                  </p>
-                </div>
-              </div>
+              <span
+                className={`text-sm font-medium ${themeClasses.textPrimary}`}
+              >
+                {isAuthenticated
+                  ? `Bem-vindo, ${user?.username}!`
+                  : 'Visitante - Visualização'}
+              </span>
 
-              {/* Status Indicator */}
-              <div className="flex items-center space-x-2">
-                {isOnline ? (
-                  <Wifi className="h-4 w-4 text-green-500" />
-                ) : (
-                  <WifiOff className="h-4 w-4 text-red-500" />
-                )}
-                <span
-                  className={`text-sm font-medium ${
-                    isOnline
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}
-                >
-                  {isOnline ? 'Conectado' : 'Desconectado'}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              {/* Theme Toggle */}
-              <ThemeToggle />
-
-              {/* Controles condicionais */}
               {resumoCronograma && categoriasCronograma.length > 0 && (
                 <div className="flex items-center space-x-4">
-                  {/* Toggle Visualização Executiva/Detalhada - só no modo cronograma */}
+                  {/* Toggle Visualização Executiva/Detalhada - para todos */}
                   {modoCronograma && (
                     <div
                       className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
@@ -322,13 +387,13 @@ function AppContent() {
                     </div>
                   )}
 
-                  {/* Toggle Dashboard/Cronograma */}
+                  {/* Toggle Dashboard/Cronograma - para todos */}
                   <button
                     onClick={toggleMode}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                       modoCronograma
-                        ? 'bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700'
-                        : `${isDark ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-500 hover:bg-gray-600'} text-white`
+                        ? 'bg-purple-500 text-white hover:bg-purple-600'
+                        : 'bg-gray-500 text-white hover:bg-gray-600'
                     }`}
                   >
                     <Calendar size={16} />
@@ -338,19 +403,37 @@ function AppContent() {
                   </button>
                 </div>
               )}
+            </div>
 
-              <button
-                onClick={() => setShowUpload(!showUpload)}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 transition-all duration-200 transform hover:scale-105"
-              >
-                <Upload size={16} />
-                <span>Carregar Dados</span>
-              </button>
+            <div className="flex items-center space-x-2">
+              {/* Botões administrativos - apenas para administradores */}
+              {isAuthenticated && isAdmin && (
+                <>
+                  <button
+                    onClick={() => setShowAdminPanel(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  >
+                    <Upload size={16} />
+                    <span>Gerenciar Dados</span>
+                  </button>
 
+                  {existeCronogramaLocal() && (
+                    <button
+                      onClick={limparDados}
+                      className="flex items-center space-x-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                      <span>Limpar Dados</span>
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* Botão de atualização - para todos */}
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
               >
                 <RefreshCw
                   size={16}
@@ -358,26 +441,12 @@ function AppContent() {
                 />
                 <span>Atualizar</span>
               </button>
-
-              {/* Botão Limpar Dados - só aparece se há dados salvos */}
-              {existeCronogramaLocal() && (
-                <button
-                  onClick={limparDados}
-                  className="flex items-center space-x-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-all duration-200 transform hover:scale-105"
-                >
-                  <Trash2 size={16} />
-                  <span>Limpar Dados</span>
-                </button>
-              )}
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* File Upload Section */}
-        {showUpload && (
+        {/* File Upload Section - apenas para administradores */}
+        {showUpload && isAdmin && (
           <div
             className={`mb-8 p-6 rounded-lg border ${themeClasses.card} ${themeClasses.shadow}`}
           >
@@ -388,73 +457,142 @@ function AppContent() {
           </div>
         )}
 
-        {(() => {
-          console.log('🔍 DEBUG - Estado da renderização:', {
-            modoCronograma,
-            resumoCronograma: resumoCronograma ? 'presente' : 'ausente',
-            categoriasCronogramaLength: categoriasCronograma.length,
-            condicao1:
-              modoCronograma &&
-              resumoCronograma &&
-              categoriasCronograma.length > 0,
-            condicao2: modoCronograma && !resumoCronograma,
-            condicao3: !modoCronograma,
-          });
-          return null;
-        })()}
-
-        {/* Condições de renderização corrigidas */}
-        {modoCronograma &&
-        resumoCronograma &&
-        categoriasCronograma.length > 0 ? (
+        {/* Dashboard Content */}
+        {isLoading ? (
+          /* Tela de Carregamento */
+          <LoadingScreen isOnline={isOnline} loadingStep={loadingStep} />
+        ) : modoCronograma &&
+          resumoCronograma &&
+          categoriasCronograma.length > 0 ? (
           /* Modo Cronograma com Dados */
-          (() => {
-            console.log('🎯 Renderizando DashboardExecutivo com:', {
-              visualizacaoExecutiva,
-              categorias: categoriasCronograma.length,
-              resumo: resumoCronograma ? 'presente' : 'ausente',
-            });
-            return null;
-          })() || (
-            <div>
-              {visualizacaoExecutiva ? (
-                /* Visualização Executiva */
-                resumoCronograma && categoriasCronograma.length > 0 ? (
-                  <DashboardExecutivo
-                    categorias={categoriasCronograma}
-                    resumo={resumoCronograma}
-                    onVerDetalhes={() => setVisualizacaoExecutiva(false)}
-                  />
-                ) : (
-                  <div className="text-center py-8">
-                    <p>Carregando dados do cronograma...</p>
+          <div>
+            {visualizacaoExecutiva ? (
+              /* Visualização Executiva */
+              resumoCronograma && categoriasCronograma.length > 0 ? (
+                <DashboardExecutivo
+                  categorias={categoriasCronograma}
+                  resumo={resumoCronograma}
+                  onVerDetalhes={() => setVisualizacaoExecutiva(false)}
+                  onAtrasadasClick={() => {
+                    setMostrarApenasAtrasadas(true);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onCriticasClick={() => {
+                    setMostrarApenasCriticas(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onConcluidasClick={() => {
+                    setMostrarApenasConcluidas(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onEmAndamentoClick={() => {
+                    setMostrarApenasEmAndamento(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasPendentes(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onPendentesClick={() => {
+                    setMostrarApenasPendentes(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8">
+                  <p>Carregando dados do cronograma...</p>
+                  {isAdmin && (
                     <button
                       onClick={() => setShowUpload(true)}
                       className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                     >
                       Carregar Dados Manualmente
                     </button>
-                  </div>
-                )
-              ) : /* Visualização Detalhada */
-              resumoCronograma ? (
-                <div>
-                  <ResumoCardsCronograma resumo={resumoCronograma} />
-                  <ListaCronograma
-                    categorias={categoriasCronograma}
-                    onTarefaClick={setTarefaSelecionada}
-                  />
+                  )}
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p>Nenhum dado de cronograma disponível</p>
-                </div>
-              )}
-            </div>
-          )
+              )
+            ) : /* Visualização Detalhada */
+            resumoCronograma ? (
+              <div>
+                <ResumoCardsCronograma
+                  resumo={resumoCronograma}
+                  onAtrasadasClick={() => {
+                    setMostrarApenasAtrasadas(true);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setMostrarApenasEmDia(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onCriticasClick={() => {
+                    setMostrarApenasCriticas(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setMostrarApenasEmDia(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                  onEmDiaClick={() => {
+                    setMostrarApenasEmDia(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setVisualizacaoExecutiva(false);
+                  }}
+                />
+                <ListaCronograma
+                  categorias={categoriasCronograma}
+                  onTarefaClick={setTarefaSelecionada}
+                  mostrarApenasAtrasadas={mostrarApenasAtrasadas}
+                  mostrarApenasCriticas={mostrarApenasCriticas}
+                  mostrarApenasConcluidas={mostrarApenasConcluidas}
+                  mostrarApenasEmAndamento={mostrarApenasEmAndamento}
+                  mostrarApenasPendentes={mostrarApenasPendentes}
+                  mostrarApenasEmDia={mostrarApenasEmDia}
+                  onLimparFiltros={() => {
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setMostrarApenasEmDia(false);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p>Nenhum dado de cronograma disponível</p>
+              </div>
+            )}
+          </div>
         ) : modoCronograma && !resumoCronograma ? (
           /* Modo Cronograma sem Dados - Welcome Screen */
-          <WelcomeScreen onCarregarDados={() => setShowUpload(true)} />
+          <WelcomeScreen
+            onCarregarDados={() =>
+              isAuthenticated && isAdmin ? setShowUpload(true) : null
+            }
+            isAdmin={isAuthenticated && isAdmin}
+          />
         ) : (
           /* Modo Dashboard Original */
           <div>
@@ -476,7 +614,8 @@ function AppContent() {
                   Atividades da Preparação
                 </h2>
                 <div className={`text-sm ${themeClasses.textSecondary}`}>
-                  Última atualização: {lastUpdate.toLocaleTimeString()}
+                  Última atualização: {lastUpdate.toLocaleDateString('pt-BR')}{' '}
+                  às {lastUpdate.toLocaleTimeString('pt-BR')}
                 </div>
               </div>
 
@@ -508,9 +647,18 @@ function AppContent() {
               <div
                 className={`flex items-center justify-between text-sm ${themeClasses.textSecondary}`}
               >
-                <div>
-                  Preparação PFUS3 (73%) - Atualização automática a cada 30
-                  segundos
+                <div className="flex items-center space-x-4">
+                  <span>Preparação PFUS3 (73%)</span>
+                  {lastUpdate && (
+                    <>
+                      <span>•</span>
+                      <span>
+                        Última atualização:{' '}
+                        {lastUpdate.toLocaleDateString('pt-BR')} às{' '}
+                        {lastUpdate.toLocaleTimeString('pt-BR')}
+                      </span>
+                    </>
+                  )}
                 </div>
                 <div className="flex items-center space-x-4">
                   <span>Total de atividades: {areas.length}</span>
@@ -529,15 +677,24 @@ function AppContent() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
+
+      {/* Admin Panel */}
+      <AdminPanel
+        isOpen={showAdminPanel}
+        onClose={() => setShowAdminPanel(false)}
+        onDataUpdate={loadData}
+      />
     </div>
   );
 }
 
-// Componente principal que envolve tudo com o ThemeProvider
+// Componente principal que envolve tudo com os Providers
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

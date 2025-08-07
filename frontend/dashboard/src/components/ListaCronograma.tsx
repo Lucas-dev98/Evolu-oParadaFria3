@@ -13,16 +13,32 @@ import {
   Activity,
   BarChart3,
   Zap,
+  Circle,
+  ClipboardList,
 } from 'lucide-react';
 
 interface ListaCronogramaProps {
   categorias: CategoriaCronograma[];
   onTarefaClick?: (tarefa: TarefaCronograma) => void;
+  mostrarApenasAtrasadas?: boolean;
+  mostrarApenasCriticas?: boolean;
+  mostrarApenasConcluidas?: boolean;
+  mostrarApenasEmAndamento?: boolean;
+  mostrarApenasPendentes?: boolean;
+  mostrarApenasEmDia?: boolean;
+  onLimparFiltros?: () => void;
 }
 
 const ListaCronograma: React.FC<ListaCronogramaProps> = ({
   categorias,
   onTarefaClick,
+  mostrarApenasAtrasadas = false,
+  mostrarApenasCriticas = false,
+  mostrarApenasConcluidas = false,
+  mostrarApenasEmAndamento = false,
+  mostrarApenasPendentes = false,
+  mostrarApenasEmDia = false,
+  onLimparFiltros,
 }) => {
   const [categoriasExpandidas, setCategoriasExpandidas] = useState<Set<string>>(
     new Set()
@@ -58,6 +74,69 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
           tarefa.percentualCompleto < 100) ||
         (filtroStatus === 'pendentes' && tarefa.percentualCompleto === 0);
 
+      // Filtros especiais para tipos específicos de atividades
+      if (mostrarApenasAtrasadas) {
+        if (tarefa.percentualCompleto === 100) return false;
+
+        const hoje = new Date();
+        const fimPrevisto = new Date(tarefa.fim);
+        const fimBaseline = new Date(tarefa.fimBaseline);
+        const diasParaFim = Math.ceil(
+          (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        const isAtrasada = diasParaFim < 0 || fimPrevisto > fimBaseline;
+        return matchBusca && matchStatus && isAtrasada;
+      }
+
+      if (mostrarApenasCriticas) {
+        if (tarefa.percentualCompleto === 100) return false;
+
+        const hoje = new Date();
+        const fimPrevisto = new Date(tarefa.fim);
+        const diasParaFim = Math.ceil(
+          (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        const isCritica = diasParaFim <= 3 && diasParaFim >= 0;
+        return matchBusca && matchStatus && isCritica;
+      }
+
+      if (mostrarApenasConcluidas) {
+        return matchBusca && matchStatus && tarefa.percentualCompleto === 100;
+      }
+
+      if (mostrarApenasEmAndamento) {
+        return (
+          matchBusca &&
+          matchStatus &&
+          tarefa.percentualCompleto > 0 &&
+          tarefa.percentualCompleto < 100
+        );
+      }
+
+      if (mostrarApenasPendentes) {
+        return matchBusca && matchStatus && tarefa.percentualCompleto === 0;
+      }
+
+      if (mostrarApenasEmDia) {
+        if (tarefa.percentualCompleto === 100) return false;
+
+        const hoje = new Date();
+        const fimPrevisto = new Date(tarefa.fim);
+        const fimBaseline = new Date(tarefa.fimBaseline);
+        const diasParaFim = Math.ceil(
+          (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        // Consideramos "em dia" as tarefas que:
+        // 1. Não estão atrasadas (fim previsto <= fim baseline E ainda tem tempo > 3 dias)
+        // 2. Ou ainda tem mais de 3 dias para terminar
+        const isEmDia =
+          (fimPrevisto <= fimBaseline && diasParaFim > 3) || diasParaFim > 3;
+        return matchBusca && matchStatus && isEmDia;
+      }
+
       return matchBusca && matchStatus;
     });
   };
@@ -71,15 +150,69 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
       <div className="relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <BarChart3 className="w-6 h-6 text-white" />
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${
+                mostrarApenasAtrasadas
+                  ? 'bg-gradient-to-br from-red-500 to-red-600'
+                  : mostrarApenasCriticas
+                    ? 'bg-gradient-to-br from-orange-500 to-orange-600'
+                    : mostrarApenasConcluidas
+                      ? 'bg-gradient-to-br from-green-500 to-green-600'
+                      : mostrarApenasEmAndamento
+                        ? 'bg-gradient-to-br from-blue-500 to-blue-600'
+                        : mostrarApenasPendentes
+                          ? 'bg-gradient-to-br from-gray-500 to-gray-600'
+                          : mostrarApenasEmDia
+                            ? 'bg-gradient-to-br from-green-400 to-green-500'
+                            : 'bg-gradient-to-br from-blue-500 to-purple-600'
+              }`}
+            >
+              {mostrarApenasAtrasadas ? (
+                <AlertTriangle className="w-6 h-6 text-white" />
+              ) : mostrarApenasCriticas ? (
+                <Clock className="w-6 h-6 text-white" />
+              ) : mostrarApenasConcluidas ? (
+                <CheckCircle className="w-6 h-6 text-white" />
+              ) : mostrarApenasEmAndamento ? (
+                <Activity className="w-6 h-6 text-white" />
+              ) : mostrarApenasPendentes ? (
+                <Circle className="w-6 h-6 text-white" />
+              ) : mostrarApenasEmDia ? (
+                <CheckCircle className="w-6 h-6 text-white" />
+              ) : (
+                <BarChart3 className="w-6 h-6 text-white" />
+              )}
             </div>
             <div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Cronograma de Preparação
+                {mostrarApenasAtrasadas
+                  ? 'Atividades Atrasadas'
+                  : mostrarApenasCriticas
+                    ? 'Atividades Críticas'
+                    : mostrarApenasConcluidas
+                      ? 'Atividades Concluídas'
+                      : mostrarApenasEmAndamento
+                        ? 'Atividades em Andamento'
+                        : mostrarApenasPendentes
+                          ? 'Atividades Pendentes'
+                          : mostrarApenasEmDia
+                            ? 'Atividades Em Dia'
+                            : 'Cronograma de Preparação'}
               </h2>
               <p className="text-gray-600">
-                Visualização detalhada das atividades
+                {mostrarApenasAtrasadas
+                  ? 'Atividades que ultrapassaram o prazo'
+                  : mostrarApenasCriticas
+                    ? 'Atividades próximas do prazo (3 dias ou menos)'
+                    : mostrarApenasConcluidas
+                      ? 'Atividades já finalizadas'
+                      : mostrarApenasEmAndamento
+                        ? 'Atividades em execução'
+                        : mostrarApenasPendentes
+                          ? 'Atividades aguardando início'
+                          : mostrarApenasEmDia
+                            ? 'Atividades com cronograma adequado'
+                            : 'Visualização detalhada das atividades'}
               </p>
             </div>
           </div>
@@ -112,6 +245,23 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
               </select>
             </div>
           </div>
+
+          {/* Botão para limpar filtros especiais */}
+          {(mostrarApenasAtrasadas ||
+            mostrarApenasCriticas ||
+            mostrarApenasConcluidas ||
+            mostrarApenasEmAndamento ||
+            mostrarApenasPendentes ||
+            mostrarApenasEmDia) &&
+            onLimparFiltros && (
+              <button
+                onClick={onLimparFiltros}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2"
+              >
+                <Filter className="w-4 h-4" />
+                <span>Limpar Filtros</span>
+              </button>
+            )}
         </div>
 
         <div className="space-y-6">

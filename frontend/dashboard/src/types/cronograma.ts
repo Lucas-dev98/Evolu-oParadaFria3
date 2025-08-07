@@ -17,6 +17,8 @@ export interface TarefaCronograma {
   percentualFisicoCalc: number;
   nivel: number; // Baseado na indentação da tarefa
   categoria: string;
+  subatividades?: TarefaCronograma[]; // Subatividades hierárquicas
+  tarefaPai?: number; // ID da tarefa pai (se for subatividade)
 }
 
 export interface StatusPrazo {

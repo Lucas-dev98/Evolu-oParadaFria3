@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle2, Clock, BarChart3 } from 'lucide-react';
 import { EventArea } from '../types';
+import { useThemeClasses } from '../contexts/ThemeContext';
 
 interface AreaCardProps {
   area: EventArea;
@@ -8,6 +9,7 @@ interface AreaCardProps {
 }
 
 const AreaCard: React.FC<AreaCardProps> = ({ area, onClick }) => {
+  const themeClasses = useThemeClasses();
   const progressPercentage = area.currentOccupancy; // Agora representa progresso em %
 
   const getProgressColor = (percentage: number) => {
@@ -42,27 +44,31 @@ const AreaCard: React.FC<AreaCardProps> = ({ area, onClick }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'normal':
-        return 'bg-green-100 text-green-800';
+        return themeClasses.success;
       case 'warning':
-        return 'bg-yellow-100 text-yellow-800';
+        return themeClasses.warning;
       case 'critical':
-        return 'bg-red-100 text-red-800';
+        return themeClasses.error;
       default:
-        return 'bg-gray-100 text-gray-800';
+        return themeClasses.info;
     }
   };
 
   return (
     <div
-      className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow duration-200"
+      className={`${themeClasses.card} rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow duration-200 ${themeClasses.cardHover}`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <span className="text-2xl">{getCategoryIcon(area.name)}</span>
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">{area.name}</h3>
-            <span className="text-sm text-gray-500">{area.category}</span>
+            <h3 className={`text-lg font-semibold ${themeClasses.textPrimary}`}>
+              {area.name}
+            </h3>
+            <span className={`text-sm ${themeClasses.textSecondary}`}>
+              {area.category}
+            </span>
           </div>
         </div>
         <div
@@ -76,12 +82,16 @@ const AreaCard: React.FC<AreaCardProps> = ({ area, onClick }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <CheckCircle2 size={16} className="text-blue-500" />
-            <span className="text-sm text-gray-600">Progresso</span>
+            <span className={`text-sm ${themeClasses.textSecondary}`}>
+              Progresso
+            </span>
           </div>
-          <span className="text-sm font-medium">{progressPercentage}%</span>
+          <span className={`text-sm font-medium ${themeClasses.textPrimary}`}>
+            {progressPercentage}%
+          </span>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className={`w-full ${themeClasses.bgTertiary} rounded-full h-2`}>
           <div
             className={`h-2 rounded-full ${getProgressColor(progressPercentage)}`}
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
@@ -89,12 +99,14 @@ const AreaCard: React.FC<AreaCardProps> = ({ area, onClick }) => {
         </div>
 
         <div className="text-center">
-          <span className="text-lg font-bold text-gray-800">
+          <span className={`text-lg font-bold ${themeClasses.textPrimary}`}>
             {progressPercentage}%
           </span>
         </div>
 
-        <div className="flex justify-between text-xs text-gray-500">
+        <div
+          className={`flex justify-between text-xs ${themeClasses.textTertiary}`}
+        >
           <div className="flex items-center space-x-1">
             <Clock size={12} />
             <span>Total: {area.capacity} subatividades</span>

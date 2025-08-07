@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug - Análise de Status das Atividades</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .debug-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border-left: 4px solid #17a2b8;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .count {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+      .em-dia {
+        color: #28a745;
+      }
+      .criticas {
+        color: #ffc107;
+      }
+      .adiantadas {
+        color: #17a2b8;
+      }
+      .atrasadas {
+        color: #dc3545;
+      }
+      .button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        margin: 10px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .button:hover {
+        background: #0056b3;
+      }
+      .log {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+      }
+      .task-analysis {
+        background: #fff3cd;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        border-left: 4px solid #ffc107;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔍 Debug: Análise de Status das Atividades</h1>
+      <p>
+        Analisando por que os dados de "Em Dia", "Críticas" e "Adiantadas" não
+        aparecem corretamente
+      </p>
+
+      <button class="button" onclick="debugAnalysis()">
+        Analisar Status das Atividades
+      </button>
+      <button class="button" onclick="clearLog()">Limpar Log</button>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div>Atividades Em Dia</div>
+          <div class="count em-dia" id="emDiaCount">-</div>
+        </div>
+        <div class="stat-card">
+          <div>Atividades Críticas</div>
+          <div class="count criticas" id="criticasCount">-</div>
+        </div>
+        <div class="stat-card">
+          <div>Atividades Adiantadas</div>
+          <div class="count adiantadas" id="adiantadasCount">-</div>
+        </div>
+        <div class="stat-card">
+          <div>Atividades Atrasadas</div>
+          <div class="count atrasadas" id="atrasadasCount">-</div>
+        </div>
+      </div>
+
+      <div class="debug-section">
+        <h3>Log de Debug</h3>
+        <div class="log" id="debugLog">
+          Clique em "Analisar Status das Atividades" para começar...
+        </div>
+      </div>
+
+      <div class="debug-section">
+        <h3>Análise Detalhada por Tarefa</h3>
+        <div id="taskAnalysis"></div>
+      </div>
+    </div>
+
+    <script>
+      let allTasks = [];
+
+      function log(message) {
+        const logDiv = document.getElementById('debugLog');
+        const timestamp = new Date().toLocaleTimeString();
+        logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      function clearLog() {
+        document.getElementById('debugLog').innerHTML = '';
+        document.getElementById('taskAnalysis').innerHTML = '';
+      }
+
+      async function debugAnalysis() {
+        clearLog();
+        log('🚀 Iniciando análise de debug...');
+
+        try {
+          // Carregar dados do CSV
+          log('📥 Carregando dados do CSV...');
+          const response = await fetch('http://localhost:3000/cronograma.csv');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const csvText = await response.text();
+          log('✅ CSV carregado com sucesso');
+
+          // Parse do CSV
+          log('🔄 Processando dados do CSV...');
+          allTasks = parseCSV(csvText);
+          log(`✅ ${allTasks.length} tarefas processadas`);
+
+          // Análise de status
+          log('📊 Analisando status das atividades...');
+          const today = new Date();
+          log(`📅 Data de referência: ${today.toISOString().split('T')[0]}`);
+
+          const statusAnalysis = analyzeTaskStatus(allTasks, today);
+          updateStatistics(statusAnalysis);
+
+          log('✅ Análise concluída!');
+        } catch (error) {
+          log(`❌ Erro: ${error.message}`);
+        }
+      }
+
+      function parseCSV(csvText) {
+        const lines = csvText.split('\n');
+        const tasks = [];
+
+        log(`📄 Processando ${lines.length} linhas do CSV...`);
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const columns = line.split(',');
+          if (columns.length < 13) continue;
+
+          const taskName = columns[1];
+          if (!taskName || taskName.length < 2) continue;
+
+          const percentComplete = parseFloat(columns[2]?.replace('%', '')) || 0;
+          const finishDate = columns[7];
+          const baselineFinish = columns[12];
+
+          if (finishDate && baselineFinish) {
+            const task = {
+              id: columns[0],
+              nome: taskName,
+              percentualCompleto: percentComplete,
+              fim: finishDate,
+              fimBaseline: baselineFinish,
+              inicio: columns[6],
+            };
+            tasks.push(task);
+          }
+        }
+
+        log(`✅ ${tasks.length} tarefas válidas encontradas`);
+        return tasks;
+      }
+
+      function analyzeTaskStatus(tasks, referenceDate) {
+        const status = {
+          emDia: 0,
+          atrasadas: 0,
+          adiantadas: 0,
+          criticas: 0,
+          concluidas: 0,
+        };
+
+        const analysisDetails = [];
+
+        log('🔍 Analisando cada tarefa...');
+
+        tasks.forEach((task, index) => {
+          if (index < 10) {
+            // Log apenas as primeiras 10 para não sobrecarregar
+            log(`📝 Tarefa ${index + 1}: ${task.nome.substring(0, 50)}...`);
+            log(`   Progresso: ${task.percentualCompleto}%`);
+            log(`   Data Fim: ${task.fim}`);
+            log(`   Baseline: ${task.fimBaseline}`);
+          }
+
+          // Tarefas concluídas
+          if (task.percentualCompleto === 100) {
+            status.concluidas++;
+            return;
+          }
+
+          // Análise de prazo para tarefas não concluídas
+          try {
+            const finishDate = new Date(task.fim);
+            const baselineDate = new Date(task.fimBaseline);
+
+            if (isNaN(finishDate.getTime()) || isNaN(baselineDate.getTime())) {
+              if (index < 10) {
+                log(`   ⚠️ Data inválida detectada`);
+              }
+              return;
+            }
+
+            const daysToFinish = Math.ceil(
+              (finishDate.getTime() - referenceDate.getTime()) /
+                (1000 * 60 * 60 * 24)
+            );
+
+            let taskStatus = '';
+
+            // Críticas: menos de 3 dias para o fim
+            if (daysToFinish <= 3 && daysToFinish >= 0) {
+              status.criticas++;
+              taskStatus = 'Crítica';
+            }
+            // Atrasadas: data fim já passou ou fim previsto > baseline
+            else if (daysToFinish < 0 || finishDate > baselineDate) {
+              status.atrasadas++;
+              taskStatus = 'Atrasada';
+            }
+            // Adiantadas: fim previsto < baseline
+            else if (finishDate < baselineDate) {
+              status.adiantadas++;
+              taskStatus = 'Adiantada';
+            }
+            // Em dia: dentro do prazo baseline
+            else {
+              status.emDia++;
+              taskStatus = 'Em Dia';
+            }
+
+            if (index < 10) {
+              log(
+                `   📊 Status: ${taskStatus} (dias para fim: ${daysToFinish})`
+              );
+            }
+
+            if (taskStatus !== 'Em Dia' || index < 5) {
+              analysisDetails.push({
+                nome: task.nome,
+                status: taskStatus,
+                daysToFinish: daysToFinish,
+                percentComplete: task.percentualCompleto,
+              });
+            }
+          } catch (error) {
+            if (index < 10) {
+              log(`   ❌ Erro ao processar datas: ${error.message}`);
+            }
+          }
+        });
+
+        log(`📊 Resultado final:`);
+        log(`   Em Dia: ${status.emDia}`);
+        log(`   Críticas: ${status.criticas}`);
+        log(`   Adiantadas: ${status.adiantadas}`);
+        log(`   Atrasadas: ${status.atrasadas}`);
+        log(`   Concluídas: ${status.concluidas}`);
+
+        // Mostrar análise detalhada
+        displayTaskAnalysis(analysisDetails);
+
+        return status;
+      }
+
+      function updateStatistics(status) {
+        document.getElementById('emDiaCount').textContent = status.emDia;
+        document.getElementById('criticasCount').textContent = status.criticas;
+        document.getElementById('adiantadasCount').textContent =
+          status.adiantadas;
+        document.getElementById('atrasadasCount').textContent =
+          status.atrasadas;
+      }
+
+      function displayTaskAnalysis(details) {
+        const container = document.getElementById('taskAnalysis');
+
+        if (details.length === 0) {
+          container.innerHTML = '<p>Nenhuma análise detalhada disponível</p>';
+          return;
+        }
+
+        let html = '<h4>Análise Detalhada das Primeiras Tarefas:</h4>';
+
+        details.slice(0, 20).forEach((task) => {
+          html += `
+                    <div class="task-analysis">
+                        <strong>${task.nome.substring(0, 80)}...</strong><br>
+                        <small>Status: ${task.status} | Progresso: ${task.percentComplete}% | Dias para fim: ${task.daysToFinish}</small>
+                    </div>
+                `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      // Auto-start na carga da página
+      window.addEventListener('load', () => {
+        log('🔧 Sistema de debug carregado');
+        log('📋 Pronto para analisar dados do cronograma PFUS3');
+      });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ResumoCronograma } from '../types/cronograma';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import {
   Calendar,
   Target,
@@ -13,11 +14,18 @@ import {
 
 interface ResumoCardsCronogramaProps {
   resumo: ResumoCronograma;
+  onAtrasadasClick?: () => void;
+  onCriticasClick?: () => void;
+  onEmDiaClick?: () => void;
 }
 
 const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
   resumo,
+  onAtrasadasClick,
+  onCriticasClick,
+  onEmDiaClick,
 }) => {
+  const themeClasses = useThemeClasses();
   const cards = [
     {
       title: 'Progresso Geral',
@@ -67,6 +75,11 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
         resumo.statusGeral && resumo.statusGeral.atividadesAtrasadas > 0
           ? 'animate-pulse'
           : '',
+      onClick: onAtrasadasClick,
+      isClickable:
+        !!onAtrasadasClick &&
+        resumo.statusGeral &&
+        resumo.statusGeral.atividadesAtrasadas > 0,
     },
   ];
 
@@ -80,6 +93,8 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
           color: 'text-green-600',
           bgGradient: 'bg-gradient-to-br from-green-50 to-green-100',
           borderColor: 'border-green-200',
+          onClick: onEmDiaClick,
+          isClickable: !!onEmDiaClick && resumo.statusGeral.atividadesEmDia > 0,
         },
         {
           title: 'Atividades Críticas',
@@ -88,6 +103,9 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
           color: 'text-orange-600',
           bgGradient: 'bg-gradient-to-br from-orange-50 to-orange-100',
           borderColor: 'border-orange-200',
+          onClick: onCriticasClick,
+          isClickable:
+            !!onCriticasClick && resumo.statusGeral.atividadesCriticas > 0,
         },
         {
           title: 'Atividades Adiantadas',
@@ -123,7 +141,10 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
         {cards.map((card, index) => (
           <div
             key={index}
-            className={`${card.cardGradient} border-2 border-white rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden group`}
+            onClick={card.onClick}
+            className={`${card.cardGradient} border-2 border-white rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden group ${
+              card.isClickable ? 'cursor-pointer hover:bg-opacity-80' : ''
+            }`}
             style={{
               animationDelay: `${index * 100}ms`,
             }}
@@ -187,7 +208,12 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
             {statusCards.map((statusCard, index) => (
               <div
                 key={index}
-                className={`${statusCard.bgGradient} ${statusCard.borderColor} border-2 rounded-xl p-4 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 relative overflow-hidden group`}
+                onClick={statusCard.onClick}
+                className={`${statusCard.bgGradient} ${statusCard.borderColor} border-2 rounded-xl p-4 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 relative overflow-hidden group ${
+                  statusCard.isClickable
+                    ? 'cursor-pointer hover:bg-opacity-80'
+                    : ''
+                }`}
                 style={{
                   animationDelay: `${index * 50}ms`,
                 }}
