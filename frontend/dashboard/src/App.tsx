@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Upload, Calendar, Trash2 } from 'lucide-react';
+import {
+  RefreshCw,
+  Upload,
+  Calendar,
+  Trash2,
+  BarChart3,
+  Route,
+  TrendingUp,
+  Activity,
+  TestTube,
+  Zap,
+} from 'lucide-react';
 import AreaCard from './components/AreaCard';
 import SummaryCards from './components/SummaryCards';
 import EvolutionChart from './components/EvolutionChart';
@@ -13,6 +24,13 @@ import WelcomeScreen from './components/WelcomeScreen';
 import Header from './components/Header';
 import AdminPanel from './components/AdminPanel';
 import LoadingScreen from './components/LoadingScreen';
+import GanttChart from './components/GanttChart';
+import KPIDashboard from './components/KPIDashboard-Real';
+import CPMAnalysis from './components/CPMAnalysisReal';
+import AIAnalysisComponent from './components/AIAnalysisComponent';
+import TestGeminiAPI from './components/TestGeminiAPI';
+import QuickAIButton from './components/QuickAIButton';
+import TarefaDetailModal from './components/TarefaDetailModal';
 import {
   ThemeProvider,
   useTheme,
@@ -22,6 +40,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { dashboardAPI } from './services/api';
 import { EventArea, DashboardSummary, EvolutionData } from './types';
 import { getMockData } from './utils/mockData';
+import { mlPrevisaoService } from './services/MLPrevisaoService';
 import {
   CategoriaCronograma,
   ResumoCronograma,
@@ -73,6 +92,13 @@ function AppContent() {
   const [mostrarApenasPendentes, setMostrarApenasPendentes] = useState(false);
   const [mostrarApenasEmDia, setMostrarApenasEmDia] = useState(false);
 
+  // Estados para Analytics Avançados
+  const [abaAnalytics, setAbaAnalytics] = useState<
+    'kpi' | 'gantt' | 'cpm' | 'tendencias' | 'teste'
+  >('kpi');
+  const [modalTarefaDetalhes, setModalTarefaDetalhes] = useState(false);
+  const [modoAnalytics, setModoAnalytics] = useState(false);
+
   // Função para carregar dados salvos localmente
   const carregarDadosSalvos = () => {
     try {
@@ -82,6 +108,10 @@ function AppContent() {
         setResumoCronograma(dadosCarregados.resumo);
         setModoCronograma(true);
         setIsOnline(true);
+
+        // Inicializar dados simulados para ML
+        inicializarDadosML(dadosCarregados.categorias);
+
         console.log('✅ Dados salvos carregados automaticamente:', {
           categorias: dadosCarregados.categorias.length,
           tarefas: dadosCarregados.resumo.totalTarefas,
@@ -93,6 +123,66 @@ function AppContent() {
       console.error('❌ Erro ao carregar dados salvos:', error);
     }
     return false;
+  };
+
+  // Função para inicializar dados simulados do ML
+  const inicializarDadosML = (categorias: CategoriaCronograma[]) => {
+    try {
+      // Simular dados históricos para algumas tarefas
+      categorias.forEach((categoria) => {
+        categoria.tarefas.forEach((tarefa) => {
+          // Simular 5-10 pontos de progresso histórico
+          const pontosHistoricos = Math.floor(Math.random() * 6) + 5;
+          const inicioTarefa = new Date(tarefa.inicio);
+
+          for (let i = 0; i < pontosHistoricos; i++) {
+            const diasAtras = pontosHistoricos - i;
+            const dataHistorica = new Date(
+              Date.now() - diasAtras * 24 * 60 * 60 * 1000
+            );
+
+            // Progresso simulado baseado no tempo decorrido
+            const progressoSimulado = Math.min(
+              tarefa.percentualCompleto,
+              (i / pontosHistoricos) * tarefa.percentualCompleto +
+                Math.random() * 10
+            );
+
+            mlPrevisaoService.registrarProgresso(
+              tarefa.id.toString(),
+              progressoSimulado,
+              dataHistorica
+            );
+          }
+
+          // Adicionar subatividades também
+          if (tarefa.subatividades) {
+            tarefa.subatividades.forEach((sub) => {
+              for (let i = 0; i < pontosHistoricos; i++) {
+                const diasAtras = pontosHistoricos - i;
+                const dataHistorica = new Date(
+                  Date.now() - diasAtras * 24 * 60 * 60 * 1000
+                );
+                const progressoSimulado = Math.min(
+                  sub.percentualCompleto,
+                  (i / pontosHistoricos) * sub.percentualCompleto +
+                    Math.random() * 10
+                );
+                mlPrevisaoService.registrarProgresso(
+                  sub.id.toString(),
+                  progressoSimulado,
+                  dataHistorica
+                );
+              }
+            });
+          }
+        });
+      });
+
+      console.log('🤖 Dados simulados do ML inicializados');
+    } catch (error) {
+      console.error('❌ Erro ao inicializar dados ML:', error);
+    }
   };
 
   // Função para carregar todos os dados
@@ -331,7 +421,11 @@ function AppContent() {
     setResumoCronograma(resumo);
     setModoCronograma(true);
     setVisualizacaoExecutiva(true);
+    setModoAnalytics(false);
     setShowUpload(false);
+
+    // Inicializar dados simulados para ML
+    inicializarDadosML(categorias);
   };
 
   return (
@@ -359,15 +453,18 @@ function AppContent() {
 
               {resumoCronograma && categoriasCronograma.length > 0 && (
                 <div className="flex items-center space-x-4">
-                  {/* Toggle Visualização Executiva/Detalhada - para todos */}
+                  {/* Toggle Visualização Executiva/Detalhada/Analytics - para todos */}
                   {modoCronograma && (
                     <div
                       className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
                     >
                       <button
-                        onClick={() => setVisualizacaoExecutiva(true)}
+                        onClick={() => {
+                          setVisualizacaoExecutiva(true);
+                          setModoAnalytics(false);
+                        }}
                         className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          visualizacaoExecutiva
+                          visualizacaoExecutiva && !modoAnalytics
                             ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
                             : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
                         }`}
@@ -375,14 +472,31 @@ function AppContent() {
                         Executivo
                       </button>
                       <button
-                        onClick={() => setVisualizacaoExecutiva(false)}
+                        onClick={() => {
+                          setVisualizacaoExecutiva(false);
+                          setModoAnalytics(false);
+                        }}
                         className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          !visualizacaoExecutiva
+                          !visualizacaoExecutiva && !modoAnalytics
                             ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
                             : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
                         }`}
                       >
                         Detalhado
+                      </button>
+                      <button
+                        onClick={() => {
+                          setVisualizacaoExecutiva(false);
+                          setModoAnalytics(true);
+                          setAbaAnalytics('kpi');
+                        }}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          modoAnalytics
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        📊 Analytics
                       </button>
                     </div>
                   )}
@@ -466,7 +580,7 @@ function AppContent() {
           categoriasCronograma.length > 0 ? (
           /* Modo Cronograma com Dados */
           <div>
-            {visualizacaoExecutiva ? (
+            {visualizacaoExecutiva && !modoAnalytics ? (
               /* Visualização Executiva */
               resumoCronograma && categoriasCronograma.length > 0 ? (
                 <DashboardExecutivo
@@ -480,6 +594,7 @@ function AppContent() {
                     setMostrarApenasEmAndamento(false);
                     setMostrarApenasPendentes(false);
                     setVisualizacaoExecutiva(false);
+                    setModoAnalytics(false);
                   }}
                   onCriticasClick={() => {
                     setMostrarApenasCriticas(true);
@@ -488,6 +603,7 @@ function AppContent() {
                     setMostrarApenasEmAndamento(false);
                     setMostrarApenasPendentes(false);
                     setVisualizacaoExecutiva(false);
+                    setModoAnalytics(false);
                   }}
                   onConcluidasClick={() => {
                     setMostrarApenasConcluidas(true);
@@ -496,6 +612,7 @@ function AppContent() {
                     setMostrarApenasEmAndamento(false);
                     setMostrarApenasPendentes(false);
                     setVisualizacaoExecutiva(false);
+                    setModoAnalytics(false);
                   }}
                   onEmAndamentoClick={() => {
                     setMostrarApenasEmAndamento(true);
@@ -504,6 +621,7 @@ function AppContent() {
                     setMostrarApenasConcluidas(false);
                     setMostrarApenasPendentes(false);
                     setVisualizacaoExecutiva(false);
+                    setModoAnalytics(false);
                   }}
                   onPendentesClick={() => {
                     setMostrarApenasPendentes(true);
@@ -512,6 +630,7 @@ function AppContent() {
                     setMostrarApenasConcluidas(false);
                     setMostrarApenasEmAndamento(false);
                     setVisualizacaoExecutiva(false);
+                    setModoAnalytics(false);
                   }}
                 />
               ) : (
@@ -525,10 +644,17 @@ function AppContent() {
                       Carregar Dados Manualmente
                     </button>
                   )}
+
+                  {/* Botão de Análise AI Rápida */}
+                  <div className="mt-6 flex justify-center">
+                    <QuickAIButton />
+                  </div>
                 </div>
               )
-            ) : /* Visualização Detalhada */
-            resumoCronograma ? (
+            ) : !modoAnalytics &&
+              !visualizacaoExecutiva &&
+              /* Visualização Detalhada - Lista Completa de Tarefas */
+              resumoCronograma ? (
               <div>
                 <ResumoCardsCronograma
                   resumo={resumoCronograma}
@@ -578,6 +704,232 @@ function AppContent() {
                     setMostrarApenasEmDia(false);
                   }}
                 />
+              </div>
+            ) : modoAnalytics ? (
+              /* Visualização Analytics Avançados */
+              <div>
+                {/* Navegação das Abas de Analytics */}
+                <div className={`mb-6 ${themeClasses.card} rounded-lg p-4`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2
+                      className={`text-xl font-semibold ${themeClasses.textPrimary}`}
+                    >
+                      🚀 Analytics Avançados & IA
+                    </h2>
+                    <div
+                      className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
+                    >
+                      <button
+                        onClick={() => setAbaAnalytics('kpi')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'kpi'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <TrendingUp className="w-4 h-4" />
+                          <span>KPIs</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('gantt')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'gantt'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <BarChart3 className="w-4 h-4" />
+                          <span>Gantt</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('cpm')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'cpm'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <Route className="w-4 h-4" />
+                          <span>CPM</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('tendencias')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'tendencias'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <Activity className="w-4 h-4" />
+                          <span>IA</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Conteúdo das Abas de Analytics */}
+                {abaAnalytics === 'kpi' && (
+                  <KPIDashboard categorias={categoriasCronograma} />
+                )}
+
+                {abaAnalytics === 'gantt' && (
+                  <GanttChart
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                )}
+
+                {abaAnalytics === 'cpm' && (
+                  <CPMAnalysis
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                )}
+
+                {abaAnalytics === 'tendencias' && (
+                  <div className="space-y-6">
+                    <AIAnalysisComponent
+                      categorias={categoriasCronograma}
+                      resumo={resumoCronograma}
+                    />
+                    <KPIDashboard categorias={categoriasCronograma} />
+                    <CPMAnalysis
+                      categorias={categoriasCronograma}
+                      onTarefaClick={(tarefa) => {
+                        setTarefaSelecionada(tarefa);
+                        setModalTarefaDetalhes(true);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {abaAnalytics === 'teste' && (
+                  <div className="space-y-6">
+                    <TestGeminiAPI />
+                  </div>
+                )}
+              </div>
+            ) : modoAnalytics ? (
+              /* Visualização Analytics Avançados */
+              <div>
+                {/* Navegação das Abas de Analytics */}
+                <div className={`mb-6 ${themeClasses.card} rounded-lg p-4`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2
+                      className={`text-xl font-semibold ${themeClasses.textPrimary}`}
+                    >
+                      🚀 Analytics Avançados & IA
+                    </h2>
+                    <div
+                      className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
+                    >
+                      <button
+                        onClick={() => setAbaAnalytics('kpi')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'kpi'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <TrendingUp className="w-4 h-4" />
+                          <span>KPIs</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('gantt')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'gantt'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <BarChart3 className="w-4 h-4" />
+                          <span>Gantt</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('cpm')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'cpm'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <Route className="w-4 h-4" />
+                          <span>CPM</span>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => setAbaAnalytics('tendencias')}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                          abaAnalytics === 'tendencias'
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <Activity className="w-4 h-4" />
+                          <span>IA</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Conteúdo das Abas de Analytics */}
+                {abaAnalytics === 'kpi' && (
+                  <KPIDashboard categorias={categoriasCronograma} />
+                )}
+
+                {abaAnalytics === 'gantt' && (
+                  <GanttChart
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                )}
+
+                {abaAnalytics === 'cpm' && (
+                  <CPMAnalysis
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                )}
+
+                {abaAnalytics === 'tendencias' && (
+                  <div className="space-y-6">
+                    <KPIDashboard categorias={categoriasCronograma} />
+                    <CPMAnalysis
+                      categorias={categoriasCronograma}
+                      onTarefaClick={(tarefa) => {
+                        setTarefaSelecionada(tarefa);
+                        setModalTarefaDetalhes(true);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-8">
@@ -677,6 +1029,18 @@ function AppContent() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
+
+      {/* Modal de Detalhes da Tarefa */}
+      {tarefaSelecionada && (
+        <TarefaDetailModal
+          tarefa={tarefaSelecionada}
+          isOpen={modalTarefaDetalhes}
+          onClose={() => {
+            setModalTarefaDetalhes(false);
+            setTarefaSelecionada(null);
+          }}
+        />
+      )}
 
       {/* Admin Panel */}
       <AdminPanel
