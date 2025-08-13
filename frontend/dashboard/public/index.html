@@ -1,13 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Dashboard PF" />
+    <meta name="application-name" content="Dashboard Parada Fria" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <meta name="msapplication-config" content="browserconfig.xml" />
+    <meta name="format-detection" content="telephone=no" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Dashboard Parada Fria - Sistema de Monitoramento de Projeto Industrial"
+    />
+    <!-- PWA Meta Tags -->
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#3b82f6"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#1e40af"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
@@ -24,7 +46,28 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Dashboard Parada Fria 3</title>
+    <script>
+      // Detect dark mode preference early to prevent flash
+      (function () {
+        const theme = localStorage.getItem('pfus3_theme_preference');
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (theme === 'dark' || (!theme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+          // Update theme-color for dark mode
+          const metaThemeColor = document.querySelector(
+            'meta[name="theme-color"]'
+          );
+          if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', '#1f2937');
+          }
+        }
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

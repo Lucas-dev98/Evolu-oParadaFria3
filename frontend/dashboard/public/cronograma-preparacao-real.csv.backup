@@ -1,0 +1,194 @@
+﻿ID,Nome da tarefa,% Complete,Physical % Complete,% Previsto Replanejamento,Duration,Start,Finish,Actual Start,Actual Finish,Predecessors,Baseline Start,Baseline Finish,% Físico Prev. LB,% Físico Prev. Replanejado,% Físico Calculado
+0,Cronograma de Preparação - PFUS3 2025,73%,0%,58,2656 hrs,Sat 5/31/25,Thu 9/18/25,Sat 5/31/25,NA,,Sat 5/31/25,Thu 8/14/25,24.25,20.09,20.09
+1,    Início da Parada,100%,100%,0,0 hrs,Thu 8/14/25,Thu 8/14/25,Thu 8/14/25,Thu 8/14/25,,Thu 8/14/25,Thu 8/14/25,0,0,0
+2,    Início da Preparação,100%,100%,100,0 hrs,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,,Tue 7/15/25,Tue 7/15/25,0,0,0
+3,    Mobilização da Equipe de Apoio de Elétrica,100%,100%,86,75 edays,Sat 5/31/25,Thu 8/14/25,Sat 5/31/25,Thu 8/14/25,,Sat 5/31/25,Thu 8/14/25,0,0,0
+4,    Mobilização da Equipe de Refratário,100%,100%,77,45 edays,Mon 6/30/25,Thu 8/14/25,Mon 6/30/25,Thu 8/14/25,3SS+102.86 days,Mon 6/30/25,Thu 8/14/25,0,0,0
+5,    Mobilização da Equipe de Preparação,100%,100%,82,60 edays,Sun 6/15/25,Thu 8/14/25,Sun 6/15/25,Thu 8/14/25,3SS+51.43 days,Sun 6/15/25,Thu 8/14/25,0,0,0
+6,    Mobilização da Equipe da Mecânica do Forno,100%,100%,77,45 edays,Mon 6/30/25,Thu 8/14/25,Mon 6/30/25,Thu 8/14/25,3SS+102.86 days,Mon 6/30/25,Thu 8/14/25,0,0,0
+7,    Mobilização da Equipe de Barramentos,100%,100%,74,40 edays,Sat 7/05/25,Thu 8/14/25,Sat 7/05/25,Thu 8/14/25,3SS+120 days,Sat 7/05/25,Thu 8/14/25,0,0,0
+8,    Canteiros Administrativos e Operacionais,100%,0%,100,800 hrs,Fri 6/27/25,Wed 7/30/25,Fri 6/27/25,Wed 7/30/25,,Fri 6/27/25,Thu 7/31/25,0,0,0
+9,        Realizar Mobilização do Canteiro da Reframax,100%,100%,100,29.33 edays,Tue 7/01/25,Wed 7/30/25,Tue 7/01/25,Wed 7/30/25,,Tue 7/01/25,Thu 7/31/25,0,0,0
+10,        Mobilizar Canteiro da RIP,100%,100%,100,5 days,Fri 6/27/25,Thu 7/03/25,Fri 6/27/25,Thu 7/03/25,3SS+92.57 days,Fri 6/27/25,Thu 7/03/25,0,0,0
+11,    Logística,32%,0%,66,1016 hrs,Mon 7/07/25,Mon 8/18/25,Mon 7/07/25,NA,,Mon 7/07/25,Thu 8/14/25,6.45,7.27,7.27
+118,    Preparação de Logística Concluída,0%,0%,0,0 hrs,Mon 8/18/25,Mon 8/18/25,NA,NA,26;29;34;39;42;60;83,Thu 8/14/25,Thu 8/14/25,0,0,0
+119,    Refratário,33%,0%,50,712 hrs,Sun 7/20/25,Mon 8/18/25,Sun 7/20/25,NA,,Sun 7/20/25,Wed 8/13/25,4.26,2.76,2.76
+120,        Início da Montagem do Canteiro da Empresa de Refratário,100%,100%,100,0 days,Sun 7/20/25,Sun 7/20/25,Sun 7/20/25,Sun 7/20/25,4SS+68.57 days,Sun 7/20/25,Sun 7/20/25,0,0,0
+121,        Montar Bancada de Projeção Convencional,0%,0%,0,6 days,Fri 8/08/25,Fri 8/15/25,Fri 8/08/25,NA,120FS+5 days,Mon 7/28/25,Fri 8/08/25,0.61,0,0
+122,        Montar Viga para o Elevador de Cremalheira ,62%,62%,62,8 days,Mon 7/28/25,Wed 8/06/25,Mon 7/28/25,NA,120SS+2 days,Wed 7/23/25,Tue 7/29/25,0.61,0.38,0.38
+123,        Montar Elevador Cremalheira,16%,16%,16,2 days,Fri 8/01/25,Fri 8/08/25,Fri 8/01/25,NA,122,Wed 7/30/25,Tue 8/12/25,0.37,0.19,0.19
+124,        Posicionar Misturador de Concreto sobre a bancada de projeção,0%,0%,0,1 day,Mon 8/18/25,Mon 8/18/25,NA,NA,121,Mon 8/11/25,Mon 8/11/25,0,0,0
+125,        Colocar Material do Tablado nas Laterais do Forno,0%,0%,0,9 days,Mon 8/04/25,Thu 8/14/25,NA,NA,2SS+7 days,Thu 7/24/25,Wed 8/06/25,0.85,0,0
+126,        Programar Mobilização das Máquinas de Demolição ,0%,0%,0,1 day,Wed 8/13/25,Wed 8/13/25,NA,NA,120FS+17 days,Wed 8/13/25,Wed 8/13/25,0,0,0
+127,        Transportar Bocal para Calha para Área,0%,0%,0,1 day,Fri 8/15/25,Fri 8/15/25,NA,NA,125,Thu 8/07/25,Thu 8/07/25,0,0,0
+128,        Preparar e Concretar Caixas Externas,100%,100%,100,2 days,Mon 7/28/25,Tue 7/29/25,Mon 7/28/25,Tue 7/29/25,120FS+5 days,Mon 7/28/25,Wed 7/30/25,0.37,0.37,0.37
+129,        Fabricar e Transportar as Rampas de Acesso das Máquinas de Demolição,100%,100%,100,0 days,Tue 7/29/25,Tue 7/29/25,Tue 7/29/25,Tue 7/29/25,128,Thu 7/31/25,Wed 8/06/25,0.24,0.61,0.61
+130,        Montar Acesso para Abertura de 2 Janelões,0%,0%,0,5 days,Mon 8/04/25,Fri 8/08/25,NA,NA,129,Thu 8/07/25,Wed 8/13/25,0,0,0
+131,        Receber e Organizar Materiais Refratários,66%,66%,66,15 days,Mon 7/21/25,Fri 8/08/25,Mon 7/21/25,NA,120,Mon 7/21/25,Fri 8/08/25,1.21,1.21,1.21
+132,        Preparar Proteção de Skids,0%,0%,0,0 hrs,Fri 8/08/25,Fri 8/08/25,NA,NA,120FS+15 days,Fri 8/08/25,Fri 8/08/25,0,0,0
+133,        Mobilizar Proteção dos Skids,0%,0%,0,2 days,Mon 8/11/25,Tue 8/12/25,NA,NA,132,Mon 8/11/25,Tue 8/12/25,0,0,0
+134,    Preparação do Refratário Concluída,0%,0%,0,0 hrs,Fri 8/15/25,Fri 8/15/25,NA,NA,127,Wed 8/13/25,Wed 8/13/25,0,0,0
+135,    Elétrica,50%,0%,66,1160 hrs,Thu 7/03/25,Wed 8/20/25,Thu 7/03/25,NA,,Thu 7/03/25,Thu 8/14/25,9.79,6.71,6.71
+175,    Preparação da Elétrica Concluída,0%,0%,0,0 days,Wed 8/20/25,Wed 8/20/25,NA,NA,137;142;147;152;157;162;167;172;174,Thu 8/14/25,Thu 8/14/25,0,0,0
+176,    Preparação (Espessador / Moagem / Homogeneização),36%,0%,64,776 hrs,Mon 7/14/25,Fri 8/15/25,Mon 7/14/25,NA,,Mon 7/14/25,Thu 8/14/25,0,2.3,2.3
+204,    Preparação do Espassador Concluída,0%,0%,0,0 hrs,Fri 8/15/25,Fri 8/15/25,NA,NA,180;181;182;183;184;185;186;187;189;191;192;194;197;198;199;201;203;195,Thu 8/14/25,Thu 8/14/25,0,0,0
+205,    Mecânica do Forno (Meio do Forno),27%,0%,58,2656 hrs,Sat 5/31/25,Thu 9/18/25,Sat 5/31/25,NA,,Sat 5/31/25,Thu 8/14/25,3.75,1.05,1.05
+206,        Dispositivos para transportes ,55%,0%,63,154 hrs,Tue 7/15/25,Wed 8/13/25,Tue 7/15/25,NA,,Tue 7/15/25,Mon 7/28/25,0.44,0.28,0.28
+207,            Fabricação dos dispositivos para içamento dos trilhos,60%,60%,60,10 days,Fri 7/25/25,Thu 8/07/25,Fri 7/25/25,NA,2,Tue 7/15/25,Mon 7/28/25,0.11,0.07,0.07
+208,            Fabricação dos dispositivos para o transporte dos trilhos ao longo do forno,50%,50%,50,10 days,Sat 7/26/25,Fri 8/08/25,Sat 7/26/25,NA,207SS,Tue 7/15/25,Mon 7/28/25,0.11,0.06,0.06
+209,            Fabricação dos dispositivos de pré-montagem das caixas secas,100%,100%,100,6 days,Tue 7/15/25,Thu 7/31/25,Tue 7/15/25,Thu 7/31/25,208SS,Tue 7/15/25,Mon 7/28/25,0.11,0.11,0.11
+210,            Fabricação dos dispositivos de segurança de translado das selagens inferiores.,33%,33%,33,12 days,Tue 7/29/25,Wed 8/13/25,Tue 7/29/25,NA,2,Tue 7/15/25,Mon 7/28/25,0.11,0.04,0.04
+211,        Dispositivos para Transportes Concluídos,0%,0%,0,0 hrs,Wed 8/13/25,Wed 8/13/25,NA,NA,207;208;209;210,Mon 7/28/25,Mon 7/28/25,0,0,0
+212,        Preparação Trilho Reto superior ,26%,0%,51,189 hrs,Tue 7/15/25,Wed 8/20/25,Tue 7/15/25,NA,,Tue 7/15/25,Wed 8/13/25,0.51,0.17,0.17
+213,            Fornecimento pela Contratada Bombas de Hidrojato para limpeza Simultanea dos Trilhos Retos Superiores + Selagem Inferior + Selagem Superior e Caixa Secadois Lados do Forno,51%,51%,51,27 days,Tue 7/15/25,Wed 8/20/25,Tue 7/15/25,NA,2,Tue 7/15/25,Mon 8/11/25,0.23,0.17,0.17
+214,"            Extensão para Iluminação ao longo do Forno para Trilho Reto Superior, Inferior e Caixa Seca do Lado Direito e Esquerdo da Grelha ",0%,0%,-0,0 days,Mon 8/04/25,Fri 8/08/25,NA,NA,,Tue 7/29/25,Mon 8/11/25,0.07,0,0
+215,            Fabricar / Requisitar Dispositivo Batente Mecânico + Parafusos e Arruelas,0%,0%,0,10 days,Mon 8/04/25,Fri 8/15/25,NA,NA,214SS,Tue 7/29/25,Mon 8/11/25,0.07,0,0
+216,            Preparar Calços para Nivelamento e Alinhamento,0%,0%,0,4 days,Mon 8/04/25,Thu 8/07/25,NA,NA,215SS,Tue 7/29/25,Fri 8/01/25,0.07,0,0
+217,            Conferir e Guardar os Trilhos de Dilatação Superior e Inferior,0%,0%,0,4 days,Mon 8/04/25,Thu 8/07/25,NA,NA,216SS,Tue 7/29/25,Fri 8/01/25,0.07,0,0
+218,            Programar empilhadeira para carregamento e descarregamento,100%,100%,100,7 hrs,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,217,Fri 8/01/25,Fri 8/01/25,0,0,0
+219,            Requisitar e transportar o trilho superior para o patio de laminado,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,207;217;218,Mon 8/04/25,Mon 8/04/25,0,0,0
+220,"            Requisição de parafusos , porcas e arruelas pela Contratante",0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,219SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+221,            Requisição de calços para alinhamento e nivelamento pela Contratante,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,220SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+222,"            Requisição de parafusos , porcas e arruelas pela Contratada",0%,0%,0,1 day,Mon 8/11/25,Mon 8/11/25,NA,NA,221,Tue 8/05/25,Tue 8/05/25,0,0,0
+223,            Requisição de calços para alinhamento e nivelamento pela Contratada,0%,0%,0,1 day,Mon 8/11/25,Mon 8/11/25,NA,NA,222SS,Tue 8/05/25,Tue 8/05/25,0,0,0
+224,            Transporte com caminhao munck do trilho para area pela contratada,0%,0%,0,2 days,Tue 8/12/25,Wed 8/13/25,NA,NA,223,Wed 8/06/25,Thu 8/07/25,0,0,0
+225,            Posicionamento dos trilhos proximo ao local de montagem,0%,0%,0,4 days,Thu 8/14/25,Tue 8/19/25,NA,NA,208;224,Fri 8/08/25,Wed 8/13/25,0,0,0
+226,        Preparação dos Trilhos Retos Superiores Concluída,0%,0%,0,0 hrs,Tue 8/19/25,Tue 8/19/25,NA,NA,225,Wed 8/13/25,Wed 8/13/25,0,0,0
+227,        Pré Montar Conjuntos Completos de Caixa Seca no Laminado (28 caixas) ,46%,0%,50,196 hrs,Tue 7/15/25,Thu 8/21/25,Tue 7/15/25,NA,,Tue 7/15/25,Thu 8/14/25,0.55,0.6,0.6
+228,            Solicitar e preparar area da manutenção centralizada para montagem das caixas secas,100%,100%,100,1 day,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,2,Tue 7/15/25,Tue 7/15/25,0.03,0.03,0.03
+229,            Separar caixas secas,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,228,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+230,            Separar vigotas,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,229SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+231,            Separar pés de paredes,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,230SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+232,"            Requisição de materiais (tirantes, parafusos, porcas e arruelas) pela contratante",100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,231SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+233,"            Requisição de materiais (tirantes, parafusos, porcas e arruelas) pela contratada",80%,80%,80,2 days,Wed 7/30/25,Mon 8/04/25,Wed 7/30/25,NA,232SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+234,            Fabricar e/ou contar quantidade de dispositivo para armazenagem da caixa seca presentes no laminado,100%,100%,100,0.42 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,233,Fri 8/01/25,Fri 7/18/25,0.07,0.07,0.07
+235,"            Realizar Transporte de peças caixa seca, pés de parede, blocos refratario do laminado para area de preparação das caixas",50%,50%,50,2 days,Fri 8/01/25,Mon 8/04/25,Fri 8/01/25,NA,234,Mon 7/21/25,Mon 7/21/25,0.03,0.02,0.02
+236,            Transporte blocos refratarios para area de preparação da caixa seca,100%,100%,100,0.71 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,235,Tue 7/22/25,Tue 7/22/25,0.03,0.03,0.03
+237,            Montagem de 1° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Wed 7/23/25,Wed 7/23/25,Wed 7/23/25,Wed 7/23/25,236,Wed 7/23/25,Wed 7/23/25,0.03,0.03,0.03
+238,            Montagem de 2° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Thu 7/24/25,Thu 7/24/25,Thu 7/24/25,Thu 7/24/25,237,Thu 7/24/25,Thu 7/24/25,0.03,0.03,0.03
+239,            Montagem de 3° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Fri 7/25/25,Fri 7/25/25,Fri 7/25/25,Fri 7/25/25,238,Fri 7/25/25,Fri 7/25/25,0.03,0.03,0.03
+240,            Montagem de 4° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Mon 7/28/25,Mon 7/28/25,Mon 7/28/25,Mon 7/28/25,239,Mon 7/28/25,Mon 7/28/25,0.03,0.03,0.03
+241,            Montagem de 5° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Mon 7/28/25,Tue 7/29/25,Mon 7/28/25,Tue 7/29/25,240,Tue 7/29/25,Tue 7/29/25,0.03,0.03,0.03
+242,            Montagem de 6° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,241,Wed 7/30/25,Wed 7/30/25,0.03,0.03,0.03
+243,            Montagem de 7° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Fri 8/01/25,Fri 8/01/25,Fri 8/01/25,Fri 8/01/25,242,Thu 7/31/25,Thu 7/31/25,0.03,0.03,0.03
+244,            Montagem de 8° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,243,Fri 8/01/25,Fri 8/01/25,0.03,0.03,0.03
+245,            Montagem de 9° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,244,Mon 8/04/25,Mon 8/04/25,0,0.03,0.03
+246,            Montagem de 10° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,245,Tue 8/05/25,Tue 8/05/25,0,0.03,0.03
+247,            Montagem de 11° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,246,Wed 8/06/25,Wed 8/06/25,0,0.00,0.00
+248,            Montagem de 12° lote de dois (2) conjunto de caixa seca ,0%,0%,0,1 day,Thu 8/07/25,Thu 8/14/25,Thu 8/07/25,NA,247,Thu 8/07/25,Thu 8/07/25,0,0,0
+249,            Montagem de 13° lote de dois (2) conjunto de caixa seca ,0%,0%,0,1 day,Fri 8/08/25,Fri 8/15/25,Fri 8/08/25,NA,248,Fri 8/08/25,Fri 8/08/25,0,0,0
+250,            Montagem de 14° lote de dois (2) conjunto de caixa seca ,0%,0%,0,1 day,Mon 8/11/25,Mon 8/18/25,Mon 8/11/25,NA,249,Mon 8/11/25,Mon 8/11/25,0,0,0
+251,"            Montagem do troller 01 (Montagem do andaime, posicionamento do troller e teste)",0%,0%,0,5 days,Mon 8/04/25,Fri 8/08/25,Mon 8/04/25,NA,250FF-1 days,Mon 8/04/25,Fri 8/08/25,0,0,0
+252,"            Montagem do troller 02 (Montagem do andaime, posicionamento do troller e teste)",0%,0%,0,5 days,Mon 8/04/25,Fri 8/08/25,Mon 8/04/25,NA,250FF-1 days,Mon 8/04/25,Fri 8/08/25,0,0,0
+253,            Transporte de quatorze (14) conjunto de caixa seca para area  ,0%,0%,0,1.5 days,Tue 8/19/25,Wed 8/20/25,NA,NA,250,Tue 8/12/25,Wed 8/13/25,0,0,0
+254,            Transporte de quatorze (14) conjunto de caixa seca para area  ,0%,0%,0,1.5 days,Wed 8/13/25,Thu 8/21/25,Wed 8/13/25,NA,253,Wed 8/13/25,Thu 8/14/25,0,0,0
+255,        Preparação dos Conjuntos de Caixa Seca Concluída,0%,0%,0,140 hrs,Thu 8/14/25,Thu 9/18/25,Thu 8/14/25,NA,251;252;254,Thu 8/14/25,Thu 8/14/25,0,0,0
+256,        Preparação Reparo de Calderaria da Caixa de Vento ,0%,0%,0,63 hrs,Mon 8/04/25,Thu 8/14/25,Mon 8/04/25,NA,,Thu 7/31/25,Tue 8/12/25,2.13,0,0
+257,            Requisitar e transportar chapas de reparo de caldeiraria para o patio de laminado,0%,0%,0,2 days,Mon 8/04/25,Tue 8/05/25,Mon 8/04/25,NA,2FS+12 days,Thu 7/31/25,Fri 8/01/25,2.13,0,0
+258,            Preparar chapas a serem ultilizadas para atividade ,0%,0%,0,7 days,Mon 8/04/25,Tue 8/12/25,Mon 8/04/25,NA,257,Mon 8/04/25,Fri 8/08/25,0,0,0
+259,            Transportar ferramental para proxima da atividade ,0%,0%,0,4 days,Mon 8/11/25,Thu 8/14/25,Mon 8/11/25,NA,258,Mon 8/11/25,Tue 8/12/25,0,0,0
+260,        Preparação das Caixas de Vento Concluída,0%,0%,100,0 hrs,Fri 8/01/25,Fri 8/01/25,NA,NA,,Sat 5/31/25,Sat 5/31/25,0,0,0
+261,        Preparação Juntas de expansão,0%,0%,0,56 hrs,Mon 8/04/25,Wed 8/13/25,NA,NA,,Thu 7/31/25,Mon 8/11/25,0.12,0,0
+262,            Verificar quantidade e transportar a Manta lã de Rocha,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,257SS,Thu 7/31/25,Thu 7/31/25,0.04,0,0
+263,            Requisitar e transportar da junta para patio de laminado,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,262SS,Thu 7/31/25,Thu 7/31/25,0.04,0,0
+264,"            Requisição de grampos ,porcas, arruelas pela contratante",0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,263,Fri 8/01/25,Fri 8/01/25,0.04,0,0
+265,"            Requisição de grampos ,porcas, arruelas pela contratada",0%,0%,0,1 day,Wed 8/06/25,Wed 8/06/25,NA,NA,264,Mon 8/04/25,Mon 8/04/25,0,0,0
+266,            Programar empilhadeira para carregamento e descarregamento,0%,0%,0,0 days,Wed 8/06/25,Wed 8/06/25,NA,NA,265,Mon 8/04/25,Mon 8/04/25,0,0,0
+267,            Transportar junta para area com caminhão munck da contratada,0%,0%,0,2 days,Thu 8/07/25,Fri 8/08/25,NA,NA,266,Tue 8/05/25,Wed 8/06/25,0,0,0
+268,            Posicionamento da junta proximo ao local de montagem,0%,0%,0,3 days,Mon 8/11/25,Wed 8/13/25,NA,NA,267,Thu 8/07/25,Mon 8/11/25,0,0,0
+269,        Preparação da Junta de Expansão Concluída,0%,0%,100,0 hrs,Fri 8/01/25,Fri 8/01/25,NA,NA,,Sat 5/31/25,Sat 5/31/25,0,0,0
+270,        Preparação Selagem Inferior ,0%,0%,0,49 hrs,Tue 8/05/25,Wed 8/13/25,Tue 8/05/25,NA,,Tue 8/05/25,Tue 8/12/25,0,0,0
+271,"            Requisição e transportar selagens para patio de laminados, conferindo quantidade e tamanho",100%,0%,0,0 days,Tue 8/05/25,Tue 8/05/25,Tue 8/05/25,Tue 8/05/25,210;219,Tue 8/05/25,Tue 8/05/25,0,0,0
+272,"            Requisição de parafusos , porcas, mangotes, tubos de lubricação e arruelas pela contratante",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,Wed 8/06/25,NA,271,Wed 8/06/25,Wed 8/06/25,0,0,0
+273,"            Requisição de parafusos , porcas e arruelas pela contratada",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,Wed 8/06/25,NA,272,Wed 8/06/25,Wed 8/06/25,0,0,0
+274,            Programar empilhadeira para carregamento e descarregamento,0%,0%,0,1 day,Wed 8/06/25,Thu 8/07/25,Wed 8/06/25,NA,273,Wed 8/06/25,Wed 8/06/25,0,0,0
+275,            Transportar selagem inferior para area com caminhão munck da contratada,0%,0%,0,1 day,Thu 8/07/25,Fri 8/08/25,Thu 8/07/25,NA,274,Thu 8/07/25,Thu 8/07/25,0,0,0
+276,            Posicionar selagens inferiores proximo ao local de montagem,0%,0%,0,3 days,Fri 8/08/25,Wed 8/13/25,Fri 8/08/25,NA,275,Fri 8/08/25,Tue 8/12/25,0,0,0
+277,        Preparação da Selagem Inferior Concluída,99%,0%,0,0 hrs,Fri 8/08/25,Fri 8/08/25,Fri 8/08/25,NA,,Sat 5/31/25,Sat 5/31/25,0,0,0
+278,        Preparação Selagem basculante,0%,0%,0,42 hrs,Tue 8/05/25,Tue 8/12/25,NA,NA,,Tue 8/05/25,Tue 8/12/25,0,0,0
+279,"            Requisição e transportar selagens para patio de laminados, conferindo quantidade e tamanh0",0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,271SS,Tue 8/05/25,Tue 8/05/25,0,0,0
+280,"            Requisição de parafusos , porcas, mangotes, tubos de lubricação e arruelas pela contratante",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,279,Wed 8/06/25,Wed 8/06/25,0,0,0
+281,"            Requisição de parafusos , porcas e arruelas pela contratada",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,280,Wed 8/06/25,Wed 8/06/25,0,0,0
+282,            Programar empilhadeira para carregamento e descarregamento,0%,0%,0,0 days,Wed 8/06/25,Wed 8/06/25,NA,NA,281,Wed 8/06/25,Wed 8/06/25,0,0,0
+283,            Transportar selagem inferior para area com caminhão munck da contratada,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,282,Thu 8/07/25,Thu 8/07/25,0,0,0
+284,            Posicionar selagens inferiores proximo ao local de montagem,0%,0%,0,3 days,Fri 8/08/25,Tue 8/12/25,NA,NA,283,Fri 8/08/25,Tue 8/12/25,0,0,0
+285,        Preparação da Selagem Basculante Concluída,0%,0%,100,0 hrs,Fri 8/01/25,Fri 8/01/25,NA,NA,,Sat 5/31/25,Sat 5/31/25,0,0,0
+286,        Preparação Selagem superior,0%,0%,0,42 hrs,Tue 8/05/25,Tue 8/12/25,NA,NA,,Tue 8/05/25,Tue 8/12/25,0,0,0
+287,"            Requisição e transportar selagens para patio de laminados, conferindo quantidade e tamanh0",0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,279SS,Tue 8/05/25,Tue 8/05/25,0,0,0
+288,"            Requisição de parafusos , porcas, mangotes, tubos de lubricação e arruelas pela contratante",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,287,Wed 8/06/25,Wed 8/06/25,0,0,0
+289,"            Requisição de parafusos , porcas e arruelas pela contratada",0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,288,Wed 8/06/25,Wed 8/06/25,0,0,0
+290,            Programar empilhadeira para carregamento e descarregamento,0%,0%,0,0 days,Wed 8/06/25,Wed 8/06/25,NA,NA,289,Wed 8/06/25,Wed 8/06/25,0,0,0
+291,            Transportar selagem inferior para area com caminhão munck da contratada,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,290,Thu 8/07/25,Thu 8/07/25,0,0,0
+292,            Posicionar selagens inferiores proximo ao local de montagem,0%,0%,0,3 days,Fri 8/08/25,Tue 8/12/25,NA,NA,291,Fri 8/08/25,Tue 8/12/25,0,0,0
+293,        Preparação da Selagem Superior Concluída,100%,100%,100,0 hrs,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,,Sat 5/31/25,Sat 5/31/25,0,0,0
+294,    Preparação da Mecânica do Forno Concluída,0%,0%,0,0 hrs,Thu 9/18/25,Thu 9/18/25,NA,NA,211;226;255;260;269;277;285;293,Thu 8/14/25,Thu 8/14/25,0,0,0
+295,    Ventiladores,0%,0%,0,243.5 hrs,Mon 8/04/25,Thu 8/14/25,NA,NA,,Mon 8/04/25,Thu 8/14/25,0,0,0
+296,        Vent-3Q53,0%,0%,0,104 hrs,Mon 8/04/25,Fri 8/08/25,NA,NA,,Mon 8/04/25,Fri 8/08/25,0,0,0
+297,            Preparar bancada para corte de chapa de desgates em campo ,0%,0%,0,2 days,Mon 8/04/25,Tue 8/05/25,NA,NA,,Mon 8/04/25,Tue 8/05/25,0,0,0
+298,            Transportar materiais para proximodo local de execução ,0%,0%,0,1 day,Wed 8/06/25,Wed 8/06/25,NA,NA,297,Wed 8/06/25,Wed 8/06/25,0,0,0
+299,            Orinetar posicionamento a caçamba de sucata para proximo do local da atividade ,0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,298SS,Wed 8/06/25,Wed 8/06/25,0,0,0
+300,            Transportar conjunto de oxicorte e solda para local da atividade ,0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,299,Wed 8/06/25,Wed 8/06/25,0,0,0
+301,            Orientar na montagem do andaime para manutenção do dumper ,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,300,Thu 8/07/25,Thu 8/07/25,0,0,0
+302,            Conferir materiais do dumper bem como a quantidfade para troca de acordo com planejamento ,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,301,Fri 8/08/25,Fri 8/08/25,0,0,0
+303,        Vent-3Q69,0%,0%,0,104 hrs,Mon 8/04/25,Fri 8/08/25,NA,NA,,Mon 8/04/25,Fri 8/08/25,0,0,0
+304,            Preparar bancada para corte de chapa de desgates em campo ,0%,0%,0,2 days,Mon 8/04/25,Tue 8/05/25,NA,NA,297SS,Mon 8/04/25,Tue 8/05/25,0,0,0
+305,            Transportar materiais para proximo do local de execução ,0%,0%,0,1 day,Wed 8/06/25,Wed 8/06/25,NA,NA,304,Wed 8/06/25,Wed 8/06/25,0,0,0
+306,            Orinetar posicionamento a caçamba de sucata para proximo do local da atividade ,0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,305SS,Wed 8/06/25,Wed 8/06/25,0,0,0
+307,            Transportar conjunto de oxicorte e solda para local da atividade ,0%,0%,0,0.5 days,Wed 8/06/25,Wed 8/06/25,NA,NA,306,Wed 8/06/25,Wed 8/06/25,0,0,0
+308,            Orientar na montagem do andaime para manutenção do dumper ,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,307,Thu 8/07/25,Thu 8/07/25,0,0,0
+309,            Conferir materiais do dumper bem como a quantidfade para troca de acordo com planejamento ,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,308,Fri 8/08/25,Fri 8/08/25,0,0,0
+310,        Vent-3Q110,0%,0%,0,75.5 hrs,Mon 8/11/25,Thu 8/14/25,NA,NA,,Mon 8/11/25,Thu 8/14/25,0,0,0
+311,            Transportar material para proximo do local da atiivdade ,0%,0%,0,1 day,Mon 8/11/25,Mon 8/11/25,NA,NA,302;309,Mon 8/11/25,Mon 8/11/25,0,0,0
+312,            Conferir se as placas estão  conforme projeto ,0%,0%,0,0.5 days,Tue 8/12/25,Tue 8/12/25,NA,NA,311,Tue 8/12/25,Tue 8/12/25,0,0,0
+313,            Conferir ferramental para execução da atividade conforme planejamento ,0%,0%,0,0.5 days,Tue 8/12/25,Tue 8/12/25,NA,NA,312,Tue 8/12/25,Tue 8/12/25,0,0,0
+314,            Transportar barreiras fisica para isolamento da area ,0%,0%,0,0.5 days,Wed 8/13/25,Wed 8/13/25,NA,NA,313,Wed 8/13/25,Wed 8/13/25,0,0,0
+315,            Posionar recuros de apoio como gerador e compressor caso nescessario proximo ao locsal ,0%,0%,0,1 day,Wed 8/13/25,Thu 8/14/25,NA,NA,314,Wed 8/13/25,Thu 8/14/25,0,0,0
+316,        Vent-3Q45 Módulos,0%,0%,0,80 hrs,Mon 8/04/25,Thu 8/07/25,NA,NA,,Mon 8/04/25,Thu 8/07/25,0,0,0
+317,            Preparar uma area de armazenamento dos modulos isolando com barreira fisica ,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,297SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+318,            Preparar area de patolamento de guindaste ,0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,317,Tue 8/05/25,Tue 8/05/25,0,0,0
+319,            Transportar ferramental a ser ultilizado para atividade ,0%,0%,0,1 day,Wed 8/06/25,Wed 8/06/25,NA,NA,318,Wed 8/06/25,Wed 8/06/25,0,0,0
+320,            Conferir montagem de andaimes para a manutenção do ventilador ,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,319,Thu 8/07/25,Thu 8/07/25,0,0,0
+321,        Vent-3Q45 Reparos,0%,0%,0,99.5 hrs,Fri 8/08/25,Tue 8/12/25,NA,NA,,Fri 8/08/25,Tue 8/12/25,0,0,0
+322,            Preparar uma area de armazenamento das chapas calandradas,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,320,Fri 8/08/25,Fri 8/08/25,0,0,0
+323,            Preparar Área de corte de Chapas,0%,0%,0,1 day,Mon 8/11/25,Mon 8/11/25,NA,NA,322,Mon 8/11/25,Mon 8/11/25,0,0,0
+324,            Transportar ferramental a ser ultilizado para atividade ,0%,0%,0,0.5 days,Tue 8/12/25,Tue 8/12/25,NA,NA,323,Tue 8/12/25,Tue 8/12/25,0,0,0
+325,            Orinetar posicionamento a caçamba de sucata para proximo do local da atividade ,0%,0%,0,0.5 days,Tue 8/12/25,Tue 8/12/25,NA,NA,324SS,Tue 8/12/25,Tue 8/12/25,0,0,0
+326,        Junta de Expansão 3Q54/55,0%,0%,0,48 hrs,Tue 8/12/25,Thu 8/14/25,NA,NA,,Tue 8/12/25,Thu 8/14/25,0,0,0
+327,            Mobilizar material de anmdaime Próximo ao Local,0%,0%,0,1 day,Tue 8/12/25,Wed 8/13/25,NA,NA,325,Tue 8/12/25,Wed 8/13/25,0,0,0
+328,            Preparar uma area de armazenamento das Juntas,0%,0%,0,0.5 days,Wed 8/13/25,Wed 8/13/25,NA,NA,327,Wed 8/13/25,Wed 8/13/25,0,0,0
+329,            Transportar ferramental a ser ultilizado para atividade ,0%,0%,0,0.5 days,Thu 8/14/25,Thu 8/14/25,NA,NA,328,Thu 8/14/25,Thu 8/14/25,0,0,0
+330,            Orientar posicionamento a caçamba de sucata para proximo do local da atividade ,0%,0%,0,0.5 days,Thu 8/14/25,Thu 8/14/25,NA,NA,329SS,Thu 8/14/25,Thu 8/14/25,0,0,0
+331,    Preparação dos Ventiladores Concluída,0%,0%,0,0 days,Thu 8/14/25,Thu 8/14/25,NA,NA,330;325;315;309;302,Thu 8/14/25,Thu 8/14/25,0,0,0
+332,    Bogiflex,45%,0%,69,2264.7 hrs,Sat 5/31/25,Tue 9/02/25,Sat 5/31/25,NA,,Sat 5/31/25,Thu 8/14/25,0,0,0
+333,        Fabricação do Berço para Apoio e Transporte da Engrenagem Concluída (Oficina Mecânica),100%,100%,100,0 days,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,,Sat 5/31/25,Sat 5/31/25,0,0,0
+334,        Fabricação dos Berços para Transporte dos Redutores Concluída (Oficina Mecânica),66%,66%,68,65 days,Sat 5/31/25,Tue 9/02/25,Sat 5/31/25,NA,,Sat 5/31/25,Sat 5/31/25,0,0,0
+335,        Fabricação dos Berços para Apoio dos Macacos da Roda de Levantamento Concluída (Oficina Mecânica),100%,100%,100,1 day,Mon 7/14/25,Mon 7/14/25,Mon 7/14/25,Mon 7/14/25,,Sat 5/31/25,Sat 5/31/25,0,0,0
+336,        Instalar andaimes de acesso ao equipamento de acorodo com planejamento ,0%,0%,0,2 days,Mon 8/04/25,Tue 8/05/25,NA,NA,,Mon 8/04/25,Tue 8/05/25,0,0,0
+337,        Transportar componentes para proximo do local da atividade ,0%,0%,0,1 day,Wed 8/06/25,Wed 8/06/25,NA,NA,336,Wed 8/06/25,Wed 8/06/25,0,0,0
+338,        Transportar barreiras fisicas para o local da atividade ,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,337,Thu 8/07/25,Thu 8/07/25,0,0,0
+339,        Transportar Suporte da engrenagem para Oficina Mecância ,0%,0%,0,1 day,Fri 8/08/25,Fri 8/08/25,NA,NA,338,Fri 8/08/25,Fri 8/08/25,0,0,0
+340,        Transportar Suportes dos Redutores para Local ,0%,0%,0,1 day,Mon 8/11/25,Mon 8/11/25,NA,NA,339,Mon 8/11/25,Mon 8/11/25,0,0,0
+341,        Transportar ferramental e maloes para proximo do local ,0%,0%,0,1 day,Tue 8/12/25,Tue 8/12/25,NA,NA,340,Tue 8/12/25,Tue 8/12/25,0,0,0
+342,        Sinalizar caminho seguro do local da atividade em função do fluxo de pessoas ,0%,0%,0,1 day,Wed 8/13/25,Wed 8/13/25,NA,NA,341,Wed 8/13/25,Wed 8/13/25,0,0,0
+343,        Acompanhar posicinamento da caçamba de sucata proximo ao local ,0%,0%,0,1 day,Thu 8/14/25,Thu 8/14/25,NA,NA,342,Thu 8/14/25,Thu 8/14/25,0,0,0
+344,        Preparação montagem da monovia superior,0%,0%,0,3 days,Mon 8/04/25,Wed 8/06/25,NA,NA,,Mon 8/04/25,Wed 8/06/25,0,0,0
+345,        Soldar os olhais e aplicar LP para desmontar a plataforma de acesso ao bogiflex,0%,0%,0,1 day,Thu 8/07/25,Thu 8/07/25,NA,NA,344,Thu 8/07/25,Thu 8/07/25,0,0,0
+346,        Mobilizar berço e vigas para elevação da roda em ambos lados.,0%,0%,0,2 days,Fri 8/08/25,Mon 8/11/25,NA,NA,345,Fri 8/08/25,Mon 8/11/25,0,0,0
+347,        Prepara ferramental.,0%,0%,0,2 days,Tue 8/12/25,Wed 8/13/25,NA,NA,346,Tue 8/12/25,Wed 8/13/25,0,0,0
+348,        Mobilizar duas Mig Mag   para frente de serviço para recuperar carambola,0%,0%,0,1 day,Thu 8/14/25,Thu 8/14/25,NA,NA,347,Thu 8/14/25,Thu 8/14/25,0,0,0
+349,        Mobilizar chapa para frente de serviço para fazer reparo na carambola,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,344SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+350,        Mobilizar duas gaiolas de gás para frente de serviço,0%,0%,0,0.5 days,Mon 8/04/25,Mon 8/04/25,NA,NA,349SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+351,        Preparar bandeirola para Abaixamento Ajuste do trilho curvo,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,350SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+352,        Preparar bandeirola para levantamento Ajuste do trilho curvo,0%,0%,0,1 day,Mon 8/04/25,Mon 8/04/25,NA,NA,351SS,Mon 8/04/25,Mon 8/04/25,0,0,0
+353,        Colocar calços e parafusos do trilho curvo no malao quadrado sem rodas no abaixamento,0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,352,Tue 8/05/25,Tue 8/05/25,0,0,0
+354,        Colocar calços e parafusos do trilho curvo no malao quadrado sem rodas no levantamento,0%,0%,0,1 day,Tue 8/05/25,Tue 8/05/25,NA,NA,353SS,Tue 8/05/25,Tue 8/05/25,0,0,0
+355,        Verticalizar coroa no berço e mobilizar para aréa,0%,0%,0,2 days,Wed 8/06/25,Thu 8/07/25,NA,NA,354,Wed 8/06/25,Thu 8/07/25,0,0,0
+356,        Cortar Chapa de Piso no patio da centralizada.,0%,0%,0,2 days,Fri 8/08/25,Mon 8/11/25,NA,NA,355,Fri 8/08/25,Mon 8/11/25,0,0,0
+357,        Mobilizar chapa de piso para o segundo piso do forno.,0%,0%,0,2 days,Tue 8/12/25,Wed 8/13/25,NA,NA,356,Tue 8/12/25,Wed 8/13/25,0,0,0
+358,        Pegar calços do trilho curvo abaixamento e colocar no malão de ferramentas,0%,0%,0,0.5 days,Thu 8/14/25,Thu 8/14/25,NA,NA,357,Thu 8/14/25,Thu 8/14/25,0,0,0
+359,        Pegar calços do trilho curvo Levantamento e colocar no malão de ferramentas,0%,0%,0,0.5 days,Thu 8/14/25,Thu 8/14/25,NA,NA,358,Thu 8/14/25,Thu 8/14/25,0,0,0
+360,        Fazer molde com papelão hidráulico da base do mancal,0%,0%,0,1 day,Thu 8/14/25,Thu 8/14/25,NA,NA,358SS,Thu 8/14/25,Thu 8/14/25,0,0,0
+361,    Preparação do Bogiflex Concluída,0%,0%,0,0 days,Tue 9/02/25,Tue 9/02/25,NA,NA,333;334;335;343;360;359;348,Thu 8/14/25,Thu 8/14/25,0,0,0
+﻿ ID,Indicators, Resource name, Type, Material label, Initials, Group, Max.Units, Std.Rate, Ovt.Rate, Cost/Use, Accrue At, Base Calendar, Code
+,,,,,,,,,,,,,
+﻿ ID, Task name, Resource name, Work, Duration

@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle2, MapPin, Activity, Calendar } from 'lucide-react';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import { DashboardSummary } from '../types';
 
 interface SummaryCardsProps {
@@ -7,6 +8,8 @@ interface SummaryCardsProps {
 }
 
 const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
+  const themeClasses = useThemeClasses();
+
   const cards = [
     {
       title: 'Atividades Concluídas',
@@ -54,33 +57,50 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
       {cards.map((card, index) => {
         const [bgColor, textColor, lightBg] = getColorClasses(card.color).split(
           ' '
         );
 
         return (
-          <div key={index} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-full ${lightBg}`}>
-                <card.icon className={`w-6 h-6 ${textColor}`} />
+          <div
+            key={index}
+            className={`rounded-lg shadow-md p-3 sm:p-6 touch-target ${themeClasses.card}`}
+          >
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div
+                className={`p-2 sm:p-3 rounded-full ${lightBg} dark:bg-opacity-20`}
+              >
+                <card.icon
+                  className={`w-4 h-4 sm:w-6 sm:h-6 ${textColor} dark:opacity-80`}
+                />
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-800">
+                <div
+                  className={`text-lg sm:text-2xl font-bold ${themeClasses.textPrimary}`}
+                >
                   {card.value}
                 </div>
-                <div className="text-sm text-gray-500">{card.subtitle}</div>
+                <div
+                  className={`text-xs sm:text-sm ${themeClasses.textTertiary}`}
+                >
+                  {card.subtitle}
+                </div>
               </div>
             </div>
 
             <div className="mb-2">
-              <h3 className="text-sm font-medium text-gray-600">
+              <h3
+                className={`text-xs sm:text-sm font-medium ${themeClasses.textSecondary} truncate`}
+              >
                 {card.title}
               </h3>
             </div>
 
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className={`w-full rounded-full h-2 ${themeClasses.bgTertiary}`}
+            >
               <div
                 className={`h-2 rounded-full ${bgColor}`}
                 style={{ width: `${Math.min(card.percentage, 100)}%` }}
@@ -88,7 +108,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
             </div>
 
             <div className="mt-2 text-right">
-              <span className="text-xs text-gray-500">
+              <span className={`text-xs ${themeClasses.textTertiary}`}>
                 {card.percentage.toFixed(1)}%
               </span>
             </div>

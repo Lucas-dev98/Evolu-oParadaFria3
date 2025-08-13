@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -11,8 +11,16 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import { EvolutionData } from '../types';
-import { Eye, EyeOff, Activity } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  Activity,
+  CheckCircle,
+  AlertTriangle,
+  TrendingUp,
+} from 'lucide-react';
 
 ChartJS.register(
   CategoryScale,
@@ -27,9 +35,22 @@ ChartJS.register(
 
 interface EvolutionChartProps {
   data: EvolutionData[];
+  additionalInfo?: {
+    totalAtividades?: number;
+    atividadesConcluidas?: number;
+    atividadesCriticas?: number;
+    progressoGeral?: number;
+    faseAtual?: string;
+  };
 }
 
-const EvolutionChart: React.FC<EvolutionChartProps> = ({ data }) => {
+const EvolutionChart: React.FC<EvolutionChartProps> = ({
+  data,
+  additionalInfo,
+}) => {
+  const themeClasses = useThemeClasses();
+  const chartRef = useRef<ChartJS<'line'>>(null);
+
   // Extrair áreas únicas dos dados
   const uniqueAreas = Array.from(new Set(data?.map((area) => area.name) || []));
 
@@ -37,6 +58,15 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ data }) => {
   const [areaVisibility, setAreaVisibility] = useState<Record<string, boolean>>(
     Object.fromEntries(uniqueAreas.map((area) => [area, true]))
   );
+
+  // Limpeza do gráfico para evitar conflitos de canvas
+  useEffect(() => {
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, []);
 
   // Debug: log dos dados recebidos
   console.log('🚀 EvolutionChart - Dados recebidos:', {
@@ -53,12 +83,20 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ data }) => {
   // Verificar se há dados válidos
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-        <Activity className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+      <div
+        className={`rounded-xl shadow-lg p-8 text-center ${themeClasses.card}`}
+      >
+        <Activity
+          className={`mx-auto h-16 w-16 ${themeClasses.textTertiary} mb-4`}
+        />
+        <h3
+          className={`text-lg font-semibold ${themeClasses.textPrimary} mb-2`}
+        >
           Carregando Dados de Evolução
         </h3>
-        <p className="text-gray-500">Processando cronograma PFUS3 2025...</p>
+        <p className={themeClasses.textSecondary}>
+          Processando cronograma PFUS3 2025...
+        </p>
       </div>
     );
   }
@@ -240,13 +278,19 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className={`rounded-lg shadow-md p-6 ${themeClasses.card}`}>
       {data.length === 0 ? (
         /* Exibir mensagem quando não há dados */
-        <div className="flex flex-col items-center justify-center h-96 text-gray-500">
-          <Activity className="w-12 h-12 mb-4 text-gray-400" />
-          <h3 className="text-lg font-semibold mb-2">Nenhum dado disponível</h3>
-          <p className="text-sm text-center">
+        <div
+          className={`flex flex-col items-center justify-center h-96 ${themeClasses.textTertiary}`}
+        >
+          <Activity className={`w-12 h-12 mb-4 ${themeClasses.textTertiary}`} />
+          <h3
+            className={`text-lg font-semibold mb-2 ${themeClasses.textSecondary}`}
+          >
+            Nenhum dado disponível
+          </h3>
+          <p className={`text-sm text-center ${themeClasses.textTertiary}`}>
             Carregue um arquivo de dados ou verifique a conexão para visualizar
             o gráfico de evolução.
           </p>
@@ -347,15 +391,116 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ data }) => {
                 </button>
               </div>
             </div>
+
+            {/* Painel de Informações das Atividades */}
+            {additionalInfo && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 mb-4">
+                  <Activity className="w-5 h-5 text-indigo-600" />
+                  <h4 className="text-lg font-semibold text-gray-800">
+                    Informações da Fase Atual
+                  </h4>
+                  {additionalInfo.faseAtual && (
+                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">
+                      {additionalInfo.faseAtual}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {/* Progresso Geral */}
+                  <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          Progresso Geral
+                        </p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {additionalInfo.progressoGeral?.toFixed(1) || '0.0'}%
+                        </p>
+                      </div>
+                      <TrendingUp className="w-8 h-8 text-blue-500" />
+                    </div>
+                  </div>
+
+                  {/* Total de Atividades */}
+                  <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          Total de Atividades
+                        </p>
+                        <p className="text-2xl font-bold text-gray-700">
+                          {additionalInfo.totalAtividades || 0}
+                        </p>
+                      </div>
+                      <Activity className="w-8 h-8 text-gray-500" />
+                    </div>
+                  </div>
+
+                  {/* Atividades Concluídas */}
+                  <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          Atividades Concluídas
+                        </p>
+                        <p className="text-2xl font-bold text-green-600">
+                          {additionalInfo.atividadesConcluidas || 0}
+                        </p>
+                        {additionalInfo.totalAtividades &&
+                          additionalInfo.totalAtividades > 0 && (
+                            <p className="text-xs text-gray-500">
+                              {(
+                                ((additionalInfo.atividadesConcluidas || 0) /
+                                  additionalInfo.totalAtividades) *
+                                100
+                              ).toFixed(1)}
+                              % do total
+                            </p>
+                          )}
+                      </div>
+                      <CheckCircle className="w-8 h-8 text-green-500" />
+                    </div>
+                  </div>
+
+                  {/* Atividades Em Andamento */}
+                  <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          Atividades Em Andamento
+                        </p>
+                        <p className="text-2xl font-bold text-orange-600">
+                          {additionalInfo.atividadesCriticas || 0}
+                        </p>
+                        {additionalInfo.totalAtividades &&
+                          additionalInfo.totalAtividades > 0 && (
+                            <p className="text-xs text-gray-500">
+                              {(
+                                ((additionalInfo.atividadesCriticas || 0) /
+                                  additionalInfo.totalAtividades) *
+                                100
+                              ).toFixed(1)}
+                              % do total
+                            </p>
+                          )}
+                      </div>
+                      <AlertTriangle className="w-8 h-8 text-orange-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Gráfico */}
           <div className="h-96">
-            <Line data={chartData} options={options} />
+            <Line ref={chartRef} data={chartData} options={options} />
           </div>
 
           {/* Estatísticas das Categorias */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {data.map((area, index) => {
               const color = enhancedColors[index % enhancedColors.length];
               const progressoAtual = area.data[area.data.length - 1]?.y || 0;

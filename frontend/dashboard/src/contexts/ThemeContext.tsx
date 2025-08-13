@@ -49,10 +49,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     // Aplicar classes CSS no documento
     const root = document.documentElement;
+    const body = document.body;
+
     if (theme === 'dark') {
       root.classList.add('dark');
+      body.classList.add('dark');
     } else {
       root.classList.remove('dark');
+      body.classList.remove('dark');
     }
 
     // Atualizar meta theme-color para mobile

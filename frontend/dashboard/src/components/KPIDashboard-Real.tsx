@@ -49,27 +49,46 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ categorias }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log(
+      '🔍 KPIDashboard useEffect - categorias:',
+      categorias?.length || 0
+    );
     if (categorias && categorias.length > 0) {
+      console.log('✅ Iniciando calcularMetricas com categorias válidas');
       calcularMetricas();
+    } else {
+      console.log('❌ Categorias vazias ou undefined:', categorias);
+      setIsLoading(false); // Para não ficar travado no loading
     }
   }, [categorias]);
 
   const calcularMetricas = () => {
     try {
+      console.log('🚀 Iniciando calcularMetricas...');
       setIsLoading(true);
 
       // Calcular métricas principais
+      console.log('📊 Calculando métricas gerais...');
       const metricasCalculadas =
         analyticsService.calcularMetricasGerais(categorias);
+      console.log('✅ Métricas calculadas:', metricasCalculadas);
       setMetricas(metricasCalculadas);
 
       // Analisar categorias
+      console.log('📈 Analisando categorias...');
       const analiseCalc = analyticsService.analisarCategorias(categorias);
+      console.log(
+        '✅ Análise de categorias:',
+        analiseCalc.length,
+        'categorias'
+      );
       setAnaliseCategorias(analiseCalc);
 
       // Identificar tarefas críticas
+      console.log('⚠️ Identificando tarefas críticas...');
       const criticasCalc =
         analyticsService.identificarTarefasCriticas(categorias);
+      console.log('✅ Tarefas críticas:', criticasCalc.length);
       setTarefasCriticas(criticasCalc.slice(0, 10)); // Top 10 mais críticas
 
       console.log('📊 Métricas Analytics calculadas:', {
@@ -79,7 +98,9 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ categorias }) => {
       });
     } catch (error) {
       console.error('❌ Erro ao calcular métricas:', error);
+      setIsLoading(false); // Garantir que sai do loading em caso de erro
     } finally {
+      console.log('🏁 Finalizando calcularMetricas, setIsLoading(false)');
       setIsLoading(false);
     }
   };

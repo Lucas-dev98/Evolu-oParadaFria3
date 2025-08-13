@@ -137,12 +137,12 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
       </div>
 
       {/* Cards principais com visual aprimorado */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {cards.map((card, index) => (
           <div
             key={index}
             onClick={card.onClick}
-            className={`${card.cardGradient} border-2 border-white rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden group ${
+            className={`${card.cardGradient} border-2 border-white rounded-2xl p-3 sm:p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden group touch-target ${
               card.isClickable ? 'cursor-pointer hover:bg-opacity-80' : ''
             }`}
             style={{
@@ -153,27 +153,26 @@ const ResumoCardsCronograma: React.FC<ResumoCardsCronogramaProps> = ({
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"></div>
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2 uppercase tracking-wide truncate">
                     {card.title}
                   </h3>
-                  <p className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  <p className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
                     {card.value}
                   </p>
                   {card.subtitle && (
-                    <p className="text-sm text-gray-600 mt-1 font-medium">
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1 font-medium truncate">
                       {card.subtitle}
                     </p>
                   )}
                 </div>
                 <div
-                  className={`${card.gradient} p-3 rounded-xl shadow-lg ${card.animate}`}
+                  className={`${card.gradient} p-2 sm:p-3 rounded-xl shadow-lg ${card.animate} flex-shrink-0`}
                 >
                   {card.icon}
                 </div>
-              </div>
-
+              </div>{' '}
               {card.progress !== undefined && (
                 <div className="mt-4">
                   <div className="flex justify-between items-center mb-2">

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import {
   Upload,
   File,
@@ -23,6 +24,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   onDataUpdate,
 }) => {
   const { isAdmin } = useAuth();
+  const themeClasses = useThemeClasses();
   const [uploadStatus, setUploadStatus] = useState<
     'idle' | 'uploading' | 'success' | 'error'
   >('idle');
@@ -99,42 +101,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div
+        className={`rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${themeClasses.card}`}
+      >
         <div className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Database className="w-6 h-6 text-green-600" />
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <Database className="w-6 h-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h2
+                  className={`text-xl font-semibold ${themeClasses.textPrimary}`}
+                >
                   Painel Administrativo
                 </h2>
-                <p className="text-sm text-gray-600">
+                <p className={`text-sm ${themeClasses.textSecondary}`}>
                   Gerenciar dados do sistema
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className={`p-2 hover:${themeClasses.bgSecondary} rounded-lg transition-colors`}
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className={`w-5 h-5 ${themeClasses.textTertiary}`} />
             </button>
           </div>
 
           {/* Upload Area */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">
+            <h3
+              className={`text-lg font-medium ${themeClasses.textPrimary} mb-4`}
+            >
               Upload de Dados
             </h3>
 
             <div
               className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                 dragActive
-                  ? 'border-blue-400 bg-blue-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                  : `${themeClasses.border} hover:border-blue-300 dark:hover:border-blue-600`
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}

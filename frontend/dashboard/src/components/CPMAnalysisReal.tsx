@@ -59,16 +59,41 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
   }, [categorias]);
 
   const obterTodasTarefas = (): TarefaCronograma[] => {
-    const todas: TarefaCronograma[] = [];
-    categorias.forEach((categoria) => {
-      categoria.tarefas.forEach((tarefa) => {
-        todas.push(tarefa);
-        if (tarefa.subatividades) {
-          todas.push(...tarefa.subatividades);
+    try {
+      const todas: TarefaCronograma[] = [];
+
+      if (!categorias || categorias.length === 0) {
+        console.warn('⚠️ Nenhuma categoria encontrada para CPM');
+        return [];
+      }
+
+      categorias.forEach((categoria) => {
+        if (categoria.tarefas && categoria.tarefas.length > 0) {
+          categoria.tarefas.forEach((tarefa) => {
+            // Validar se a tarefa tem os campos necessários
+            if (
+              tarefa &&
+              tarefa.id &&
+              tarefa.nome &&
+              tarefa.duracao &&
+              tarefa.inicio &&
+              tarefa.fim
+            ) {
+              todas.push(tarefa);
+              if (tarefa.subatividades) {
+                todas.push(...tarefa.subatividades);
+              }
+            }
+          });
         }
       });
-    });
-    return todas.filter((t) => t.duracao && t.inicio && t.fim);
+
+      console.log('📋 CPM processou', todas.length, 'tarefas válidas');
+      return todas.filter((t) => t.duracao && t.inicio && t.fim);
+    } catch (error) {
+      console.error('❌ Erro ao obter tarefas para CPM:', error);
+      return [];
+    }
   };
 
   const parseDependencias = (predecessores: string): DependenciaParsed[] => {
@@ -105,27 +130,39 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
   };
 
   const calcularDuracao = (tarefa: TarefaCronograma): number => {
-    // Extrai duração em dias de strings como "100 hrs", "5 days", "2656 hrs"
-    const durStr = tarefa.duracao;
+    try {
+      // Extrai duração em dias de strings como "100 hrs", "5 days", "2656 hrs"
+      const durStr = tarefa.duracao || '1 day';
 
-    // Buscar por horas
-    const hoursMatch = durStr.match(/(\d+(?:\.\d+)?)\s*hrs?/i);
-    if (hoursMatch) {
-      return Math.ceil(parseFloat(hoursMatch[1]) / 8); // 8 horas = 1 dia
+      // Buscar por horas
+      const hoursMatch = durStr.match(/(\d+(?:\.\d+)?)\s*hrs?/i);
+      if (hoursMatch) {
+        const horas = parseFloat(hoursMatch[1]);
+        return Math.max(1, Math.ceil(horas / 8)); // Mínimo 1 dia, 8 horas = 1 dia
+      }
+
+      // Buscar por dias
+      const daysMatch = durStr.match(/(\d+(?:\.\d+)?)\s*(e?days?)/i);
+      if (daysMatch) {
+        return Math.max(1, Math.ceil(parseFloat(daysMatch[1])));
+      }
+
+      // Fallback: usar diferença entre datas
+      const inicio = new Date(tarefa.inicio);
+      const fim = new Date(tarefa.fim);
+
+      if (!isNaN(inicio.getTime()) && !isNaN(fim.getTime())) {
+        const diffDays = Math.ceil(
+          (fim.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        return Math.max(1, diffDays);
+      }
+
+      return 1; // Fallback mínimo
+    } catch (error) {
+      console.error('❌ Erro ao calcular duração:', error, tarefa);
+      return 1;
     }
-
-    // Buscar por dias
-    const daysMatch = durStr.match(/(\d+(?:\.\d+)?)\s*(e?days?)/i);
-    if (daysMatch) {
-      return Math.ceil(parseFloat(daysMatch[1]));
-    }
-
-    // Fallback: usar diferença entre datas
-    const inicio = new Date(tarefa.inicio);
-    const fim = new Date(tarefa.fim);
-    return Math.ceil(
-      (fim.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)
-    );
   };
 
   const executarCalculoCPM = (): TarefaCPM[] => {
@@ -156,7 +193,11 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
 
     // Forward Pass - Calcular datas mais cedo possível
     let alteracoes = true;
-    while (alteracoes) {
+    let iteracoes = 0;
+    const maxIteracoes = 1000; // Proteção contra loop infinito
+
+    while (alteracoes && iteracoes < maxIteracoes) {
+      iteracoes++;
       alteracoes = false;
 
       tarefasCPMCalc.forEach((tarefaCPM) => {
@@ -221,6 +262,15 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
       });
     }
 
+    if (iteracoes >= maxIteracoes) {
+      console.warn(
+        '⚠️ Forward pass atingiu limite de iterações:',
+        maxIteracoes
+      );
+    } else {
+      console.log('✅ Forward pass concluído em', iteracoes, 'iterações');
+    }
+
     // Backward Pass - Calcular datas mais tarde possível
     const dataFinalProjeto = new Date(
       Math.max(
@@ -245,7 +295,10 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
 
     // Calcular backward pass com dependências
     alteracoes = true;
-    while (alteracoes) {
+    iteracoes = 0; // Reset contador
+
+    while (alteracoes && iteracoes < maxIteracoes) {
+      iteracoes++;
       alteracoes = false;
 
       tarefasCPMCalc.forEach((tarefaCPM) => {
@@ -309,6 +362,15 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
       });
     }
 
+    if (iteracoes >= maxIteracoes) {
+      console.warn(
+        '⚠️ Backward pass atingiu limite de iterações:',
+        maxIteracoes
+      );
+    } else {
+      console.log('✅ Backward pass concluído em', iteracoes, 'iterações');
+    }
+
     // Calcular folgas e identificar caminho crítico
     tarefasCPMCalc.forEach((tarefaCPM) => {
       const folgaTempo = Math.round(
@@ -328,7 +390,22 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
     try {
       console.log('🔄 Calculando CPM para PFUS3...');
 
+      // Adicionar proteção contra travamento
+      const timeout = setTimeout(() => {
+        console.warn('⚠️ CPM cálculo demorou demais, interrompendo...');
+        setIsCalculando(false);
+        setTarefasCPM([]);
+        setCaminhosCriticos(null);
+      }, 10000); // 10 segundos timeout
+
       const resultadoCPM = executarCalculoCPM();
+      clearTimeout(timeout);
+
+      console.log(
+        '✅ CPM calculado com sucesso:',
+        resultadoCPM.length,
+        'tarefas'
+      );
       setTarefasCPM(resultadoCPM);
 
       // Identificar caminhos críticos
@@ -346,7 +423,8 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
         .filter(
           (t) =>
             t.folga < 7 || // Menos de 1 semana de folga
-            t.tarefa.percentualCompleto < t.tarefa.percentualFisico * 0.8 || // Progresso atrasado
+            t.tarefa.percentualCompleto <
+              t.tarefa.percentualReplanejamento * 0.8 || // Progresso atrasado
             new Date(t.tarefa.fim) < new Date() // Já passou do prazo
         )
         .slice(0, 10);
@@ -369,6 +447,17 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
   const identificarSequenciasCriticas = (
     tarefasCriticas: TarefaCPM[]
   ): TarefaCPM[][] => {
+    if (!tarefasCriticas || tarefasCriticas.length === 0) {
+      console.warn('⚠️ Nenhuma tarefa crítica encontrada');
+      return [];
+    }
+
+    console.log(
+      '🔍 Identificando sequências críticas para',
+      tarefasCriticas.length,
+      'tarefas críticas'
+    );
+
     // Lógica simplificada para identificar sequências do caminho crítico
     const sequencias: TarefaCPM[][] = [];
     const processadas = new Set<number>();
@@ -397,22 +486,59 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
         }
       }
 
-      if (sequencia.length > 1) {
+      if (sequencia.length >= 1) {
+        // Mudança: aceitar sequências de 1 tarefa também
         sequencias.push(sequencia);
       }
     });
 
-    return sequencias.sort((a, b) => b.length - a.length);
+    const resultado = sequencias.sort((a, b) => b.length - a.length);
+    console.log('📊 Encontradas', resultado.length, 'sequências críticas');
+    return resultado;
   };
 
   const calcularDuracaoTotal = (sequencia: TarefaCPM[]): number => {
-    return sequencia.reduce((total, t) => total + calcularDuracao(t.tarefa), 0);
+    if (!sequencia || sequencia.length === 0) {
+      console.warn('⚠️ Sequência vazia para calcular duração total');
+      return 0;
+    }
+
+    const total = sequencia.reduce((total, t) => {
+      const duracao = calcularDuracao(t.tarefa);
+      return total + duracao;
+    }, 0);
+
+    console.log(
+      '📊 Duração total calculada:',
+      total,
+      'dias para',
+      sequencia.length,
+      'tarefas'
+    );
+    return total;
   };
 
   const calcularMargemSeguranca = (todas: TarefaCPM[]): number => {
-    const folgaMedia =
-      todas.reduce((acc, t) => acc + Math.max(0, t.folga), 0) / todas.length;
-    return Math.round(folgaMedia);
+    if (!todas || todas.length === 0) {
+      console.warn('⚠️ Nenhuma tarefa para calcular margem de segurança');
+      return 0;
+    }
+
+    const somaFolgas = todas.reduce(
+      (acc, t) => acc + Math.max(0, t.folga || 0),
+      0
+    );
+    const folgaMedia = somaFolgas / todas.length;
+    const resultado = Math.round(folgaMedia);
+
+    console.log(
+      '📊 Margem de segurança calculada:',
+      resultado,
+      'dias (média de',
+      todas.length,
+      'tarefas)'
+    );
+    return isNaN(resultado) ? 0 : resultado;
   };
 
   const obterCorFolga = (folga: number) => {
@@ -460,7 +586,7 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
               <Target className="w-8 h-8 text-red-600" />
               <div>
                 <p className="text-2xl font-bold">
-                  {caminhosCriticos.sequencias.length}
+                  {caminhosCriticos.sequencias?.length || 0}
                 </p>
                 <p className="text-sm text-gray-600">Caminhos Críticos</p>
               </div>
@@ -472,7 +598,7 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
               <Clock className="w-8 h-8 text-blue-600" />
               <div>
                 <p className="text-2xl font-bold">
-                  {caminhosCriticos.duracaoTotal}
+                  {caminhosCriticos.duracaoTotal || 0}
                 </p>
                 <p className="text-sm text-gray-600">Dias Duração</p>
               </div>
@@ -496,7 +622,9 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
               <Calendar className="w-8 h-8 text-green-600" />
               <div>
                 <p className="text-2xl font-bold">
-                  {caminhosCriticos.margemSeguranca}
+                  {isNaN(caminhosCriticos.margemSeguranca)
+                    ? 0
+                    : caminhosCriticos.margemSeguranca}
                 </p>
                 <p className="text-sm text-gray-600">Margem Média (dias)</p>
               </div>
@@ -527,7 +655,7 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
                       <p>Categoria: {tarefaCPM.tarefa.categoria}</p>
                       <p>
                         Progresso: {tarefaCPM.tarefa.percentualCompleto}%
-                        (Previsto: {tarefaCPM.tarefa.percentualFisico}%)
+                        (Previsto: {tarefaCPM.tarefa.percentualReplanejamento}%)
                       </p>
                       <div className="flex space-x-4">
                         <span>

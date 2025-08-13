@@ -1,6 +1,11 @@
 // Teste direto da API Gemini com a nova versão
 const testeGeminiDireto = async () => {
-  const apiKey = 'AIzaSyDtlj2yTwpjC_Q6AyrQVvbFKDWAvJWcb20';
+  const apiKey = process.env.REACT_APP_GOOGLE_GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Chave da API do Gemini não encontrada no arquivo .env');
+  }
+
   const prompt =
     'Responda apenas com: {"status": "funcionando", "modelo": "gemini-1.5-flash"}';
 

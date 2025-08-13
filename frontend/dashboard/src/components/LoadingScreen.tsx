@@ -1,4 +1,5 @@
 import React from 'react';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import {
   Loader2,
   FileSpreadsheet,
@@ -16,6 +17,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   isOnline,
   loadingStep = 'csv',
 }) => {
+  const themeClasses = useThemeClasses();
+
   const getLoadingMessage = () => {
     switch (loadingStep) {
       case 'local':
@@ -62,7 +65,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <div className="text-center max-w-md mx-auto">
         {/* Ícone animado */}
         <div className="flex justify-center mb-6">
-          <div className="p-4 bg-white rounded-full shadow-lg border">
+          <div
+            className={`p-4 rounded-full shadow-lg border ${themeClasses.card}`}
+          >
             {icon}
           </div>
         </div>
@@ -73,11 +78,17 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         </div>
 
         {/* Texto principal */}
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">{title}</h2>
-        <p className="text-gray-600 mb-6">{description}</p>
+        <h2
+          className={`text-xl font-semibold ${themeClasses.textPrimary} mb-2`}
+        >
+          {title}
+        </h2>
+        <p className={`${themeClasses.textSecondary} mb-6`}>{description}</p>
 
         {/* Barra de progresso animada */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+        <div
+          className={`w-full rounded-full h-2 mb-4 ${themeClasses.bgTertiary}`}
+        >
           <div
             className="bg-blue-500 h-2 rounded-full animate-pulse"
             style={{ width: '60%' }}
@@ -85,7 +96,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         </div>
 
         {/* Status de conexão */}
-        <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+        <div
+          className={`flex items-center justify-center space-x-2 text-sm ${themeClasses.textTertiary}`}
+        >
           {isOnline ? (
             <>
               <Wifi className="w-4 h-4 text-green-500" />
@@ -100,9 +113,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         </div>
 
         {/* Dicas durante o carregamento */}
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">💡 Dica</h3>
-          <p className="text-sm text-blue-700">
+        <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
+            💡 Dica
+          </h3>
+          <p className="text-sm text-blue-700 dark:text-blue-400">
             {loadingStep === 'csv' &&
               'O sistema está processando automaticamente o cronograma PFUS3 2025.'}
             {loadingStep === 'backend' &&

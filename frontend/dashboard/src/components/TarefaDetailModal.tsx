@@ -127,7 +127,7 @@ const TarefaDetailModal: React.FC<TarefaDetailModalProps> = ({
           </div>
 
           {/* Datas Grid */}
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {/* Início */}
             <div className={`${themeClasses.bgSecondary} rounded-xl p-4`}>
               <div className="flex items-center space-x-3 mb-2">

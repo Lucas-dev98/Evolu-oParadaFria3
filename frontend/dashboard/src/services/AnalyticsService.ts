@@ -62,7 +62,15 @@ class AnalyticsService {
    * Calcula métricas gerais do projeto baseado nos dados reais
    */
   calcularMetricasGerais(categorias: CategoriaCronograma[]): MetricasAnalytics {
+    console.log(
+      '🔍 AnalyticsService.calcularMetricasGerais - entrada:',
+      categorias?.length || 0,
+      'categorias'
+    );
+
     const todasTarefas = this.obterTodasTarefas(categorias);
+    console.log('📝 Todas as tarefas obtidas:', todasTarefas.length, 'tarefas');
+
     const hoje = new Date();
 
     // Métricas básicas
@@ -408,16 +416,23 @@ class AnalyticsService {
 
   private calcularHorasEstimadas(tarefas: TarefaCronograma[]): number {
     return tarefas.reduce((total, tarefa) => {
-      // Extrair horas da string de duração (ex: "100 hrs" → 100)
+      // Se duracao é um número, usar diretamente (assumindo dias, convertemos para horas)
+      if (typeof tarefa.duracao === 'number') {
+        return total + tarefa.duracao * 8; // Assumir 8 horas por dia
+      }
+
+      // Se duracao é string, extrair horas da string de duração (ex: "100 hrs" → 100)
       const match = tarefa.duracao.match(/(\d+(?:\.\d+)?)\s*hrs?/i);
       if (match) {
         return total + parseFloat(match[1]);
       }
 
       // Se não tem horas, tentar extrair dias e converter
-      const daysMatch = tarefa.duracao.match(/(\d+(?:\.\d+)?)\s*e?days?/i);
-      if (daysMatch) {
-        return total + parseFloat(daysMatch[1]) * 8; // 8 horas por dia
+      if (typeof tarefa.duracao === 'string') {
+        const daysMatch = tarefa.duracao.match(/(\d+(?:\.\d+)?)\s*e?days?/i);
+        if (daysMatch) {
+          return total + parseFloat(daysMatch[1]) * 8; // 8 horas por dia
+        }
       }
 
       return total;

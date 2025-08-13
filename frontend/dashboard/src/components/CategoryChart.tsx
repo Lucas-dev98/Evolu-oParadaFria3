@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useThemeClasses } from '../contexts/ThemeContext';
 import { DashboardSummary } from '../types';
 import { PieChart, Users, BarChart3 } from 'lucide-react';
 
@@ -11,6 +12,8 @@ interface CategoryChartProps {
 }
 
 const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
+  const themeClasses = useThemeClasses();
+  const chartRef = useRef<ChartJS<'doughnut'>>(null);
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
 
   const categories = Object.keys(summary.areasByCategory);
@@ -37,6 +40,15 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
     { main: '#14B8A6', hover: '#0D9488', light: '#CCFBF1' }, // teal
     { main: '#F97316', hover: '#EA580C', light: '#FED7AA' }, // orange
   ];
+
+  // Limpeza do gráfico para evitar conflitos de canvas
+  useEffect(() => {
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, []);
 
   const chartData = {
     labels: categories,
@@ -99,12 +111,12 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className={`rounded-lg shadow-md p-6 ${themeClasses.card}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <PieChart className="w-5 h-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className={`text-lg font-semibold ${themeClasses.textPrimary}`}>
             Distribuição por Categoria
           </h3>
         </div>
@@ -114,8 +126,8 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
             onClick={() => setViewMode('chart')}
             className={`p-2 rounded-lg transition-colors ${
               viewMode === 'chart'
-                ? 'bg-blue-100 text-blue-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                : `${themeClasses.bgTertiary} ${themeClasses.textSecondary} hover:${themeClasses.cardHover}`
             }`}
           >
             <PieChart className="w-4 h-4" />
@@ -124,8 +136,8 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
             onClick={() => setViewMode('table')}
             className={`p-2 rounded-lg transition-colors ${
               viewMode === 'table'
-                ? 'bg-blue-100 text-blue-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                : `${themeClasses.bgTertiary} ${themeClasses.textSecondary} hover:${themeClasses.cardHover}`
             }`}
           >
             <BarChart3 className="w-4 h-4" />
@@ -137,7 +149,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
         <>
           {/* Gráfico */}
           <div className="relative h-80 mb-6">
-            <Doughnut data={chartData} options={options} />
+            <Doughnut ref={chartRef} data={chartData} options={options} />
 
             {/* Valor central */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -181,20 +193,30 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
       ) : (
         /* Tabela */
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-lg border">
+          <div
+            className={`overflow-hidden rounded-lg border ${themeClasses.border}`}
+          >
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className={themeClasses.bgSecondary}>
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                  <th
+                    className={`px-4 py-3 text-left text-sm font-medium ${themeClasses.textPrimary}`}
+                  >
                     Categoria
                   </th>
-                  <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                  <th
+                    className={`px-4 py-3 text-center text-sm font-medium ${themeClasses.textPrimary}`}
+                  >
                     Progresso
                   </th>
-                  <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                  <th
+                    className={`px-4 py-3 text-center text-sm font-medium ${themeClasses.textPrimary}`}
+                  >
                     Percentual
                   </th>
-                  <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                  <th
+                    className={`px-4 py-3 text-center text-sm font-medium ${themeClasses.textPrimary}`}
+                  >
                     Áreas
                   </th>
                 </tr>
@@ -213,19 +235,26 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ summary }) => {
                   }))
                   .sort((a, b) => b.occupancy - a.occupancy)
                   .map((item) => (
-                    <tr key={item.category} className="hover:bg-gray-50">
+                    <tr
+                      key={item.category}
+                      className={`hover:${themeClasses.bgSecondary}`}
+                    >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <div
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: item.color.main }}
                           />
-                          <span className="font-medium text-gray-800">
+                          <span
+                            className={`font-medium ${themeClasses.textPrimary}`}
+                          >
                             {item.category}
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-center font-semibold text-gray-800">
+                      <td
+                        className={`px-4 py-3 text-center font-semibold ${themeClasses.textPrimary}`}
+                      >
                         {item.occupancy.toLocaleString()}
                       </td>
                       <td className="px-4 py-3 text-center text-gray-600">
