@@ -15,12 +15,10 @@ interface TopNavigationProps {
   user: { username: string } | null;
   isAdmin: boolean;
   modoCronograma: boolean;
-  visualizacaoExecutiva: boolean;
   modoAnalytics: boolean;
   existeCronogramaLocal: boolean;
   resumoCronograma: any; // para verificar se tem dados de cronograma
-  onExecutivoClick: () => void;
-  onDetalhadoClick: () => void;
+  onAtividadesClick: () => void;
   onAnalyticsClick: () => void;
   onDashboardClick: () => void;
   onGerenciarDadosClick: () => void;
@@ -40,12 +38,10 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
   user,
   isAdmin,
   modoCronograma,
-  visualizacaoExecutiva,
   modoAnalytics,
   existeCronogramaLocal,
   resumoCronograma,
-  onExecutivoClick,
-  onDetalhadoClick,
+  onAtividadesClick,
   onAnalyticsClick,
   onDashboardClick,
   onGerenciarDadosClick,
@@ -72,7 +68,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
   });
 
   // Funções melhoradas com notificações e animações
-  const handleExecutivoClick = () => {
+  const handleAtividadesClick = () => {
     if (!temCronogramaForced) {
       onNotify?.(
         'warning',
@@ -81,34 +77,11 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
       );
       return;
     }
-    onExecutivoClick();
+    onAtividadesClick();
     onNotify?.(
       'success',
-      'Visualização Executiva',
-      'Mostrando resumo executivo do projeto'
-    );
-
-    // Scroll suave para a seção principal
-    setTimeout(() => {
-      const mainContent = document.querySelector('main');
-      mainContent?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  const handleDetalhadoClick = () => {
-    if (!temCronogramaForced) {
-      onNotify?.(
-        'warning',
-        'Dados não disponíveis',
-        'Carregue dados de cronograma para acessar esta visualização'
-      );
-      return;
-    }
-    onDetalhadoClick();
-    onNotify?.(
-      'success',
-      'Visualização Detalhada',
-      'Mostrando informações detalhadas do cronograma'
+      'Visualização de Atividades',
+      'Mostrando atividades organizadas por frente de trabalho'
     );
 
     // Scroll suave para a seção principal
@@ -192,6 +165,20 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
 
   return (
     <div className={`${themeClasses.card} ${themeClasses.border} border-b`}>
+      {/* Indicador de Status do Analytics */}
+      {modoCronograma && !resumoCronograma && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-3">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center space-x-2 text-sm">
+              <BarChart3 size={16} className="text-blue-500" />
+              <span className="text-blue-700 dark:text-blue-300">
+                <strong>Modo Analytics ativo:</strong> Carregue dados de
+                cronograma para acessar todas as funcionalidades de análise
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 py-2 sm:py-0 min-h-[3rem] sm:h-12 lg:h-16">
           {/* Welcome section */}
@@ -215,57 +202,45 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
               </span>
             </div>
 
-            {/* View Toggle Buttons - Hidden em mobile muito pequeno */}
-            <div className="hidden sm:flex items-center space-x-1">
+            {/* View Toggle Buttons - Simplificado para apenas 2 modos */}
+            <div className="flex items-center space-x-1 scale-90 sm:scale-100">
               <button
-                onClick={handleExecutivoClick}
+                onClick={handleAtividadesClick}
                 disabled={!temCronogramaForced}
                 className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 transform hover:scale-105 flex items-center space-x-1 touch-target ${
-                  visualizacaoExecutiva && !modoAnalytics && modoCronograma
+                  !modoAnalytics && modoCronograma
                     ? `bg-blue-500 text-white shadow-md`
                     : temCronogramaForced
                       ? `${themeClasses.textSecondary} hover:${themeClasses.textPrimary} hover:bg-gray-100 dark:hover:bg-gray-800`
                       : `${themeClasses.textTertiary} cursor-not-allowed opacity-50`
                 }`}
               >
-                <span>Executivo</span>
-                {visualizacaoExecutiva && !modoAnalytics && modoCronograma && (
+                <span>Atividades</span>
+                {!modoAnalytics && modoCronograma && (
                   <ChevronRight size={12} className="animate-pulse" />
                 )}
               </button>
-              <button
-                onClick={handleDetalhadoClick}
-                disabled={!temCronogramaForced}
-                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 transform hover:scale-105 flex items-center space-x-1 touch-target ${
-                  !visualizacaoExecutiva && !modoAnalytics && modoCronograma
-                    ? `bg-blue-500 text-white shadow-md`
-                    : temCronogramaForced
-                      ? `${themeClasses.textSecondary} hover:${themeClasses.textPrimary} hover:bg-gray-100 dark:hover:bg-gray-800`
-                      : `${themeClasses.textTertiary} cursor-not-allowed opacity-50`
-                }`}
-              >
-                <span>Detalhado</span>
-                {!visualizacaoExecutiva && !modoAnalytics && modoCronograma && (
-                  <ChevronRight size={12} className="animate-pulse" />
-                )}
-              </button>
-              <button
-                onClick={handleAnalyticsClick}
-                disabled={!temCronogramaForced}
-                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 transform hover:scale-105 flex items-center space-x-1 touch-target ${
-                  modoAnalytics && modoCronograma
-                    ? `bg-blue-500 text-white shadow-md`
-                    : temCronogramaForced
-                      ? `${themeClasses.textSecondary} hover:${themeClasses.textPrimary} hover:bg-gray-100 dark:hover:bg-gray-800`
-                      : `${themeClasses.textTertiary} cursor-not-allowed opacity-50`
-                }`}
-              >
-                <BarChart3 size={12} />
-                <span>Analytics</span>
-                {modoAnalytics && modoCronograma && (
-                  <ChevronRight size={12} className="animate-pulse" />
-                )}
-              </button>
+
+              {/* Botão Analytics */}
+              {modoCronograma && (
+                <button
+                  onClick={handleAnalyticsClick}
+                  disabled={!temCronogramaForced}
+                  className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 transform hover:scale-105 flex items-center space-x-1 touch-target ${
+                    modoAnalytics && modoCronograma
+                      ? `bg-blue-500 text-white shadow-md`
+                      : temCronogramaForced
+                        ? `${themeClasses.textSecondary} hover:${themeClasses.textPrimary} hover:bg-gray-100 dark:hover:bg-gray-800`
+                        : `${themeClasses.textTertiary} cursor-not-allowed opacity-50`
+                  }`}
+                >
+                  <BarChart3 size={12} />
+                  <span>Analytics</span>
+                  {modoAnalytics && modoCronograma && (
+                    <ChevronRight size={12} className="animate-pulse" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
 
@@ -287,6 +262,28 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
                 {modoCronograma ? 'Dashboard' : 'Cronograma'}
               </span>
             </button>
+
+            {/* Botão Analytics - versão principal sempre visível quando há cronograma */}
+            {modoCronograma && (
+              <button
+                onClick={handleAnalyticsClick}
+                disabled={!temCronogramaForced}
+                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 transform hover:scale-105 touch-target shadow-md ${
+                  modoAnalytics
+                    ? 'bg-orange-500 text-white hover:bg-orange-600'
+                    : temCronogramaForced
+                      ? 'bg-blue-500 text-white hover:bg-blue-600'
+                      : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                }`}
+              >
+                <BarChart3 size={14} className="sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline">Analytics</span>
+                <span className="xs:hidden">📊</span>
+                {modoAnalytics && (
+                  <ChevronRight size={12} className="animate-pulse" />
+                )}
+              </button>
+            )}
 
             {isAuthenticated && isAdmin && (
               <>

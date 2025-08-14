@@ -1,0 +1,25 @@
+# Arquivos de desenvolvimento
+*.md
+.env.example
+temp_*
+test-*
+debug-*
+
+# Node modules (serão reinstalados)
+node_modules/
+
+# Arquivos de build locais
+frontend/dashboard/build/
+backend/dist/
+
+# Arquivos de teste
+*.test.*
+__tests__/
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.temp/

@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BarChart3, Route, TrendingUp, Activity, Settings } from 'lucide-react';
+import {
+  BarChart3,
+  Route,
+  TrendingUp,
+  Activity,
+  Settings,
+} from 'lucide-react';
 import AreaGridEnhanced from './components/AreaGridEnhanced';
 import AreaDetailModalEnhanced from './components/AreaDetailModalEnhanced';
 import SummaryCards from './components/SummaryCards';
@@ -25,10 +31,10 @@ import TarefaDetailModal from './components/TarefaDetailModal';
 import ParadaHeader from './components/ParadaHeader';
 import PhasesNavigation from './components/PhasesNavigation';
 import TopNavigation from './components/TopNavigation';
-import PhaseExecutiveView from './components/PhaseExecutiveView';
 import PhaseDataManager from './components/PhaseDataManager';
 import CronogramaUpload from './components/CronogramaUpload';
 import PreparacaoUpload from './components/PreparacaoUpload';
+import PhaseActivitiesManager from './components/PhaseActivitiesManager';
 import { NotificationContainer } from './components/NotificationToast';
 import { useNotifications } from './hooks/useNotifications';
 import { ThemeProvider, useThemeClasses } from './contexts/ThemeContext';
@@ -80,8 +86,7 @@ function AppContent() {
   >('traditional');
 
   // Estados para cronograma
-  const [modoCronograma, setModoCronograma] = useState(false);
-  const [visualizacaoExecutiva, setVisualizacaoExecutiva] = useState(true);
+  const [modoCronograma, setModoCronograma] = useState(true); // Iniciar em modo cronograma
   const [categoriasCronograma, setCategoriasCronograma] = useState<
     CategoriaCronograma[]
   >([]);
@@ -107,12 +112,18 @@ function AppContent() {
   const [modalAtividades, setModalAtividades] = useState(false);
   const [dadosPreparacaoProcessados, setDadosPreparacaoProcessados] =
     useState<any>(null);
-  const [modoAnalytics, setModoAnalytics] = useState(false);
+  const [modoAnalytics, setModoAnalytics] = useState(false); // false = modo Atividades, true = modo Analytics
   const [navegacaoAtiva, setNavegacaoAtiva] = useState(false);
 
   // Estados para controle das fases da parada
   const [paradaData, setParadaData] = useState<ParadaData>(getPhasesMockData());
   const [selectedPhase, setSelectedPhase] = useState<PhaseType>('preparacao');
+
+  // Estados para filtros de atividades
+  const [filtroStatus, setFiltroStatus] = useState<string>('');
+  const [filtroPrioridade, setFiltroPrioridade] = useState<string>('');
+  const [filtroFrente, setFiltroFrente] = useState<string>('');
+  const [termoPesquisa, setTermoPesquisa] = useState<string>('');
 
   // Função para filtrar áreas pela fase selecionada
   const getFilteredAreasByPhase = (phase: PhaseType) => {
@@ -137,6 +148,385 @@ function AppContent() {
   const getCurrentPhaseName = () => {
     const phase = paradaData.phases.find((p) => p.id === selectedPhase);
     return phase ? phase.name : 'Preparação';
+  };
+
+  // Função para converter dados do cronograma em atividades organizadas por frente de trabalho
+  const getAtividadesPorFase = (fase: PhaseType) => {
+    console.log('🔍 getAtividadesPorFase chamada para fase:', fase);
+    console.log('📊 categoriasCronograma:', categoriasCronograma);
+    console.log(
+      '📈 categoriasCronograma.length:',
+      categoriasCronograma?.length || 0
+    );
+
+    if (!categoriasCronograma || categoriasCronograma.length === 0) {
+      console.log('⚠️ Nenhuma categoria encontrada - retornando array vazio');
+      return [];
+    }
+
+    const atividadesDaFase: any[] = [];
+    console.log('🔄 Processando categorias...');
+
+    categoriasCronograma.forEach((categoria) => {
+      // Verificação de segurança para categoria
+      if (
+        !categoria ||
+        !categoria.tarefas ||
+        !Array.isArray(categoria.tarefas)
+      ) {
+        console.warn('⚠️ Categoria inválida encontrada:', categoria);
+        return;
+      }
+
+      categoria.tarefas.forEach((tarefa) => {
+        // Verificação de segurança para tarefa
+        if (!tarefa || typeof tarefa !== 'object') {
+          console.warn('⚠️ Tarefa inválida encontrada:', tarefa);
+          return;
+        }
+
+        // Garantir que os campos necessários existem e são strings
+        const categoriaNome = categoria.nome || '';
+        const tarefaNome = tarefa.nome || '';
+
+        // Determinar frente de trabalho baseada na categoria e nome da tarefa
+        let frenteTrabalho = 'Outras Atividades';
+
+        if (fase === 'preparacao') {
+          if (
+            categoriaNome.includes('Logística') ||
+            tarefaNome.includes('Logística')
+          ) {
+            frenteTrabalho = 'Logística e Suprimentos';
+          } else if (
+            categoriaNome.includes('Refratário') ||
+            tarefaNome.includes('Refratário')
+          ) {
+            frenteTrabalho = 'Refratário';
+          } else if (
+            categoriaNome.includes('Mobilização') ||
+            tarefaNome.includes('Mobilização') ||
+            tarefaNome.includes('Canteiro')
+          ) {
+            frenteTrabalho = 'Mobilização e Canteiro';
+          } else if (categoriaNome.includes('Preparação')) {
+            frenteTrabalho = 'Preparação Geral';
+          }
+        } else if (
+          fase === 'parada' ||
+          fase === 'manutencao' ||
+          fase === 'partida'
+        ) {
+          if (
+            categoriaNome.includes('Parada') ||
+            tarefaNome.includes('Parada') ||
+            tarefaNome.includes('Shutdown')
+          ) {
+            frenteTrabalho = 'Parada de Unidades';
+          } else if (
+            categoriaNome.includes('Manutenção') ||
+            tarefaNome.includes('Manutenção')
+          ) {
+            frenteTrabalho = 'Manutenção';
+          } else if (
+            categoriaNome.includes('Partida') ||
+            tarefaNome.includes('Partida') ||
+            tarefaNome.includes('Startup')
+          ) {
+            frenteTrabalho = 'Partida de Unidades';
+          } else if (
+            categoriaNome.includes('Teste') ||
+            tarefaNome.includes('Teste')
+          ) {
+            frenteTrabalho = 'Testes e Comissionamento';
+          } else if (
+            categoriaNome.includes('Inspeção') ||
+            tarefaNome.includes('Inspeção')
+          ) {
+            frenteTrabalho = 'Inspeção e Controle';
+          }
+        }
+
+        // Determinar status baseado no percentual
+        let status = 'pendente';
+        if (tarefa.percentualCompleto >= 100) {
+          status = 'concluida';
+        } else if (tarefa.percentualCompleto > 0) {
+          status = 'em-andamento';
+        }
+
+        // Verificar se está atrasada (simplificado)
+        const fimTarefa = new Date(tarefa.fim || tarefa.fimBaseline);
+        const hoje = new Date();
+        if (fimTarefa < hoje && tarefa.percentualCompleto < 100) {
+          status = 'atrasada';
+        }
+
+        // Determinar prioridade baseada no nível e criticidade
+        let prioridade: 'alta' | 'media' | 'baixa' = 'media';
+        if (tarefa.nivel === 0 || (tarefa as any).critica) {
+          prioridade = 'alta';
+        } else if (tarefa.nivel > 2) {
+          prioridade = 'baixa';
+        }
+
+        // Gerar dependências e recursos baseados no tipo de atividade
+        const gerarDependenciasRecursos = (
+          nome: string,
+          frenteTrabalho: string
+        ) => {
+          const dependencias: string[] = [];
+          const recursos: string[] = [];
+
+          // Dependências baseadas na atividade
+          if (nome.includes('Mobilização')) {
+            dependencias.push('Contratação de pessoal', 'Licenças ambientais');
+            recursos.push('Equipamentos pesados', 'Caminhões', 'Guindaste');
+          } else if (nome.includes('Canteiro')) {
+            dependencias.push('Mobilização', 'Terraplanagem');
+            recursos.push('Containers', 'Energia elétrica', 'Agua potável');
+          } else if (nome.includes('Logística')) {
+            dependencias.push('Canteiro', 'Acessos liberados');
+            recursos.push('Empilhadeira', 'Pallets', 'Armazenagem');
+          } else if (nome.includes('Refratário')) {
+            dependencias.push('Desmontagem', 'Limpeza de equipamentos');
+            recursos.push('Refratários', 'Argamassa', 'Ferramentas especiais');
+          } else if (nome.includes('Parada')) {
+            dependencias.push('Preparação concluída', 'Permissões de trabalho');
+            recursos.push('Equipe operacional', 'Procedimentos de parada');
+          } else if (nome.includes('Manutenção')) {
+            dependencias.push(
+              'Parada de equipamentos',
+              'Isolamento de energia'
+            );
+            recursos.push(
+              'Peças de reposição',
+              'Ferramentas',
+              'Mão de obra especializada'
+            );
+          } else if (nome.includes('Partida')) {
+            dependencias.push('Manutenção concluída', 'Testes aprovados');
+            recursos.push('Equipe de partida', 'Instrumentação', 'Utilidades');
+          }
+
+          return { dependencias, recursos };
+        };
+
+        const { dependencias, recursos } = gerarDependenciasRecursos(
+          tarefaNome,
+          frenteTrabalho
+        );
+
+        const atividade = {
+          id: tarefa.id?.toString() || `${categoriaNome}-${Math.random()}`,
+          nome: tarefaNome,
+          frenteTrabalho,
+          percentualCompleto: tarefa.percentualCompleto || 0,
+          percentualFisico:
+            tarefa.percentualFisico || tarefa.percentualCompleto || 0,
+          duracao: tarefa.duracao || '1 day',
+          inicio:
+            tarefa.inicio ||
+            tarefa.inicioBaseline ||
+            new Date().toISOString().split('T')[0],
+          fim:
+            tarefa.fim ||
+            tarefa.fimBaseline ||
+            new Date().toISOString().split('T')[0],
+          responsavel:
+            (tarefa as any).responsavel || `Coordenador ${frenteTrabalho}`,
+          prioridade,
+          status,
+          dependencias: (tarefa as any).dependencias || dependencias,
+          recursos: (tarefa as any).recursos || recursos,
+          fase:
+            (tarefa as any).fase ||
+            (fase === 'preparacao' ? 'Preparação' : 'Operacional'),
+          categoria: categoriaNome,
+          nivel: tarefa.nivel || 0,
+        };
+
+        // Filtrar por fase se a tarefa tem informação de fase
+        if ((tarefa as any).fase) {
+          const tarefaFase = ((tarefa as any).fase || '').toLowerCase();
+          if (
+            (fase === 'preparacao' && tarefaFase.includes('preparação')) ||
+            ((fase === 'parada' ||
+              fase === 'manutencao' ||
+              fase === 'partida') &&
+              tarefaFase.includes('operacional'))
+          ) {
+            atividadesDaFase.push(atividade);
+          }
+        } else {
+          // Se não tem informação de fase, incluir baseado na categoria
+          if (
+            (fase === 'preparacao' &&
+              (categoriaNome.includes('Preparação') ||
+                !categoriaNome.includes('Operacional'))) ||
+            ((fase === 'parada' ||
+              fase === 'manutencao' ||
+              fase === 'partida') &&
+              categoriaNome.includes('Operacional'))
+          ) {
+            atividadesDaFase.push(atividade);
+          }
+        }
+      });
+    });
+
+    console.log('✅ getAtividadesPorFase finalizada');
+    console.log('📊 Total de atividades encontradas:', atividadesDaFase.length);
+    console.log('🎯 Primeiras 3 atividades:', atividadesDaFase.slice(0, 3));
+    console.log('📋 Todas as atividades:', atividadesDaFase);
+
+    return atividadesDaFase;
+  };
+
+  // Função para aplicar filtros às atividades
+  const aplicarFiltrosAtividades = (atividades: any[]) => {
+    console.log('🔍 Aplicando filtros:', {
+      filtroStatus,
+      filtroPrioridade,
+      filtroFrente,
+      termoPesquisa,
+    });
+    console.log('📊 Atividades antes do filtro:', atividades.length);
+
+    const resultado = atividades.filter((atividade) => {
+      let passaFiltro = true;
+
+      // Debug da atividade atual
+      console.log('🔎 Verificando atividade:', {
+        nome: atividade.nome,
+        status: atividade.status,
+        percentual: atividade.percentualCompleto,
+        prioridade: atividade.prioridade,
+        frente: atividade.frenteTrabalho,
+      });
+
+      // Filtro por Pesquisa
+      if (termoPesquisa && termoPesquisa.trim()) {
+        const termoBusca = termoPesquisa.toLowerCase().trim();
+        const nome = (atividade.nome || '').toLowerCase();
+        const frente = (atividade.frenteTrabalho || '').toLowerCase();
+        const responsavel = (atividade.responsavel || '').toLowerCase();
+
+        passaFiltro =
+          nome.includes(termoBusca) ||
+          frente.includes(termoBusca) ||
+          responsavel.includes(termoBusca);
+
+        if (!passaFiltro) {
+          console.log('❌ Filtro de pesquisa rejeitou:', atividade.nome);
+          return false;
+        }
+      }
+
+      // Filtro por Status
+      if (filtroStatus) {
+        const status = atividade.status?.toLowerCase() || '';
+        const percentual = atividade.percentualCompleto || 0;
+
+        switch (filtroStatus) {
+          case 'completa':
+            passaFiltro = status.includes('completa') || percentual >= 100;
+            break;
+          case 'em_andamento':
+            passaFiltro =
+              status.includes('andamento') ||
+              (percentual > 0 && percentual < 100);
+            break;
+          case 'pendente':
+            passaFiltro = status.includes('pendente') || percentual === 0;
+            break;
+          case 'atrasada':
+            // Verificar se está atrasada baseado na data
+            const hoje = new Date();
+            const fimPrevisto = new Date(atividade.fim);
+            passaFiltro =
+              status.includes('atrasada') ||
+              (fimPrevisto < hoje && percentual < 100);
+            break;
+        }
+
+        if (!passaFiltro) {
+          console.log('❌ Filtro por status rejeitou:', atividade.nome);
+          return false;
+        }
+      }
+
+      // Filtro por Prioridade
+      if (filtroPrioridade) {
+        const prioridade = atividade.prioridade?.toLowerCase() || '';
+        passaFiltro = prioridade.includes(filtroPrioridade);
+
+        if (!passaFiltro) {
+          console.log('❌ Filtro por prioridade rejeitou:', atividade.nome);
+          return false;
+        }
+      }
+
+      // Filtro por Frente de Trabalho
+      if (filtroFrente) {
+        const frente = atividade.frenteTrabalho?.toLowerCase() || '';
+        switch (filtroFrente) {
+          case 'manutencao':
+            passaFiltro =
+              frente.includes('manutenção') || frente.includes('manutencao');
+            break;
+          case 'logistica':
+            passaFiltro =
+              frente.includes('logística') || frente.includes('logistica');
+            break;
+          case 'refratario':
+            passaFiltro =
+              frente.includes('refratário') || frente.includes('refratario');
+            break;
+          case 'mobilizacao':
+            passaFiltro =
+              frente.includes('mobilização') || frente.includes('mobilizacao');
+            break;
+          case 'testes':
+            passaFiltro =
+              frente.includes('testes') || frente.includes('comissionamento');
+            break;
+          case 'inspecao':
+            passaFiltro =
+              frente.includes('inspeção') ||
+              frente.includes('inspecao') ||
+              frente.includes('controle');
+            break;
+          default:
+            passaFiltro = true;
+        }
+
+        if (!passaFiltro) {
+          console.log('❌ Filtro por frente rejeitou:', atividade.nome);
+          return false;
+        }
+      }
+
+      console.log('✅ Atividade passou por todos os filtros:', atividade.nome);
+      return true;
+    });
+
+    console.log('📈 Atividades após filtro:', resultado.length);
+    return resultado;
+  };
+
+  // Função para obter atividades filtradas
+  const getAtividadesFiltradas = (fase: PhaseType) => {
+    const atividades = getAtividadesPorFase(fase);
+    return aplicarFiltrosAtividades(atividades);
+  };
+
+  // Função para limpar todos os filtros
+  const limparFiltros = () => {
+    setFiltroStatus('');
+    setFiltroPrioridade('');
+    setFiltroFrente('');
+    setTermoPesquisa('');
   };
 
   // Função para carregar dados salvos localmente
@@ -251,7 +641,6 @@ function AppContent() {
           };
           setParadaData(novasParadaData);
           setModoCronograma(true);
-          setVisualizacaoExecutiva(true);
 
           // Calcular resumo baseado nas fases
           const totalTarefas = cronogramaData.atividades?.length || 0;
@@ -360,6 +749,178 @@ function AppContent() {
 
           // Armazenar dados de preparação processados para uso no modal
           setDadosPreparacaoProcessados(dadosPreparacao);
+
+          // IMPORTANTE: Criar categoriasCronograma a partir dos dados reais processados
+          console.log(
+            '🔄 Criando categorias do cronograma a partir dos dados reais...'
+          );
+          const categoriasCronogramaReais: CategoriaCronograma[] = [];
+
+          // Adicionar atividades de preparação
+          if (
+            dadosPreparacao.atividades &&
+            dadosPreparacao.atividades.length > 0
+          ) {
+            const categoriaPreparacao: CategoriaCronograma = {
+              nome: 'Preparação PFUS3',
+              cor: '#10B981', // Verde
+              icone: '🔧',
+              progresso: Math.round(
+                dadosPreparacao.atividades.reduce(
+                  (acc, a) => acc + a.percentual,
+                  0
+                ) / dadosPreparacao.atividades.length
+              ),
+              tarefas: dadosPreparacao.atividades.map(
+                (atividade) =>
+                  ({
+                    id: atividade.id || Math.random().toString(),
+                    nome: atividade.nome,
+                    percentualCompleto: atividade.percentual,
+                    percentualFisico: atividade.percentual,
+                    percentualReplanejamento: 0,
+                    percentualFisicoPrev: atividade.percentual,
+                    percentualFisicoReplan: atividade.percentual,
+                    percentualFisicoCalc: atividade.percentual,
+                    duracao: `${atividade.duracao || 1} days`,
+                    inicio:
+                      atividade.dataInicio ||
+                      new Date().toISOString().split('T')[0],
+                    fim:
+                      atividade.dataFim ||
+                      new Date().toISOString().split('T')[0],
+                    inicioBaseline:
+                      atividade.dataInicio ||
+                      new Date().toISOString().split('T')[0],
+                    fimBaseline:
+                      atividade.dataFim ||
+                      new Date().toISOString().split('T')[0],
+                    nivel: atividade.nivel || 0,
+                    categoria: 'Preparação',
+                    // Campos personalizados (não na interface padrão, mas funcionais)
+                    responsavel:
+                      (atividade as any).responsavel || 'Equipe Preparação',
+                    prioridade: atividade.critica ? 'alta' : 'media',
+                    status:
+                      atividade.percentual >= 100
+                        ? 'concluida'
+                        : atividade.percentual > 0
+                          ? 'em-andamento'
+                          : 'pendente',
+                    dependencias: (atividade as any).dependencias || [],
+                    recursos: (atividade as any).recursos || [],
+                    fase: 'Preparação',
+                  }) as TarefaCronograma & {
+                    responsavel: string;
+                    prioridade: string;
+                    status: string;
+                    dependencias: string[];
+                    recursos: string[];
+                    fase: string;
+                  }
+              ),
+            };
+            categoriasCronogramaReais.push(categoriaPreparacao);
+          }
+
+          // Adicionar atividades operacionais
+          if (
+            dadosOperacional.atividades &&
+            dadosOperacional.atividades.length > 0
+          ) {
+            const categoriaOperacional: CategoriaCronograma = {
+              nome: 'Operacional PFUS3',
+              cor: '#3B82F6', // Azul
+              icone: '⚙️',
+              progresso: Math.round(
+                (dadosOperacional.atividades.filter(
+                  (a) => a.status === 'completed'
+                ).length *
+                  100) /
+                  dadosOperacional.atividades.length
+              ),
+              tarefas: dadosOperacional.atividades.map(
+                (atividade) =>
+                  ({
+                    id: atividade.id || Math.random().toString(),
+                    nome: atividade.nome,
+                    percentualCompleto:
+                      atividade.status === 'completed'
+                        ? 100
+                        : atividade.status === 'in-progress'
+                          ? 50
+                          : 0,
+                    percentualFisico:
+                      atividade.status === 'completed'
+                        ? 100
+                        : atividade.status === 'in-progress'
+                          ? 50
+                          : 0,
+                    percentualReplanejamento: 0,
+                    percentualFisicoPrev:
+                      atividade.status === 'completed' ? 100 : 50,
+                    percentualFisicoReplan:
+                      atividade.status === 'completed' ? 100 : 50,
+                    percentualFisicoCalc:
+                      atividade.status === 'completed' ? 100 : 50,
+                    duracao: `${atividade.duracao || 1} days`,
+                    inicio:
+                      atividade.dataInicio ||
+                      new Date().toISOString().split('T')[0],
+                    fim:
+                      atividade.dataFim ||
+                      new Date().toISOString().split('T')[0],
+                    inicioBaseline:
+                      atividade.dataInicio ||
+                      new Date().toISOString().split('T')[0],
+                    fimBaseline:
+                      atividade.dataFim ||
+                      new Date().toISOString().split('T')[0],
+                    nivel: atividade.nivel || 0,
+                    categoria: 'Operacional',
+                    // Campos personalizados
+                    responsavel: atividade.responsavel || 'Equipe Operacional',
+                    prioridade: (atividade as any).critica ? 'alta' : 'media',
+                    status:
+                      atividade.status === 'completed'
+                        ? 'concluida'
+                        : atividade.status === 'in-progress'
+                          ? 'em-andamento'
+                          : 'pendente',
+                    dependencias: (atividade as any).dependencias || [],
+                    recursos: (atividade as any).recursos || [],
+                    fase: 'Operacional',
+                  }) as TarefaCronograma & {
+                    responsavel: string;
+                    prioridade: string;
+                    status: string;
+                    dependencias: string[];
+                    recursos: string[];
+                    fase: string;
+                  }
+              ),
+            };
+            categoriasCronogramaReais.push(categoriaOperacional);
+          }
+
+          console.log(
+            '✅ Categorias do cronograma criadas:',
+            categoriasCronogramaReais
+          );
+          console.log(
+            '📊 Total de categorias:',
+            categoriasCronogramaReais.length
+          );
+          console.log(
+            '📋 Total de tarefas:',
+            categoriasCronogramaReais.reduce(
+              (acc, cat) => acc + cat.tarefas.length,
+              0
+            )
+          );
+
+          // Definir as categorias do cronograma
+          setCategoriasCronograma(categoriasCronogramaReais);
 
           // Combinar dados das duas fases
           const todasFases = [dadosPreparacao.fase, ...dadosOperacional.fases];
@@ -503,7 +1064,6 @@ function AppContent() {
           setSummary(summaryData);
           setAreas(areasData);
           setModoCronograma(true);
-          setVisualizacaoExecutiva(true);
           setIsOnline(true);
           setLastUpdate(new Date());
 
@@ -670,7 +1230,6 @@ function AppContent() {
 
             setResumoCronograma(resumoCombinado);
             setModoCronograma(true);
-            setVisualizacaoExecutiva(true);
             setIsOnline(true);
             setLastUpdate(new Date());
 
@@ -732,7 +1291,7 @@ function AppContent() {
     loadData();
   }, []); // Array de dependências vazio para executar apenas uma vez
 
-  // Ativar automaticamente o modo executivo quando há dados de cronograma PELA PRIMEIRA VEZ
+  // Ativar automaticamente o modo atividades quando há dados de cronograma
   useEffect(() => {
     if (
       modoCronograma &&
@@ -740,27 +1299,20 @@ function AppContent() {
       resumoCronograma.totalTarefas > 0 &&
       !navegacaoAtiva // Só ativar se o usuário não estiver navegando
     ) {
-      // Se estamos no modo cronograma e temos dados, mas nenhuma visualização está ativa
-      // SOMENTE na inicialização, não interferir com navegação do usuário
-      if (!visualizacaoExecutiva && !modoAnalytics) {
-        console.log(
-          '🔄 Ativando visualização executiva por padrão (inicialização)'
-        );
-        setVisualizacaoExecutiva(true);
-      }
+      // Modo atividades é padrão (modoAnalytics = false)
+      console.log('🔄 Dados de cronograma carregados - modo atividades ativo');
     }
-  }, [modoCronograma, resumoCronograma, navegacaoAtiva]); // Removido visualizacaoExecutiva e modoAnalytics das dependências
+  }, [modoCronograma, resumoCronograma, navegacaoAtiva]);
 
   // Debug: Estados de navegação em tempo real
   useEffect(() => {
     console.log('🔄 ESTADOS DE NAVEGAÇÃO MUDARAM:', {
       modoCronograma,
-      visualizacaoExecutiva,
       modoAnalytics,
       navegacaoAtiva,
       timestamp: new Date().toLocaleTimeString(),
     });
-  }, [visualizacaoExecutiva, modoAnalytics, modoCronograma, navegacaoAtiva]);
+  }, [modoAnalytics, modoCronograma, navegacaoAtiva]);
 
   // Debug: Estado de aba Analytics em tempo real
   useEffect(() => {
@@ -831,7 +1383,6 @@ function AppContent() {
   // Função para alternar entre dashboard e cronograma
   const toggleMode = () => {
     setModoCronograma(!modoCronograma);
-    setVisualizacaoExecutiva(true);
   };
 
   // Função para abrir modal de detalhes
@@ -935,7 +1486,6 @@ function AppContent() {
     setCategoriasCronograma([]);
     setResumoCronograma(null);
     setModoCronograma(false);
-    setVisualizacaoExecutiva(true);
     setShowUpload(false);
     notifications.success(
       'Dados limpos',
@@ -959,7 +1509,6 @@ function AppContent() {
     setCategoriasCronograma(categorias);
     setResumoCronograma(resumo);
     setModoCronograma(true);
-    setVisualizacaoExecutiva(true);
     setModoAnalytics(false);
     setShowUpload(false);
 
@@ -1043,7 +1592,6 @@ function AppContent() {
 
     // Atualizar estado do modo cronograma
     setModoCronograma(true);
-    setVisualizacaoExecutiva(true);
 
     notifications.success(
       'Cronograma Operacional Carregado',
@@ -1095,13 +1643,86 @@ function AppContent() {
       {/* Botão de Debug - só aparece se não há dados */}
       {(!areas || areas.length === 0) &&
         (!categoriasCronograma || categoriasCronograma.length === 0) && (
-          <div className="fixed top-20 right-4 z-50">
+          <div className="fixed top-20 right-4 z-50 space-y-2">
             <button
               onClick={forcarDadosDemo}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg"
+              className="block w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg"
               title="Forçar carregamento de dados de demonstração"
             >
               🔧 Debug: Carregar Dados Demo
+            </button>
+            <button
+              onClick={async () => {
+                console.log('� Carregando dados reais dos arquivos CSV...');
+                try {
+                  // Carregar cronograma operacional
+                  const responseCronograma = await fetch(
+                    '/cronograma-operacional.csv'
+                  );
+                  const csvCronograma = await responseCronograma.text();
+                  console.log(
+                    '📄 Cronograma operacional carregado:',
+                    csvCronograma.slice(0, 200)
+                  );
+
+                  // Carregar cronograma de preparação
+                  const responsePreparacao = await fetch(
+                    '/cronograma-preparacao.csv'
+                  );
+                  const csvPreparacao = await responsePreparacao.text();
+                  console.log(
+                    '📄 Cronograma preparação carregado:',
+                    csvPreparacao.slice(0, 200)
+                  );
+
+                  // Processar dados usando as funções existentes
+                  const dadosOperacionais =
+                    await processarCronogramaOperacional(csvCronograma);
+                  const dadosPreparacao =
+                    await processarCronogramaPreparacao(csvPreparacao);
+
+                  console.log('✅ Dados processados:');
+                  console.log('🔧 Operacionais:', dadosOperacionais);
+                  console.log('🔨 Preparação:', dadosPreparacao);
+
+                  // Definir dados (usar a estrutura correta dos tipos)
+                  if (
+                    dadosOperacionais &&
+                    (dadosOperacionais as any).categorias
+                  ) {
+                    setCategoriasCronograma(
+                      (dadosOperacionais as any).categorias
+                    );
+                    if ((dadosOperacionais as any).resumo) {
+                      setResumoCronograma((dadosOperacionais as any).resumo);
+                    }
+                    console.log('✅ Dados operacionais definidos!');
+                  } else if (
+                    dadosPreparacao &&
+                    (dadosPreparacao as any).categorias
+                  ) {
+                    setCategoriasCronograma(
+                      (dadosPreparacao as any).categorias
+                    );
+                    if ((dadosPreparacao as any).resumo) {
+                      setResumoCronograma((dadosPreparacao as any).resumo);
+                    }
+                    console.log('✅ Dados de preparação definidos!');
+                  }
+
+                  notifications.success(
+                    'Dados Carregados',
+                    'Arquivos CSV carregados com sucesso!'
+                  );
+                } catch (error) {
+                  console.error('❌ Erro ao carregar dados:', error);
+                  notifications.error('Erro', 'Erro ao carregar dados CSV');
+                }
+              }}
+              className="block w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg"
+              title="Carregar dados reais dos arquivos CSV"
+            >
+              📊 Carregar CSV Reais
             </button>
           </div>
         )}
@@ -1112,81 +1733,27 @@ function AppContent() {
         user={user}
         isAdmin={isAdmin}
         modoCronograma={modoCronograma}
-        visualizacaoExecutiva={visualizacaoExecutiva}
         modoAnalytics={modoAnalytics}
         existeCronogramaLocal={existeCronogramaLocal()}
         resumoCronograma={resumoCronograma}
-        onExecutivoClick={() => {
-          console.log('🎯 Executivo clicado - antes:', {
-            modoCronograma,
-            visualizacaoExecutiva,
-            modoAnalytics,
-          });
-          setNavegacaoAtiva(true); // Marcar que usuário está navegando
+        onAtividadesClick={() => {
+          console.log('📋 Atividades clicado');
+          setNavegacaoAtiva(true);
           setModoCronograma(true);
-          setVisualizacaoExecutiva(true);
           setModoAnalytics(false);
-          console.log(
-            '🎯 Executivo clicado - depois: setando modoCronograma=true, visualizacaoExecutiva=true, modoAnalytics=false'
-          );
-
-          // Confirmar mudança de estado após um pequeno delay
           setTimeout(() => {
-            console.log('🎯 EXECUTIVO - Estado confirmado após mudança:', {
-              modoCronograma: true,
-              visualizacaoExecutiva: true,
-              modoAnalytics: false,
-            });
-            setNavegacaoAtiva(false); // Resetar flag após navegação
-          }, 100);
-        }}
-        onDetalhadoClick={() => {
-          console.log('🔍 Detalhado clicado - antes:', {
-            modoCronograma,
-            visualizacaoExecutiva,
-            modoAnalytics,
-          });
-          setNavegacaoAtiva(true); // Marcar que usuário está navegando
-          setModoCronograma(true);
-          setVisualizacaoExecutiva(false);
-          setModoAnalytics(false);
-          console.log(
-            '🔍 Detalhado clicado - depois: setando modoCronograma=true, visualizacaoExecutiva=false, modoAnalytics=false'
-          );
-
-          // Confirmar mudança de estado após um pequeno delay
-          setTimeout(() => {
-            console.log('🔍 DETALHADO - Estado confirmado após mudança:', {
-              modoCronograma: true,
-              visualizacaoExecutiva: false,
-              modoAnalytics: false,
-            });
-            setNavegacaoAtiva(false); // Resetar flag após navegação
+            console.log('� ATIVIDADES - Estado confirmado');
+            setNavegacaoAtiva(false);
           }, 100);
         }}
         onAnalyticsClick={() => {
-          console.log('📊 Analytics clicado - antes:', {
-            modoCronograma,
-            visualizacaoExecutiva,
-            modoAnalytics,
-          });
-          setNavegacaoAtiva(true); // Marcar que usuário está navegando
+          console.log('📊 Analytics clicado');
+          setNavegacaoAtiva(true);
           setModoCronograma(true);
-          setVisualizacaoExecutiva(false);
           setModoAnalytics(true);
-          // Removido: setAbaAnalytics('kpi') - para manter a aba atual selecionada
-          console.log(
-            '📊 Analytics clicado - depois: setando modoCronograma=true, visualizacaoExecutiva=false, modoAnalytics=true'
-          );
-
-          // Confirmar mudança de estado após um pequeno delay
           setTimeout(() => {
-            console.log('📊 ANALYTICS - Estado confirmado após mudança:', {
-              modoCronograma: true,
-              visualizacaoExecutiva: false,
-              modoAnalytics: true,
-            });
-            setNavegacaoAtiva(false); // Resetar flag após navegação
+            console.log('📊 ANALYTICS - Estado confirmado');
+            setNavegacaoAtiva(false);
           }, 100);
         }}
         onDashboardClick={toggleMode}
@@ -1220,7 +1787,34 @@ function AppContent() {
           <PhasesNavigation
             phases={paradaData.phases}
             currentPhase={selectedPhase}
-            onPhaseSelect={setSelectedPhase}
+            onPhaseSelect={(phaseId: PhaseType) => {
+              setSelectedPhase(phaseId);
+              setModoAnalytics(false); // Garantir que está no modo Atividades
+              console.log(
+                `🎯 Fase selecionada: ${phaseId} - Redirecionando para atividades`
+              );
+
+              // Scroll suave para as atividades após um pequeno delay
+              setTimeout(() => {
+                const element = document.querySelector(
+                  '[data-testid="activities-section"]'
+                );
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest',
+                  });
+                  console.log(
+                    '📍 Scroll automático para as atividades executado'
+                  );
+                } else {
+                  console.warn(
+                    '⚠️ Seção de atividades não encontrada para scroll'
+                  );
+                }
+              }, 300); // Delay para garantir que o componente foi renderizado
+            }}
           />
         </div>
 
@@ -1319,349 +1913,301 @@ function AppContent() {
         ) : modoCronograma ? (
           /* Modo Cronograma - TEMPORÁRIO: Removida verificação de dados para testar navegação */
           <div>
-            {/* Indicador da Visualização Atual */}
-            <div className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-3 border-l-4 border-blue-500">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  {/* DEBUG: Estados atuais */}
-                  <div className="text-xs bg-gray-100 p-1 rounded">
-                    Exec: {visualizacaoExecutiva.toString()} | Analytics:{' '}
-                    {modoAnalytics.toString()}
+            {/* Renderização Principal Simplificada para 2 Modos */}
+            {modoAnalytics ? (
+              /* Modo Analytics */
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Análises Avançadas</h2>
+                <div className="space-y-6">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                    <p className="text-blue-700 dark:text-blue-300">
+                      Área de Analytics com IA e análises avançadas
+                    </p>
+                    <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
+                      Em desenvolvimento
+                    </p>
                   </div>
-
-                  {visualizacaoExecutiva && !modoAnalytics ? (
-                    <>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <span className="font-medium text-blue-700 dark:text-blue-300">
-                        🎯 Visualização Executiva
-                      </span>
-                      <span className="text-sm text-blue-600 dark:text-blue-400">
-                        - KPIs e resumo gerencial por fase
-                      </span>
-                    </>
-                  ) : !visualizacaoExecutiva && !modoAnalytics ? (
-                    <>
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="font-medium text-green-700 dark:text-green-300">
-                        🔍 Visualização Detalhada
-                      </span>
-                      <span className="text-sm text-green-600 dark:text-green-400">
-                        - Lista completa de atividades e subatividades
-                      </span>
-                    </>
-                  ) : modoAnalytics ? (
-                    <>
-                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                      <span className="font-medium text-purple-700 dark:text-purple-300">
-                        📊 Analytics Avançado
-                      </span>
-                      <span className="text-sm text-purple-600 dark:text-purple-400">
-                        - Análises com IA e predições inteligentes
-                      </span>
-                    </>
-                  ) : null}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {resumoCronograma?.totalTarefas || 0} atividades carregadas
                 </div>
               </div>
-            </div>
-
-            {/* Renderização baseada nos estados */}
-            {visualizacaoExecutiva && !modoAnalytics ? (
-              /* Visualização Executiva por Fase */
-              <div>
-                <PhaseExecutiveView
-                  phaseData={{
-                    id: selectedPhase,
-                    name: `${paradaData.phases.find((p) => p.id === selectedPhase)?.name} PFUS3 2025`,
-                    progress:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.progress || 0,
-                    activities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.activities || 0,
-                    completedActivities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.completedActivities || 0,
-                    delayedActivities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.delayedActivities || 0,
-                    criticalActivities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.criticalActivities || 0,
-                    onTimeActivities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.onTimeActivities || 0,
-                    advancedActivities:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.advancedActivities || 0,
-                    estimatedEnd:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.estimatedEnd || '',
-                    daysRemaining:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.daysRemaining || 0,
-                    totalTasks:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.totalTasks || 0,
-                    inProgressTasks:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.inProgressTasks || 0,
-                    pendingTasks:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.pendingTasks || 0,
-                    categories:
-                      paradaData.phases.find((p) => p.id === selectedPhase)
-                        ?.categories || [],
-                  }}
-                  onDetailsClick={(category) => {
-                    notifications.info(
-                      'Ver Detalhes',
-                      `Abrindo detalhes de ${category}`
-                    );
-                    // Implementação futura: navegação para detalhes da categoria
+            ) : resumoCronograma ? (
+              /* Modo Atividades */
+              <div data-testid="activities-section">
+                <PhaseActivitiesManager
+                  activities={getAtividadesFiltradas(selectedPhase)}
+                  phaseName={
+                    paradaData.phases.find((p) => p.id === selectedPhase)
+                      ?.name || selectedPhase
+                  }
+                  filtroStatus={filtroStatus}
+                  setFiltroStatus={setFiltroStatus}
+                  filtroPrioridade={filtroPrioridade}
+                  setFiltroPrioridade={setFiltroPrioridade}
+                  filtroFrente={filtroFrente}
+                  setFiltroFrente={setFiltroFrente}
+                  termoPesquisa={termoPesquisa}
+                  setTermoPesquisa={setTermoPesquisa}
+                  limparFiltros={limparFiltros}
+                  onAccessDirectly={() => {
+                    console.log('🎯 Acesso direto ao PhaseActivitiesManager');
+                    setModoAnalytics(false);
+                    setModoCronograma(true);
                   }}
                 />
               </div>
-            ) : !modoAnalytics && !visualizacaoExecutiva && resumoCronograma ? (
-              /* Visualização Detalhada - Lista Completa de Tarefas */
-              <div>
-                {/* Botão de Detalhamento de Atividades */}
-                {dadosPreparacaoProcessados &&
-                  dadosPreparacaoProcessados.atividadesHierarchicas && (
-                    <div className="mb-6">
-                      <button
-                        onClick={() => setModalAtividades(true)}
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
-                      >
-                        <div className="flex items-center justify-center">
-                          <Activity className="w-5 h-5 mr-2" />
-                          <span className="font-semibold">
-                            Ver Detalhamento Completo das Atividades
-                          </span>
-                          <div className="ml-3 text-sm opacity-90">
-                            ({dadosPreparacaoProcessados.atividades.length}{' '}
-                            atividades com hierarquia)
-                          </div>
+            ) : (
+              /* Nenhum Dado */
+              <div className="text-center py-8">
+                <p>Nenhum dado de cronograma disponível</p>
+              </div>
+            )}
+            <div>
+              {/* Botão de Detalhamento de Atividades */}
+              {dadosPreparacaoProcessados &&
+                dadosPreparacaoProcessados.atividadesHierarchicas && (
+                  <div className="mb-6">
+                    <button
+                      onClick={() => setModalAtividades(true)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
+                    >
+                      <div className="flex items-center justify-center">
+                        <Activity className="w-5 h-5 mr-2" />
+                        <span className="font-semibold">
+                          Ver Detalhamento Completo das Atividades
+                        </span>
+                        <div className="ml-3 text-sm opacity-90">
+                          ({dadosPreparacaoProcessados.atividades.length}{' '}
+                          atividades com hierarquia)
                         </div>
-                      </button>
-                    </div>
-                  )}
-
-                {resumoCronograma && (
-                  <ResumoCardsCronograma
-                    resumo={resumoCronograma}
-                    onAtrasadasClick={() => {
-                      setMostrarApenasAtrasadas(true);
-                      setMostrarApenasCriticas(false);
-                      setMostrarApenasConcluidas(false);
-                      setMostrarApenasEmAndamento(false);
-                      setMostrarApenasPendentes(false);
-                      setMostrarApenasEmDia(false);
-                      setVisualizacaoExecutiva(false);
-                    }}
-                    onCriticasClick={() => {
-                      setMostrarApenasCriticas(true);
-                      setMostrarApenasAtrasadas(false);
-                      setMostrarApenasConcluidas(false);
-                      setMostrarApenasEmAndamento(false);
-                      setMostrarApenasPendentes(false);
-                      setMostrarApenasEmDia(false);
-                      setVisualizacaoExecutiva(false);
-                    }}
-                    onEmDiaClick={() => {
-                      setMostrarApenasEmDia(true);
-                      setMostrarApenasAtrasadas(false);
-                      setMostrarApenasCriticas(false);
-                      setMostrarApenasConcluidas(false);
-                      setMostrarApenasEmAndamento(false);
-                      setMostrarApenasPendentes(false);
-                      setVisualizacaoExecutiva(false);
-                    }}
-                  />
+                      </div>
+                    </button>
+                  </div>
                 )}
-                <ListaCronograma
-                  categorias={categoriasCronograma}
-                  onTarefaClick={setTarefaSelecionada}
-                  mostrarApenasAtrasadas={mostrarApenasAtrasadas}
-                  mostrarApenasCriticas={mostrarApenasCriticas}
-                  mostrarApenasConcluidas={mostrarApenasConcluidas}
-                  mostrarApenasEmAndamento={mostrarApenasEmAndamento}
-                  mostrarApenasPendentes={mostrarApenasPendentes}
-                  mostrarApenasEmDia={mostrarApenasEmDia}
-                  onLimparFiltros={() => {
-                    setMostrarApenasAtrasadas(false);
+
+              {resumoCronograma && (
+                <ResumoCardsCronograma
+                  resumo={resumoCronograma}
+                  onAtrasadasClick={() => {
+                    setMostrarApenasAtrasadas(true);
                     setMostrarApenasCriticas(false);
                     setMostrarApenasConcluidas(false);
                     setMostrarApenasEmAndamento(false);
                     setMostrarApenasPendentes(false);
                     setMostrarApenasEmDia(false);
                   }}
+                  onCriticasClick={() => {
+                    setMostrarApenasCriticas(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                    setMostrarApenasEmDia(false);
+                  }}
+                  onEmDiaClick={() => {
+                    setMostrarApenasEmDia(true);
+                    setMostrarApenasAtrasadas(false);
+                    setMostrarApenasCriticas(false);
+                    setMostrarApenasConcluidas(false);
+                    setMostrarApenasEmAndamento(false);
+                    setMostrarApenasPendentes(false);
+                  }}
                 />
-              </div>
-            ) : modoAnalytics ? (
-              /* Visualização Analytics Avançados */
-              <div>
-                {/* Navegação das Abas de Analytics */}
-                <div className={`mb-6 ${themeClasses.card} rounded-lg p-4`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2
-                      className={`text-xl font-semibold ${themeClasses.textPrimary}`}
+              )}
+              <ListaCronograma
+                categorias={categoriasCronograma}
+                onTarefaClick={setTarefaSelecionada}
+                mostrarApenasAtrasadas={mostrarApenasAtrasadas}
+                mostrarApenasCriticas={mostrarApenasCriticas}
+                mostrarApenasConcluidas={mostrarApenasConcluidas}
+                mostrarApenasEmAndamento={mostrarApenasEmAndamento}
+                mostrarApenasPendentes={mostrarApenasPendentes}
+                mostrarApenasEmDia={mostrarApenasEmDia}
+                onLimparFiltros={() => {
+                  setMostrarApenasAtrasadas(false);
+                  setMostrarApenasCriticas(false);
+                  setMostrarApenasConcluidas(false);
+                  setMostrarApenasEmAndamento(false);
+                  setMostrarApenasPendentes(false);
+                  setMostrarApenasEmDia(false);
+                }}
+              />
+            </div>
+            ) : modoAnalytics ? ( /* Visualização Analytics Avançados */
+            <div>
+              {/* Navegação das Abas de Analytics */}
+              <div className={`mb-6 ${themeClasses.card} rounded-lg p-4`}>
+                <div className="flex items-center justify-between mb-4">
+                  <h2
+                    className={`text-xl font-semibold ${themeClasses.textPrimary}`}
+                  >
+                    🚀 Analytics Avançados & IA
+                  </h2>
+                  {/* Debug: Verificar dados */}
+                  {(() => {
+                    console.log('🔍 DEBUG Analytics Render:', {
+                      categoriasCronograma: categoriasCronograma?.length || 0,
+                      categoriasCompletas: categoriasCronograma,
+                      abaAnalytics,
+                      temDados:
+                        !!categoriasCronograma &&
+                        categoriasCronograma.length > 0,
+                    });
+                    return null;
+                  })()}
+                  {/* DEBUG: Indicador da aba ativa */}
+                  <div className="text-xs bg-yellow-100 p-1 rounded">
+                    Aba ativa: {abaAnalytics}
+                  </div>
+                  <div
+                    className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
+                  >
+                    <button
+                      onClick={() => {
+                        console.log('🎯 KPI clicado - mudando para:', 'kpi');
+                        setAbaAnalytics('kpi');
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        abaAnalytics === 'kpi'
+                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                      }`}
                     >
-                      🚀 Analytics Avançados & IA
-                    </h2>
-                    {/* Debug: Verificar dados */}
-                    {(() => {
-                      console.log('🔍 DEBUG Analytics Render:', {
-                        categoriasCronograma: categoriasCronograma?.length || 0,
-                        categoriasCompletas: categoriasCronograma,
-                        abaAnalytics,
-                        temDados:
-                          !!categoriasCronograma &&
-                          categoriasCronograma.length > 0,
-                      });
-                      return null;
-                    })()}
-                    {/* DEBUG: Indicador da aba ativa */}
-                    <div className="text-xs bg-yellow-100 p-1 rounded">
-                      Aba ativa: {abaAnalytics}
-                    </div>
-                    <div
-                      className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
+                      <div className="flex items-center space-x-1">
+                        <TrendingUp className="w-4 h-4" />
+                        <span>KPIs</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log(
+                          '📊 Gantt clicado - mudando para:',
+                          'gantt'
+                        );
+                        setAbaAnalytics('gantt');
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        abaAnalytics === 'gantt'
+                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                      }`}
                     >
-                      <button
-                        onClick={() => {
-                          console.log('🎯 KPI clicado - mudando para:', 'kpi');
-                          setAbaAnalytics('kpi');
-                        }}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          abaAnalytics === 'kpi'
-                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                        }`}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <TrendingUp className="w-4 h-4" />
-                          <span>KPIs</span>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => {
-                          console.log(
-                            '📊 Gantt clicado - mudando para:',
-                            'gantt'
-                          );
-                          setAbaAnalytics('gantt');
-                        }}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          abaAnalytics === 'gantt'
-                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                        }`}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <BarChart3 className="w-4 h-4" />
-                          <span>Gantt</span>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => {
-                          console.log('🔄 CPM clicado - mudando para:', 'cpm');
-                          setAbaAnalytics('cpm');
-                        }}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          abaAnalytics === 'cpm'
-                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                        }`}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <Route className="w-4 h-4" />
-                          <span>CPM</span>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => {
-                          console.log(
-                            '⚙️ Fases clicado - mudando para:',
-                            'fases'
-                          );
-                          setAbaAnalytics('fases');
-                        }}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          abaAnalytics === 'fases'
-                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                        }`}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <Settings className="w-4 h-4" />
-                          <span>Fases</span>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => {
-                          console.log(
-                            '🤖 IA clicado - mudando para:',
-                            'tendencias'
-                          );
-                          setAbaAnalytics('tendencias');
-                        }}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          abaAnalytics === 'tendencias'
-                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                            : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                        }`}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <Activity className="w-4 h-4" />
-                          <span>IA</span>
-                        </div>
-                      </button>
-                    </div>
+                      <div className="flex items-center space-x-1">
+                        <BarChart3 className="w-4 h-4" />
+                        <span>Gantt</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log('🔄 CPM clicado - mudando para:', 'cpm');
+                        setAbaAnalytics('cpm');
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        abaAnalytics === 'cpm'
+                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                      }`}
+                    >
+                      <div className="flex items-center space-x-1">
+                        <Route className="w-4 h-4" />
+                        <span>CPM</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log(
+                          '⚙️ Fases clicado - mudando para:',
+                          'fases'
+                        );
+                        setAbaAnalytics('fases');
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        abaAnalytics === 'fases'
+                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                      }`}
+                    >
+                      <div className="flex items-center space-x-1">
+                        <Settings className="w-4 h-4" />
+                        <span>Fases</span>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log(
+                          '🤖 IA clicado - mudando para:',
+                          'tendencias'
+                        );
+                        setAbaAnalytics('tendencias');
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        abaAnalytics === 'tendencias'
+                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                      }`}
+                    >
+                      <div className="flex items-center space-x-1">
+                        <Activity className="w-4 h-4" />
+                        <span>IA</span>
+                      </div>
+                    </button>
                   </div>
                 </div>
+              </div>
 
-                {/* Conteúdo das Abas de Analytics */}
-                {(() => {
-                  console.log('🎯 DEBUG: abaAnalytics =', abaAnalytics);
-                  console.log(
-                    '🎯 DEBUG: categoriasCronograma length =',
-                    categoriasCronograma?.length || 0
-                  );
-                  console.log(
-                    '🎯 DEBUG: renderizando KPI?',
-                    abaAnalytics === 'kpi'
-                  );
-                  return null;
-                })()}
-                {abaAnalytics === 'kpi' && (
-                  <div>
-                    {/* DEBUG: Criar categorias fake se necessário */}
-                    {(() => {
-                      if (
-                        (!categoriasCronograma ||
-                          categoriasCronograma.length === 0) &&
-                        resumoCronograma?.totalTarefas &&
-                        resumoCronograma.totalTarefas > 0
-                      ) {
-                        console.log(
-                          '⚡ CARREGANDO dados reais do CSV para Analytics...'
-                        );
+              {/* Conteúdo das Abas de Analytics */}
+              {(() => {
+                console.log('🎯 DEBUG: abaAnalytics =', abaAnalytics);
+                console.log(
+                  '🎯 DEBUG: categoriasCronograma length =',
+                  categoriasCronograma?.length || 0
+                );
+                console.log(
+                  '🎯 DEBUG: renderizando KPI?',
+                  abaAnalytics === 'kpi'
+                );
+                return null;
+              })()}
+              {abaAnalytics === 'kpi' && (
+                <div>
+                  {/* DEBUG: Criar categorias fake se necessário */}
+                  {(() => {
+                    if (
+                      (!categoriasCronograma ||
+                        categoriasCronograma.length === 0) &&
+                      resumoCronograma?.totalTarefas &&
+                      resumoCronograma.totalTarefas > 0
+                    ) {
+                      console.log(
+                        '⚡ CARREGANDO dados reais do CSV para Analytics...'
+                      );
 
-                        // Função para carregar e processar o CSV real
-                        const carregarCSVReal = async () => {
-                          try {
-                            const response = await fetch(
-                              '/cronograma-preparacao-real.csv'
-                            );
-                            const csvText = await response.text();
+                      // Função para carregar e processar AMBOS os CSVs reais
+                      const carregarCSVReal = async () => {
+                        try {
+                          // Carregar ambos os cronogramas
+                          const [responsePreparacao, responseOperacional] =
+                            await Promise.all([
+                              fetch('/cronograma-preparacao-real.csv'),
+                              fetch('/cronograma-operacional.csv'),
+                            ]);
 
-                            const linhas = csvText.split('\n').slice(1); // Remove header
-                            const categorias = new Map();
+                          const [csvPreparacao, csvOperacional] =
+                            await Promise.all([
+                              responsePreparacao.text(),
+                              responseOperacional.text(),
+                            ]);
 
-                            linhas.forEach((linha, index) => {
+                          console.log(
+                            '📊 Carregando dados de PREPARAÇÃO + OPERACIONAL para IA...'
+                          );
+
+                          const categorias = new Map();
+
+                          // Processar cronograma de PREPARAÇÃO
+                          const linhasPreparacao = csvPreparacao
+                            .split('\n')
+                            .slice(1);
+                          linhasPreparacao.forEach(
+                            (linha: string, index: number) => {
                               if (!linha.trim()) return;
 
                               const campos = linha.split(',');
@@ -1687,20 +2233,20 @@ function AppContent() {
                               const nome = nomeCompleto.trim();
 
                               // Categorizar baseado no nível hierárquico e conteúdo
-                              let categoria = 'Outras Atividades';
+                              let categoria = 'Preparação - Outras';
                               if (nome.includes('Logística'))
-                                categoria = 'Logística';
+                                categoria = 'Preparação - Logística';
                               else if (nome.includes('Refratário'))
-                                categoria = 'Refratário';
+                                categoria = 'Preparação - Refratário';
                               else if (
                                 nome.includes('Mobilização') ||
                                 nome.includes('Canteiro')
                               )
-                                categoria = 'Mobilização e Canteiros';
+                                categoria = 'Preparação - Mobilização';
                               else if (espacos === 4)
-                                categoria = 'Preparação Principal';
+                                categoria = 'Preparação - Principal';
                               else if (espacos === 8)
-                                categoria = 'Atividades Detalhadas';
+                                categoria = 'Preparação - Detalhadas';
 
                               if (!categorias.has(categoria)) {
                                 categorias.set(categoria, {
@@ -1708,24 +2254,22 @@ function AppContent() {
                                     .toLowerCase()
                                     .replace(/[^a-z0-9]/g, '-'),
                                   nome: categoria,
-                                  descricao: `Categoria ${categoria} - PFUS3 2025`,
-                                  cor:
-                                    categoria === 'Logística'
-                                      ? '#3B82F6'
-                                      : categoria === 'Refratário'
-                                        ? '#EF4444'
-                                        : categoria ===
-                                            'Mobilização e Canteiros'
-                                          ? '#10B981'
-                                          : categoria === 'Preparação Principal'
-                                            ? '#F59E0B'
-                                            : '#8B5CF6',
+                                  descricao: `${categoria} - PFUS3 2025`,
+                                  cor: categoria.includes('Logística')
+                                    ? '#3B82F6'
+                                    : categoria.includes('Refratário')
+                                      ? '#EF4444'
+                                      : categoria.includes('Mobilização')
+                                        ? '#10B981'
+                                        : categoria.includes('Principal')
+                                          ? '#F59E0B'
+                                          : '#8B5CF6',
                                   tarefas: [],
                                 });
                               }
 
                               const tarefa = {
-                                id: parseInt(id) || 0,
+                                id: `prep-${parseInt(id) || index}`,
                                 nome: nome,
                                 percentualCompleto: percentCompleto,
                                 percentualFisico: percentFisico,
@@ -1746,141 +2290,273 @@ function AppContent() {
                                 percentualFisicoCalc: percentFisico,
                                 nivel: Math.floor(espacos / 4),
                                 categoria: categoria,
+                                fase: 'Preparação',
                               };
 
                               categorias.get(categoria).tarefas.push(tarefa);
-                            });
+                            }
+                          );
 
-                            const categoriasArray = Array.from(
-                              categorias.values()
-                            );
-                            console.log(
-                              '📊 Dados reais carregados do CSV PFUS3:',
-                              categoriasArray.length,
-                              'categorias com',
-                              categoriasArray.reduce(
-                                (acc, cat) => acc + cat.tarefas.length,
-                                0
+                          // Processar cronograma OPERACIONAL
+                          const linhasOperacional = csvOperacional
+                            .split('\n')
+                            .slice(1);
+                          linhasOperacional.forEach(
+                            (linha: string, index: number) => {
+                              if (!linha.trim()) return;
+
+                              const campos = linha.split(',');
+                              if (campos.length < 8) return;
+
+                              const id = campos[0];
+                              const nomeCompleto = campos[1];
+                              const inicio = campos[2];
+                              const fim = campos[3];
+                              const duracao = campos[4] || '1 day';
+                              const predecessores = campos[5] || '';
+
+                              const nome = nomeCompleto.trim();
+
+                              // Categorizar atividades operacionais
+                              let categoria = 'Operacional - Outras';
+                              if (
+                                nome.includes('Parada') ||
+                                nome.includes('Shutdown')
+                              )
+                                categoria = 'Operacional - Parada';
+                              else if (
+                                nome.includes('Manutenção') ||
+                                nome.includes('Maintenance')
+                              )
+                                categoria = 'Operacional - Manutenção';
+                              else if (
+                                nome.includes('Partida') ||
+                                nome.includes('Startup')
+                              )
+                                categoria = 'Operacional - Partida';
+                              else if (
+                                nome.includes('Teste') ||
+                                nome.includes('Test')
+                              )
+                                categoria = 'Operacional - Testes';
+                              else if (
+                                nome.includes('Inspeção') ||
+                                nome.includes('Inspection')
+                              )
+                                categoria = 'Operacional - Inspeção';
+
+                              if (!categorias.has(categoria)) {
+                                categorias.set(categoria, {
+                                  id: categoria
+                                    .toLowerCase()
+                                    .replace(/[^a-z0-9]/g, '-'),
+                                  nome: categoria,
+                                  descricao: `${categoria} - PFUS3 2025`,
+                                  cor: categoria.includes('Parada')
+                                    ? '#DC2626'
+                                    : categoria.includes('Manutenção')
+                                      ? '#F59E0B'
+                                      : categoria.includes('Partida')
+                                        ? '#059669'
+                                        : categoria.includes('Testes')
+                                          ? '#7C3AED'
+                                          : categoria.includes('Inspeção')
+                                            ? '#2563EB'
+                                            : '#6B7280',
+                                  tarefas: [],
+                                });
+                              }
+
+                              const tarefa = {
+                                id: `oper-${parseInt(id) || index}`,
+                                nome: nome,
+                                percentualCompleto: 0, // Operacional ainda não iniciado
+                                percentualFisico: 0,
+                                percentualReplanejamento: 0,
+                                duracao: duracao,
+                                inicio:
+                                  inicio ||
+                                  new Date().toISOString().split('T')[0],
+                                fim:
+                                  fim || new Date().toISOString().split('T')[0],
+                                inicioBaseline:
+                                  inicio ||
+                                  new Date().toISOString().split('T')[0],
+                                fimBaseline:
+                                  fim || new Date().toISOString().split('T')[0],
+                                percentualFisicoPrev: 0,
+                                percentualFisicoReplan: 0,
+                                percentualFisicoCalc: 0,
+                                nivel: 0,
+                                categoria: categoria,
+                                fase: 'Operacional',
+                                predecessores: predecessores,
+                              };
+
+                              categorias.get(categoria).tarefas.push(tarefa);
+                            }
+                          );
+
+                          const categoriasArray = Array.from(
+                            categorias.values()
+                          );
+
+                          const totalTarefasPreparacao = categoriasArray
+                            .filter((cat) => cat.nome.includes('Preparação'))
+                            .reduce((acc, cat) => acc + cat.tarefas.length, 0);
+
+                          const totalTarefasOperacional = categoriasArray
+                            .filter((cat) => cat.nome.includes('Operacional'))
+                            .reduce((acc, cat) => acc + cat.tarefas.length, 0);
+
+                          console.log(
+                            '📊 Dados COMBINADOS carregados para IA:',
+                            `${categoriasArray.length} categorias total`,
+                            `| Preparação: ${totalTarefasPreparacao} tarefas`,
+                            `| Operacional: ${totalTarefasOperacional} tarefas`,
+                            `| Total: ${totalTarefasPreparacao + totalTarefasOperacional} tarefas`
+                          );
+
+                          setCategoriasCronograma(categoriasArray as any);
+                        } catch (error) {
+                          console.error('❌ Erro ao carregar CSV real:', error);
+                          // Fallback para dados simulados em caso de erro
+                          console.log(
+                            '🔄 Usando dados simulados COMBINADOS como fallback...'
+                          );
+                          const totalTarefas = resumoCronograma.totalTarefas;
+                          const categoriasFallback = [
+                            {
+                              id: 'fallback-prep',
+                              nome: 'Preparação (Simulado)',
+                              descricao: 'Dados de preparação simulados',
+                              cor: '#3B82F6',
+                              tarefas: Array.from(
+                                { length: Math.floor(totalTarefas * 0.4) },
+                                (_, i) => ({
+                                  id: `prep-fallback-${i}`,
+                                  titulo: `Preparação Simulada ${i + 1}`,
+                                  descricao: `Atividade de preparação ${i + 1}`,
+                                  inicio: new Date()
+                                    .toISOString()
+                                    .split('T')[0],
+                                  fim: new Date().toISOString().split('T')[0],
+                                  percentualCompleto: Math.floor(
+                                    Math.random() * 100
+                                  ),
+                                  percentualFisico: Math.floor(
+                                    Math.random() * 100
+                                  ),
+                                  duracao: `${Math.floor(Math.random() * 10) + 1} days`,
+                                  responsavel: 'Equipe Preparação',
+                                  prioridade: 'media' as any,
+                                  dependencias: [],
+                                  recursos: [],
+                                  fase: 'Preparação',
+                                })
                               ),
-                              'tarefas reais'
-                            );
+                            },
+                            {
+                              id: 'fallback-oper',
+                              nome: 'Operacional (Simulado)',
+                              descricao: 'Dados operacionais simulados',
+                              cor: '#EF4444',
+                              tarefas: Array.from(
+                                { length: Math.floor(totalTarefas * 0.6) },
+                                (_, i) => ({
+                                  id: `oper-fallback-${i}`,
+                                  titulo: `Operacional Simulado ${i + 1}`,
+                                  descricao: `Atividade operacional ${i + 1}`,
+                                  inicio: new Date()
+                                    .toISOString()
+                                    .split('T')[0],
+                                  fim: new Date().toISOString().split('T')[0],
+                                  percentualCompleto: 0,
+                                  percentualFisico: 0,
+                                  duracao: `${Math.floor(Math.random() * 5) + 1} days`,
+                                  responsavel: 'Equipe Operacional',
+                                  prioridade: 'alta' as any,
+                                  dependencias: [],
+                                  recursos: [],
+                                  fase: 'Operacional',
+                                })
+                              ),
+                            },
+                          ];
+                          setCategoriasCronograma(categoriasFallback as any);
+                        }
+                      };
 
-                            setCategoriasCronograma(categoriasArray as any);
-                          } catch (error) {
-                            console.error(
-                              '❌ Erro ao carregar CSV real:',
-                              error
-                            );
-                            // Fallback para dados simulados em caso de erro
-                            console.log(
-                              '🔄 Usando dados simulados como fallback...'
-                            );
-                            const totalTarefas = resumoCronograma.totalTarefas;
-                            const categoriasFallback = [
-                              {
-                                id: 'fallback-prep',
-                                nome: 'Preparação (Simulado)',
-                                descricao: 'Dados simulados como fallback',
-                                cor: '#3B82F6',
-                                tarefas: Array.from(
-                                  { length: Math.floor(totalTarefas * 0.5) },
-                                  (_, i) => ({
-                                    id: `fallback-${i}`,
-                                    titulo: `Atividade Simulada ${i + 1}`,
-                                    descricao: `Atividade de fallback ${i + 1}`,
-                                    inicio: new Date()
-                                      .toISOString()
-                                      .split('T')[0],
-                                    fim: new Date().toISOString().split('T')[0],
-                                    percentualCompleto: Math.floor(
-                                      Math.random() * 100
-                                    ),
-                                    percentualFisico: Math.floor(
-                                      Math.random() * 100
-                                    ),
-                                    duracao: `${Math.floor(Math.random() * 10) + 1} days`,
-                                    responsavel: 'Equipe Simulada',
-                                    prioridade: 'media' as any,
-                                    dependencias: [],
-                                    recursos: [],
-                                  })
-                                ),
-                              },
-                            ];
-                            setCategoriasCronograma(categoriasFallback as any);
-                          }
-                        };
+                      carregarCSVReal();
+                    }
+                    return null;
+                  })()}
+                  {/* KPI Dashboard - Aba KPI ativa */}
+                  <KPIDashboard categorias={categoriasCronograma} />
+                </div>
+              )}
 
-                        carregarCSVReal();
-                      }
-                      return null;
-                    })()}
-                    {/* KPI Dashboard - Aba KPI ativa */}
-                    <KPIDashboard categorias={categoriasCronograma} />
-                  </div>
-                )}
+              {abaAnalytics === 'gantt' && (
+                <div>
+                  {/* Gantt Chart - Aba Gantt ativa */}
+                  <GanttChart
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                </div>
+              )}
 
-                {abaAnalytics === 'gantt' && (
-                  <div>
-                    {/* Gantt Chart - Aba Gantt ativa */}
-                    <GanttChart
-                      categorias={categoriasCronograma}
-                      onTarefaClick={(tarefa) => {
-                        setTarefaSelecionada(tarefa);
-                        setModalTarefaDetalhes(true);
-                      }}
-                    />
-                  </div>
-                )}
+              {abaAnalytics === 'cpm' && (
+                <div>
+                  {/* CPM Analysis - Aba CPM ativa */}
+                  <CPMAnalysis
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                </div>
+              )}
 
-                {abaAnalytics === 'cpm' && (
-                  <div>
-                    {/* CPM Analysis - Aba CPM ativa */}
-                    <CPMAnalysis
-                      categorias={categoriasCronograma}
-                      onTarefaClick={(tarefa) => {
-                        setTarefaSelecionada(tarefa);
-                        setModalTarefaDetalhes(true);
-                      }}
-                    />
-                  </div>
-                )}
+              {abaAnalytics === 'fases' && (
+                <div>
+                  {/* Fases Próximas Manager - Aba Fases ativa */}
+                  <FasesProximasManager />
+                </div>
+              )}
 
-                {abaAnalytics === 'fases' && (
-                  <div>
-                    {/* Fases Próximas Manager - Aba Fases ativa */}
-                    <FasesProximasManager />
-                  </div>
-                )}
+              {abaAnalytics === 'tendencias' && resumoCronograma && (
+                <div className="space-y-6">
+                  <AIAnalysisComponent
+                    categorias={categoriasCronograma}
+                    resumo={resumoCronograma}
+                  />
+                  <KPIDashboard categorias={categoriasCronograma} />
+                  <CPMAnalysis
+                    categorias={categoriasCronograma}
+                    onTarefaClick={(tarefa) => {
+                      setTarefaSelecionada(tarefa);
+                      setModalTarefaDetalhes(true);
+                    }}
+                  />
+                </div>
+              )}
 
-                {abaAnalytics === 'tendencias' && resumoCronograma && (
-                  <div className="space-y-6">
-                    <AIAnalysisComponent
-                      categorias={categoriasCronograma}
-                      resumo={resumoCronograma}
-                    />
-                    <KPIDashboard categorias={categoriasCronograma} />
-                    <CPMAnalysis
-                      categorias={categoriasCronograma}
-                      onTarefaClick={(tarefa) => {
-                        setTarefaSelecionada(tarefa);
-                        setModalTarefaDetalhes(true);
-                      }}
-                    />
-                  </div>
-                )}
-
-                {abaAnalytics === 'teste' && (
-                  <div className="space-y-6">
-                    <TestGeminiAPI />
-                  </div>
-                )}
-              </div>
+              {abaAnalytics === 'teste' && (
+                <div className="space-y-6">
+                  <TestGeminiAPI />
+                </div>
+              )}
+            </div>
             ) : (
-              <div className="text-center py-8">
-                <p>Nenhum dado de cronograma disponível</p>
-              </div>
-            )}
+            <div className="text-center py-8">
+              <p>Nenhum dado de cronograma disponível</p>
+            </div>
+            )
           </div>
         ) : modoCronograma && !resumoCronograma ? (
           /* Modo Cronograma sem Dados - Welcome Screen */

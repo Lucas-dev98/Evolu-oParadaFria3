@@ -1,0 +1,30 @@
+{
+  "name": "evolucao-parada-fria",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão de Parada Fria",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "install": "cd backend && npm install && cd ../frontend/dashboard && npm install",
+    "build": "node render-build.js",
+    "start": "cd backend && NODE_ENV=production npm start",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend/dashboard && npm start\"",
+    "backend:build": "cd backend && npm run build",
+    "backend:start": "cd backend && npm start",
+    "frontend:build": "cd frontend/dashboard && npm run build",
+    "frontend:install": "cd frontend/dashboard && npm install",
+    "backend:install": "cd backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "keywords": [
+    "react",
+    "node",
+    "typescript",
+    "dashboard"
+  ],
+  "author": "Lucas-dev98",
+  "license": "MIT"
+}
