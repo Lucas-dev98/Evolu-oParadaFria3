@@ -643,18 +643,7 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                                 <div
                                   className={`text-sm ${themeClasses.textSecondary} mt-1`}
                                 >
-                                  {atividade.duracao} • {atividade.inicio} →{' '}
-                                  {atividade.fim}
-                                  {atividade.responsavel && (
-                                    <>
-                                      {' • '}
-                                      <Users
-                                        size={12}
-                                        className="inline mr-1"
-                                      />
-                                      {atividade.responsavel}
-                                    </>
-                                  )}
+                                  {/* ...removido duração do card principal... */}
                                 </div>
                               </div>
                             </div>
@@ -683,97 +672,87 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                           {expandedAtividades.includes(atividade.id) && (
                             <div className="mt-4 ml-8 border-l-2 border-blue-500 pl-4">
                               <div className="bg-green-500 text-white p-4 text-center font-bold rounded-lg mb-4">
-                                ✅ EXPANSÃO FUNCIONANDO PARA: {atividade.nome}
-                                <br />
-                                ID: {atividade.id} | Status: {atividade.status}
+                                ID: {atividade.id} | {atividade.nome}
                               </div>
-
-                              {/* Detalhes da atividade */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                                <div>
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Categoria
-                                  </span>
-                                  <p
-                                    className={`text-sm font-medium ${themeClasses.textPrimary}`}
-                                  >
-                                    {atividade.categoria}
-                                  </p>
+                              <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg space-y-2">
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Categoria:</b> {atividade.categoria}
                                 </div>
-                                <div>
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Nível
-                                  </span>
-                                  <p
-                                    className={`text-sm font-medium ${themeClasses.textPrimary}`}
-                                  >
-                                    {atividade.nivel}
-                                  </p>
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Nível:</b> {atividade.nivel}
                                 </div>
-                                <div>
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Físico
-                                  </span>
-                                  <p
-                                    className={`text-sm font-medium ${themeClasses.textPrimary}`}
-                                  >
-                                    {atividade.percentualFisico}%
-                                  </p>
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Prioridade:</b> {atividade.prioridade}
                                 </div>
-                                <div>
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Prioridade
-                                  </span>
-                                  <p
-                                    className={`text-sm font-medium ${themeClasses.textPrimary}`}
-                                  >
-                                    {atividade.prioridade}
-                                  </p>
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Equipe:</b>{' '}
+                                  {atividade.responsavel || 'Não informado'}
                                 </div>
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Progresso físico:</b>{' '}
+                                  {atividade.percentualFisico}%
+                                </div>
+                                <div className="text-sm text-gray-700 dark:text-gray-200">
+                                  <b>Progresso total:</b>{' '}
+                                  {atividade.percentualCompleto}%
+                                </div>
+                                <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                                  <span className="font-bold">Planejado:</span>{' '}
+                                  Início:{' '}
+                                  {(atividade as any).inicioBaseline ||
+                                    atividade.inicio}{' '}
+                                  | Fim:{' '}
+                                  {(atividade as any).fimBaseline ||
+                                    atividade.fim}
+                                </div>
+                                {(atividade as any).inicioReal &&
+                                  (atividade as any).fimReal && (
+                                    <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                                      <span className="font-bold">Real:</span>{' '}
+                                      Início: {(atividade as any).inicioReal} |
+                                      Fim: {(atividade as any).fimReal}
+                                    </div>
+                                  )}
+                                {/* Dias de atraso */}
+                                {(() => {
+                                  const fimPlanejado =
+                                    (atividade as any).fimBaseline ||
+                                    atividade.fim;
+                                  const fimReal = (atividade as any).fimReal;
+                                  if (fimPlanejado && fimReal) {
+                                    const dataFimPlanejado = new Date(
+                                      fimPlanejado
+                                    );
+                                    const dataFimReal = new Date(fimReal);
+                                    const diffMs =
+                                      dataFimReal.getTime() -
+                                      dataFimPlanejado.getTime();
+                                    const diffDias = Math.ceil(
+                                      diffMs / (1000 * 3600 * 24)
+                                    );
+                                    if (diffDias > 0) {
+                                      return (
+                                        <div className="text-sm font-bold text-red-600">
+                                          Atraso: {diffDias} dia(s)
+                                        </div>
+                                      );
+                                    } else if (diffDias < 0) {
+                                      return (
+                                        <div className="text-sm font-bold text-green-600">
+                                          Adiantada: {Math.abs(diffDias)} dia(s)
+                                        </div>
+                                      );
+                                    } else {
+                                      return (
+                                        <div className="text-sm font-bold text-gray-600">
+                                          No prazo
+                                        </div>
+                                      );
+                                    }
+                                  }
+                                  return null;
+                                })()}
                               </div>
-
-                              {/* Dependências e Recursos */}
-                              {atividade.dependencias &&
-                                atividade.dependencias.length > 0 && (
-                                  <div className="mt-3">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                      Dependências
-                                    </span>
-                                    <div className="flex flex-wrap gap-2 mt-1">
-                                      {atividade.dependencias.map(
-                                        (dep, index) => (
-                                          <span
-                                            key={index}
-                                            className="px-2 py-1 rounded-md text-xs bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400"
-                                          >
-                                            {dep}
-                                          </span>
-                                        )
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-
-                              {atividade.recursos &&
-                                atividade.recursos.length > 0 && (
-                                  <div className="mt-3">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                      Recursos
-                                    </span>
-                                    <div className="flex flex-wrap gap-2 mt-1">
-                                      {atividade.recursos.map(
-                                        (recurso, index) => (
-                                          <span
-                                            key={index}
-                                            className="px-2 py-1 rounded-md text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400"
-                                          >
-                                            {recurso}
-                                          </span>
-                                        )
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
                             </div>
                           )}
                         </div>
