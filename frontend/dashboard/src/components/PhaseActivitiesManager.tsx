@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   ChevronDown,
   ChevronRight,
@@ -782,7 +782,7 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                   </div>
                 )}
               </div>
-            )
+            );
           }
         )}
       </div>

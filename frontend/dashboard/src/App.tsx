@@ -5,6 +5,8 @@ import {
   TrendingUp,
   Activity,
   Settings,
+  Users,
+  ChevronRight,
 } from 'lucide-react';
 import AreaGridEnhanced from './components/AreaGridEnhanced';
 import AreaDetailModalEnhanced from './components/AreaDetailModalEnhanced';
@@ -12,8 +14,6 @@ import SummaryCards from './components/SummaryCards';
 import EvolutionChart from './components/EvolutionChart';
 import CategoryChart from './components/CategoryChart';
 import FileUpload from './components/FileUpload';
-import ResumoCardsCronograma from './components/ResumoCardsCronograma';
-import ListaCronograma from './components/ListaCronograma';
 import WelcomeScreen from './components/WelcomeScreen';
 import Header from './components/Header';
 import AdminPanel from './components/AdminPanel';
@@ -24,13 +24,13 @@ import CPMAnalysis from './components/CPMAnalysisReal';
 import AIAnalysisComponent from './components/AIAnalysisComponent';
 import TestGeminiAPI from './components/TestGeminiAPI';
 import FasesProximasManager from './components/FasesProximasManager';
-import AtividadeDetailModal from './components/AtividadeDetailModal';
 import { processarCronogramaOperacional } from './utils/cronogramaOperacionalProcessor';
 import { processarCronogramaPreparacao } from './utils/cronogramaPreparacaoProcessor';
 import TarefaDetailModal from './components/TarefaDetailModal';
 import ParadaHeader from './components/ParadaHeader';
 import PhasesNavigation from './components/PhasesNavigation';
 import TopNavigation from './components/TopNavigation';
+import PhaseExecutiveView from './components/PhaseExecutiveView';
 import PhaseDataManager from './components/PhaseDataManager';
 import CronogramaUpload from './components/CronogramaUpload';
 import PreparacaoUpload from './components/PreparacaoUpload';
@@ -95,21 +95,11 @@ function AppContent() {
   const [tarefaSelecionada, setTarefaSelecionada] =
     useState<TarefaCronograma | null>(null);
 
-  // Estados para filtros especiais
-  const [mostrarApenasAtrasadas, setMostrarApenasAtrasadas] = useState(false);
-  const [mostrarApenasCriticas, setMostrarApenasCriticas] = useState(false);
-  const [mostrarApenasConcluidas, setMostrarApenasConcluidas] = useState(false);
-  const [mostrarApenasEmAndamento, setMostrarApenasEmAndamento] =
-    useState(false);
-  const [mostrarApenasPendentes, setMostrarApenasPendentes] = useState(false);
-  const [mostrarApenasEmDia, setMostrarApenasEmDia] = useState(false);
-
   // Estados para Analytics Avançados
   const [abaAnalytics, setAbaAnalytics] = useState<
     'kpi' | 'gantt' | 'cpm' | 'tendencias' | 'fases' | 'teste'
   >('kpi');
   const [modalTarefaDetalhes, setModalTarefaDetalhes] = useState(false);
-  const [modalAtividades, setModalAtividades] = useState(false);
   const [dadosPreparacaoProcessados, setDadosPreparacaoProcessados] =
     useState<any>(null);
   const [modoAnalytics, setModoAnalytics] = useState(false); // false = modo Atividades, true = modo Analytics
@@ -1960,77 +1950,6 @@ function AppContent() {
                 <p>Nenhum dado de cronograma disponível</p>
               </div>
             )}
-            <div>
-              {/* Botão de Detalhamento de Atividades */}
-              {dadosPreparacaoProcessados &&
-                dadosPreparacaoProcessados.atividadesHierarchicas && (
-                  <div className="mb-6">
-                    <button
-                      onClick={() => setModalAtividades(true)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
-                    >
-                      <div className="flex items-center justify-center">
-                        <Activity className="w-5 h-5 mr-2" />
-                        <span className="font-semibold">
-                          Ver Detalhamento Completo das Atividades
-                        </span>
-                        <div className="ml-3 text-sm opacity-90">
-                          ({dadosPreparacaoProcessados.atividades.length}{' '}
-                          atividades com hierarquia)
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-                )}
-
-              {resumoCronograma && (
-                <ResumoCardsCronograma
-                  resumo={resumoCronograma}
-                  onAtrasadasClick={() => {
-                    setMostrarApenasAtrasadas(true);
-                    setMostrarApenasCriticas(false);
-                    setMostrarApenasConcluidas(false);
-                    setMostrarApenasEmAndamento(false);
-                    setMostrarApenasPendentes(false);
-                    setMostrarApenasEmDia(false);
-                  }}
-                  onCriticasClick={() => {
-                    setMostrarApenasCriticas(true);
-                    setMostrarApenasAtrasadas(false);
-                    setMostrarApenasConcluidas(false);
-                    setMostrarApenasEmAndamento(false);
-                    setMostrarApenasPendentes(false);
-                    setMostrarApenasEmDia(false);
-                  }}
-                  onEmDiaClick={() => {
-                    setMostrarApenasEmDia(true);
-                    setMostrarApenasAtrasadas(false);
-                    setMostrarApenasCriticas(false);
-                    setMostrarApenasConcluidas(false);
-                    setMostrarApenasEmAndamento(false);
-                    setMostrarApenasPendentes(false);
-                  }}
-                />
-              )}
-              <ListaCronograma
-                categorias={categoriasCronograma}
-                onTarefaClick={setTarefaSelecionada}
-                mostrarApenasAtrasadas={mostrarApenasAtrasadas}
-                mostrarApenasCriticas={mostrarApenasCriticas}
-                mostrarApenasConcluidas={mostrarApenasConcluidas}
-                mostrarApenasEmAndamento={mostrarApenasEmAndamento}
-                mostrarApenasPendentes={mostrarApenasPendentes}
-                mostrarApenasEmDia={mostrarApenasEmDia}
-                onLimparFiltros={() => {
-                  setMostrarApenasAtrasadas(false);
-                  setMostrarApenasCriticas(false);
-                  setMostrarApenasConcluidas(false);
-                  setMostrarApenasEmAndamento(false);
-                  setMostrarApenasPendentes(false);
-                  setMostrarApenasEmDia(false);
-                }}
-              />
-            </div>
             ) : modoAnalytics ? ( /* Visualização Analytics Avançados */
             <div>
               {/* Navegação das Abas de Analytics */}
@@ -2671,42 +2590,12 @@ function AppContent() {
         />
       )}
 
-      {/* Modal de Detalhamento de Atividades */}
-      {dadosPreparacaoProcessados && (
-        <AtividadeDetailModal
-          isOpen={modalAtividades}
-          onClose={() => setModalAtividades(false)}
-          atividades={dadosPreparacaoProcessados.atividadesHierarchicas || []}
-          titulo={
-            dadosPreparacaoProcessados.metadata?.titulo ||
-            'Cronograma de Preparação'
-          }
-        />
-      )}
-
       {/* Admin Panel */}
       <AdminPanel
         isOpen={showAdminPanel}
         onClose={() => setShowAdminPanel(false)}
         onDataUpdate={loadData}
       />
-
-      {/* Modal de Atividades Detalhadas */}
-      {dadosPreparacaoProcessados && (
-        <AtividadeDetailModal
-          isOpen={modalAtividades}
-          onClose={() => setModalAtividades(false)}
-          atividades={
-            dadosPreparacaoProcessados.atividadesHierarchicas ||
-            dadosPreparacaoProcessados.atividades ||
-            []
-          }
-          titulo={
-            dadosPreparacaoProcessados.metadata?.titulo ||
-            'Atividades de Preparação'
-          }
-        />
-      )}
     </div>
   );
 }
