@@ -1276,6 +1276,67 @@ function AppContent() {
     loadData();
   }, []); // Array de dependências vazio para executar apenas uma vez
 
+  // Auto-carregar dados CSV se não houver dados de cronograma
+  useEffect(() => {
+    const autoLoadCSVData = async () => {
+      // Só carregar automaticamente se não houver dados e não estiver carregando
+      if (
+        !resumoCronograma &&
+        !isLoading &&
+        categoriasCronograma.length === 0
+      ) {
+        console.log('🔄 Auto-carregando dados CSV...');
+        try {
+          // Carregar cronograma operacional
+          const responseCronograma = await fetch('/cronograma-operacional.csv');
+          const csvCronograma = await responseCronograma.text();
+
+          // Carregar cronograma de preparação
+          const responsePreparacao = await fetch('/cronograma-preparacao.csv');
+          const csvPreparacao = await responsePreparacao.text();
+
+          // Processar dados usando as funções existentes
+          const dadosOperacionais =
+            await processarCronogramaOperacional(csvCronograma);
+          const dadosPreparacao =
+            await processarCronogramaPreparacao(csvPreparacao);
+
+          console.log('✅ Dados processados automaticamente:');
+          console.log('🔧 Operacionais:', dadosOperacionais);
+          console.log('🔨 Preparação:', dadosPreparacao);
+
+          // Definir dados (usar a estrutura correta dos tipos)
+          if (dadosOperacionais && (dadosOperacionais as any).categorias) {
+            setCategoriasCronograma((dadosOperacionais as any).categorias);
+            if ((dadosOperacionais as any).resumo) {
+              setResumoCronograma((dadosOperacionais as any).resumo);
+            }
+            setModoCronograma(true);
+            console.log('✅ Dados operacionais definidos automaticamente!');
+          } else if (dadosPreparacao && (dadosPreparacao as any).categorias) {
+            setCategoriasCronograma((dadosPreparacao as any).categorias);
+            if ((dadosPreparacao as any).resumo) {
+              setResumoCronograma((dadosPreparacao as any).resumo);
+            }
+            setModoCronograma(true);
+            console.log('✅ Dados de preparação definidos automaticamente!');
+          }
+
+          console.log('🎉 Dados de cronograma carregados automaticamente!');
+        } catch (error) {
+          console.log(
+            'ℹ️ Dados CSV não encontrados, continuando sem dados:',
+            error
+          );
+        }
+      }
+    };
+
+    // Executar após um pequeno delay para evitar conflitos
+    const timer = setTimeout(autoLoadCSVData, 1000);
+    return () => clearTimeout(timer);
+  }, [resumoCronograma, isLoading, categoriasCronograma.length]);
+
   // Ativar automaticamente o modo atividades quando há dados de cronograma
   useEffect(() => {
     if (
