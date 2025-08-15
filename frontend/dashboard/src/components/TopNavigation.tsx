@@ -3,7 +3,6 @@ import {
   BarChart3,
   Calendar,
   User,
-  Upload,
   RefreshCw,
   Trash2,
   ChevronRight,
@@ -21,7 +20,6 @@ interface TopNavigationProps {
   onAtividadesClick: () => void;
   onAnalyticsClick: () => void;
   onDashboardClick: () => void;
-  onGerenciarDadosClick: () => void;
   onLimparDadosClick: () => void;
   onAtualizarClick: () => void;
   isLoading: boolean;
@@ -44,7 +42,6 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
   onAtividadesClick,
   onAnalyticsClick,
   onDashboardClick,
-  onGerenciarDadosClick,
   onLimparDadosClick,
   onAtualizarClick,
   isLoading,
@@ -134,15 +131,6 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
-  };
-
-  const handleGerenciarDadosClick = () => {
-    onGerenciarDadosClick();
-    onNotify?.(
-      'info',
-      'Painel de Administração',
-      'Abrindo gerenciador de dados'
-    );
   };
 
   const handleLimparDadosClick = () => {
@@ -287,15 +275,6 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
 
             {isAuthenticated && isAdmin && (
               <>
-                <button
-                  onClick={handleGerenciarDadosClick}
-                  className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-200 transform hover:scale-105 text-xs sm:text-sm font-medium shadow-md touch-target"
-                >
-                  <Upload size={14} className="sm:w-4 sm:h-4" />
-                  <span className="hidden xs:inline">Gerenciar Dados</span>
-                  <span className="xs:hidden">Gerenciar</span>
-                </button>
-
                 {existeCronogramaLocal && (
                   <button
                     onClick={handleLimparDadosClick}

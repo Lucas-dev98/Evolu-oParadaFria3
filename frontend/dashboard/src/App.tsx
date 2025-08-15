@@ -1745,7 +1745,6 @@ function AppContent() {
           }, 100);
         }}
         onDashboardClick={toggleMode}
-        onGerenciarDadosClick={() => setShowAdminPanel(true)}
         onLimparDadosClick={limparDados}
         onAtualizarClick={handleRefresh}
         isLoading={isLoading}
@@ -2420,8 +2419,6 @@ function AppContent() {
                   />
                 </div>
               )}
-
-
 
               {abaAnalytics === 'tendencias' && resumoCronograma && (
                 <div className="space-y-6">
