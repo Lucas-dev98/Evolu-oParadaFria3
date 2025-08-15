@@ -4,7 +4,6 @@ import {
   Route,
   TrendingUp,
   Activity,
-  Settings,
   Users,
   ChevronRight,
 } from 'lucide-react';
@@ -23,7 +22,6 @@ import KPIDashboard from './components/KPIDashboard-Real';
 import CPMAnalysis from './components/CPMAnalysisReal';
 import AIAnalysisComponent from './components/AIAnalysisComponent';
 import TestGeminiAPI from './components/TestGeminiAPI';
-import FasesProximasManager from './components/FasesProximasManager';
 import { processarCronogramaOperacional } from './utils/cronogramaOperacionalProcessor';
 import { processarCronogramaPreparacao } from './utils/cronogramaPreparacaoProcessor';
 import TarefaDetailModal from './components/TarefaDetailModal';
@@ -97,7 +95,7 @@ function AppContent() {
 
   // Estados para Analytics Avançados
   const [abaAnalytics, setAbaAnalytics] = useState<
-    'kpi' | 'gantt' | 'cpm' | 'tendencias' | 'fases' | 'teste'
+    'kpi' | 'gantt' | 'cpm' | 'tendencias' | 'teste'
   >('kpi');
   const [modalTarefaDetalhes, setModalTarefaDetalhes] = useState(false);
   const [dadosPreparacaoProcessados, setDadosPreparacaoProcessados] =
@@ -2030,25 +2028,7 @@ function AppContent() {
                         <span>CPM</span>
                       </div>
                     </button>
-                    <button
-                      onClick={() => {
-                        console.log(
-                          '⚙️ Fases clicado - mudando para:',
-                          'fases'
-                        );
-                        setAbaAnalytics('fases');
-                      }}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        abaAnalytics === 'fases'
-                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                      }`}
-                    >
-                      <div className="flex items-center space-x-1">
-                        <Settings className="w-4 h-4" />
-                        <span>Fases</span>
-                      </div>
-                    </button>
+
                     <button
                       onClick={() => {
                         console.log(
@@ -2441,12 +2421,7 @@ function AppContent() {
                 </div>
               )}
 
-              {abaAnalytics === 'fases' && (
-                <div>
-                  {/* Fases Próximas Manager - Aba Fases ativa */}
-                  <FasesProximasManager />
-                </div>
-              )}
+
 
               {abaAnalytics === 'tendencias' && resumoCronograma && (
                 <div className="space-y-6">
