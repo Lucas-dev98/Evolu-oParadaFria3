@@ -9,9 +9,6 @@ import {
 } from 'lucide-react';
 import AreaGridEnhanced from './components/AreaGridEnhanced';
 import AreaDetailModalEnhanced from './components/AreaDetailModalEnhanced';
-import SummaryCards from './components/SummaryCards';
-import EvolutionChart from './components/EvolutionChart';
-import CategoryChart from './components/CategoryChart';
 import FileUpload from './components/FileUpload';
 import WelcomeScreen from './components/WelcomeScreen';
 import Header from './components/Header';
@@ -2460,25 +2457,6 @@ function AppContent() {
         ) : (
           /* Modo Dashboard Original */
           <div>
-            {/* Summary Cards */}
-            {summary && <SummaryCards summary={summary} />}
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <EvolutionChart
-                data={evolution}
-                additionalInfo={{
-                  totalAtividades: resumoCronograma?.totalTarefas || 0,
-                  atividadesConcluidas:
-                    resumoCronograma?.tarefasConcluidas || 0,
-                  atividadesCriticas: resumoCronograma?.tarefasEmAndamento || 0,
-                  progressoGeral: resumoCronograma?.progressoGeral || 0,
-                  faseAtual: getCurrentPhaseName(),
-                }}
-              />
-              {summary && <CategoryChart summary={summary} />}
-            </div>
-
             {/* Areas Grid - Enhanced View Only */}
             <div className="mb-4 p-4 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-300">
               <div className="flex items-center justify-between">
