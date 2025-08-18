@@ -45,20 +45,26 @@ try {
 
   // 3. Verificar e preparar imagens antes do build
   console.log('🖼️ Verificando imagens antes do build...');
-  const publicImgPath = path.join('frontend', 'dashboard', 'public', 'static', 'img');
+  const publicImgPath = path.join(
+    'frontend',
+    'dashboard',
+    'public',
+    'static',
+    'img'
+  );
   if (!fs.existsSync(publicImgPath)) {
     console.log('📁 Criando pasta de imagens em public...');
     fs.mkdirSync(publicImgPath, { recursive: true });
   }
-  
+
   // Copiar imagens do diretório raiz se existirem (fallback para deploy)
   const rootImages = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'];
   let imagesCopiedFromRoot = 0;
-  
+
   for (const imgName of rootImages) {
     const rootImgPath = path.join(imgName);
     const targetImgPath = path.join(publicImgPath, imgName);
-    
+
     if (fs.existsSync(rootImgPath) && !fs.existsSync(targetImgPath)) {
       try {
         fs.copyFileSync(rootImgPath, targetImgPath);
@@ -69,11 +75,13 @@ try {
       }
     }
   }
-  
+
   if (imagesCopiedFromRoot > 0) {
-    console.log(`✅ ${imagesCopiedFromRoot} imagens copiadas do diretório raiz`);
+    console.log(
+      `✅ ${imagesCopiedFromRoot} imagens copiadas do diretório raiz`
+    );
   }
-  
+
   // Verificar o que existe na pasta final
   if (fs.existsSync(publicImgPath)) {
     const files = fs.readdirSync(publicImgPath);
@@ -115,14 +123,14 @@ try {
     console.log('📁 Conteúdo de frontend/dashboard:');
     const dashboardContents = fs.readdirSync(dashboardPath);
     console.log(dashboardContents);
-    
+
     // Verificar se existe pasta public
     const publicPath = path.join(dashboardPath, 'public');
     if (fs.existsSync(publicPath)) {
       console.log('📁 Conteúdo de frontend/dashboard/public:');
       const publicContents = fs.readdirSync(publicPath);
       console.log(publicContents);
-      
+
       const publicStaticPath = path.join(publicPath, 'static');
       if (fs.existsSync(publicStaticPath)) {
         console.log('📁 Conteúdo de frontend/dashboard/public/static:');
@@ -130,14 +138,14 @@ try {
         console.log(staticContents);
       }
     }
-    
+
     // Verificar se existe pasta build
     const buildPath = path.join(dashboardPath, 'build');
     if (fs.existsSync(buildPath)) {
       console.log('📁 Conteúdo de frontend/dashboard/build:');
       const buildContents = fs.readdirSync(buildPath);
       console.log(buildContents);
-      
+
       const buildStaticPath = path.join(buildPath, 'static');
       if (fs.existsSync(buildStaticPath)) {
         console.log('📁 Conteúdo de frontend/dashboard/build/static:');

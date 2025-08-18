@@ -438,6 +438,194 @@ app.get('/api/data-status', (req, res) => {
   });
 });
 
+// Rota para obter todos os dados do cronograma
+app.get('/api/cronograma', (req, res) => {
+  try {
+    const cronogramaData = loadCronogramaFromFile();
+    if (cronogramaData) {
+      res.json(cronogramaData);
+    } else {
+      res.json({
+        fases: [],
+        atividades: [],
+        metadata: {
+          titulo: 'Cronograma PFUS3 2025',
+          dataInicio: '',
+          dataFim: '',
+          duracaoTotal: '',
+          progressoGeral: 0,
+          ultimaAtualizacao: new Date().toISOString(),
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao obter cronograma:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Rota para upload de cronograma completo (via CSV)
+app.post('/api/cronograma/upload', (req, res) => {
+  try {
+    const { categorias, resumo, tipo } = req.body;
+
+    if (!categorias || !resumo) {
+      return res.status(400).json({
+        error: 'Dados inválidos. Esperado categorias e resumo.',
+      });
+    }
+
+    // Carregar dados existentes ou criar novo
+    let cronogramaData = loadCronogramaFromFile();
+    if (!cronogramaData) {
+      cronogramaData = {
+        fases: [],
+        atividades: [],
+        metadata: {
+          titulo: 'Cronograma PFUS3 2025',
+          dataInicio: '',
+          dataFim: '',
+          duracaoTotal: '',
+          progressoGeral: 0,
+          ultimaAtualizacao: new Date().toISOString(),
+        },
+      };
+    }
+
+    // Converter categorias para formato backend
+    const atividades = categorias.flatMap((categoria: any) =>
+      categoria.tarefas.map((tarefa: any) => ({
+        id:
+          tarefa.id ||
+          `${categoria.nome}_${tarefa.nome}`.replace(/\s+/g, '_').toLowerCase(),
+        nome: tarefa.nome,
+        categoria: categoria.nome,
+        dataInicio: tarefa.inicio,
+        dataFim: tarefa.fim,
+        duracao: tarefa.duracao,
+        percentualCompleto: tarefa.percentualCompleto || 0,
+        status: tarefa.status || 'pendente',
+        dependencias: tarefa.dependencias || [],
+        recursos: tarefa.recursos || [],
+        responsavel: tarefa.responsavel || '',
+        tipo: tipo || 'cronograma',
+      }))
+    );
+
+    // Atualizar atividades
+    cronogramaData.atividades = [
+      ...cronogramaData.atividades.filter(
+        (a: any) => a.tipo !== (tipo || 'cronograma')
+      ),
+      ...atividades,
+    ];
+
+    // Atualizar metadata
+    cronogramaData.metadata = {
+      ...cronogramaData.metadata,
+      ultimaAtualizacao: new Date().toISOString(),
+      progressoGeral: resumo.percentualCompleto || 0,
+    };
+
+    saveCronogramaToFile(cronogramaData);
+
+    res.json({
+      message: 'Cronograma carregado com sucesso!',
+      categorias: categorias.length,
+      atividades: atividades.length,
+      tipo: tipo || 'cronograma',
+    });
+  } catch (error) {
+    console.error('Erro ao fazer upload do cronograma:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Rota para upload de dados por fases
+app.post('/api/fases/upload', (req, res) => {
+  try {
+    const { fase, atividades, metadata } = req.body;
+
+    if (!fase || !atividades) {
+      return res.status(400).json({
+        error: 'Dados inválidos. Esperado fase e atividades.',
+      });
+    }
+
+    // Carregar dados existentes
+    let cronogramaData = loadCronogramaFromFile();
+    if (!cronogramaData) {
+      cronogramaData = {
+        fases: [],
+        atividades: [],
+        metadata: {
+          titulo: 'Cronograma PFUS3 2025',
+          dataInicio: '',
+          dataFim: '',
+          duracaoTotal: '',
+          progressoGeral: 0,
+          ultimaAtualizacao: new Date().toISOString(),
+        },
+      };
+    }
+
+    // Atualizar ou adicionar a fase
+    const faseIndex = cronogramaData.fases.findIndex(
+      (f: any) => f.id === fase.id
+    );
+    if (faseIndex >= 0) {
+      cronogramaData.fases[faseIndex] = fase;
+    } else {
+      cronogramaData.fases.push(fase);
+    }
+
+    // Atualizar atividades da fase
+    cronogramaData.atividades = [
+      ...cronogramaData.atividades.filter((a: any) => a.fase !== fase.id),
+      ...atividades.map((ativ: any) => ({ ...ativ, fase: fase.id })),
+    ];
+
+    // Atualizar metadata
+    cronogramaData.metadata = {
+      ...cronogramaData.metadata,
+      ultimaAtualizacao: new Date().toISOString(),
+    };
+
+    saveCronogramaToFile(cronogramaData);
+
+    res.json({
+      message: `Dados da fase ${fase.nome} carregados com sucesso!`,
+      fase: fase.id,
+      atividades: atividades.length,
+    });
+  } catch (error) {
+    console.error('Erro ao fazer upload da fase:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Rota para obter dados de uma fase específica
+app.get('/api/fases/:faseId', (req, res) => {
+  try {
+    const { faseId } = req.params;
+    const cronogramaData = loadCronogramaFromFile();
+
+    if (!cronogramaData) {
+      return res.json({ fase: null, atividades: [] });
+    }
+
+    const fase = cronogramaData.fases.find((f: any) => f.id === faseId);
+    const atividades = cronogramaData.atividades.filter(
+      (a: any) => a.fase === faseId
+    );
+
+    res.json({ fase, atividades });
+  } catch (error) {
+    console.error('Erro ao obter dados da fase:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 app.get('/api/areas', (req, res) => {
   res.json(eventAreas);
 });

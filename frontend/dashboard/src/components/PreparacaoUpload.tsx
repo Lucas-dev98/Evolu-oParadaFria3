@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useTheme, useThemeClasses } from '../contexts/ThemeContext';
 import { useNotifications } from '../hooks/useNotifications';
+import { dashboardAPI } from '../services/api';
 import {
   processarCronogramaPreparacao,
   ProcessedPreparacao,
@@ -55,6 +56,25 @@ const PreparacaoUpload: React.FC<PreparacaoUploadProps> = ({
         setProcessedData(processed);
         setUploadState('success');
         onPreparacaoProcessed(processed);
+
+        // Salvar no backend para persistência global
+        try {
+          await dashboardAPI.uploadFase({
+            fase: {
+              ...processed.fase,
+              id: 'preparacao',
+              nome: 'Preparação',
+            },
+            atividades: processed.atividades || [],
+            metadata: {
+              dataUpload: new Date().toISOString(),
+              arquivo: file.name,
+            },
+          });
+          console.log('✅ Dados de preparação salvos no backend!');
+        } catch (apiError) {
+          console.warn('⚠️ Erro ao salvar no backend:', apiError);
+        }
 
         addSuccessNotification(
           'Upload Realizado com Sucesso',

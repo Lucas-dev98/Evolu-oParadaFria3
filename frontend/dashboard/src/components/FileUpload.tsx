@@ -14,6 +14,7 @@ import Papa from 'papaparse';
 import { EventArea } from '../types';
 import { CategoriaCronograma, ResumoCronograma } from '../types/cronograma';
 import { useTheme, useThemeClasses } from '../contexts/ThemeContext';
+import { dashboardAPI } from '../services/api';
 import {
   processarCronogramaCSV,
   gerarTemplateCronograma,
@@ -140,6 +141,18 @@ const FileUpload: React.FC<FileUploadProps> = ({
         salvarCronogramaLocal(categorias, resumo, file.name);
         verificarDadosLocais(); // Atualizar estado dos dados salvos
 
+        // Salvar também no backend para persistência global
+        try {
+          await dashboardAPI.uploadCronograma({
+            categorias,
+            resumo,
+            tipo: 'cronograma',
+          });
+          console.log('✅ Cronograma salvo no backend para todos os usuários!');
+        } catch (error) {
+          console.warn('⚠️ Erro ao salvar cronograma no backend:', error);
+        }
+
         setTipoArquivo('cronograma');
         setStatus({
           type: 'success',
@@ -230,19 +243,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   const saveDataToBackend = async (data: EventArea[]) => {
     try {
-      const response = await fetch('http://localhost:5000/api/update-areas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ areas: data }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao salvar no backend');
-      }
+      await dashboardAPI.uploadAreas(data);
+      console.log('✅ Dados salvos no backend com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar no backend:', error);
+      // Não bloquear o upload por erro no backend
     }
   };
 

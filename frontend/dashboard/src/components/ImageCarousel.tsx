@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from 'axios';
+import { getAPIUrl } from '../config/environment';
 
 interface ImageCarouselProps {
   images: string[];
@@ -16,22 +18,63 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 }) => {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [processedImages, setProcessedImages] = useState<string[]>([]);
 
-  const prev = () => setCurrent((current - 1 + images.length) % images.length);
-  const next = () => setCurrent((current + 1) % images.length);
+  // Processa os caminhos das imagens através da API
+  useEffect(() => {
+    const processImages = async () => {
+      if (!images || images.length === 0) {
+        setProcessedImages([]);
+        return;
+      }
+
+      try {
+        const processed = await Promise.all(
+          images.map(async (imagePath) => {
+            try {
+              const apiUrl = getAPIUrl();
+              const response = await axios.get(
+                `${apiUrl}/api/images/${encodeURIComponent(imagePath)}`
+              );
+              return response.data.url || imagePath;
+            } catch (error) {
+              console.log(`⚠️ Usando caminho original para: ${imagePath}`);
+              return imagePath;
+            }
+          })
+        );
+        setProcessedImages(processed);
+      } catch (error) {
+        console.error('❌ Erro ao processar imagens:', error);
+        setProcessedImages(images);
+      }
+    };
+
+    processImages();
+  }, [images]);
+
+  const prev = () =>
+    setCurrent((current - 1 + processedImages.length) % processedImages.length);
+  const next = () => setCurrent((current + 1) % processedImages.length);
 
   // Auto-play functionality com pause no hover
   useEffect(() => {
-    if (!autoPlay || !images || images.length <= 1 || isHovered) return;
+    if (
+      !autoPlay ||
+      !processedImages ||
+      processedImages.length <= 1 ||
+      isHovered
+    )
+      return;
 
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
+      setCurrent((prev) => (prev + 1) % processedImages.length);
     }, interval);
 
     return () => clearInterval(timer);
-  }, [autoPlay, interval, images, isHovered]);
+  }, [autoPlay, interval, processedImages, isHovered]);
 
-  if (!images || images.length === 0) {
+  if (!processedImages || processedImages.length === 0) {
     return (
       <div className="w-full flex flex-col items-center mb-6">
         <div
@@ -64,7 +107,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   }
 
   // Corrige índice fora do array
-  const safeIndex = Math.max(0, Math.min(current, images.length - 1));
+  const safeIndex = Math.max(0, Math.min(current, processedImages.length - 1));
 
   return (
     <div
@@ -78,16 +121,22 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       >
         {/* Main image */}
         <img
-          src={images[safeIndex]}
+          src={processedImages[safeIndex]}
           alt={`Planta Industrial - Imagem ${safeIndex + 1}`}
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
           onError={(e) => {
-            console.error('❌ Erro ao carregar imagem:', images[safeIndex]);
+            console.error(
+              '❌ Erro ao carregar imagem:',
+              processedImages[safeIndex]
+            );
             // Opcional: adicionar imagem de fallback
             // e.currentTarget.src = '/path/to/fallback-image.jpg';
           }}
           onLoad={() => {
-            console.log('✅ Imagem carregada com sucesso:', images[safeIndex]);
+            console.log(
+              '✅ Imagem carregada com sucesso:',
+              processedImages[safeIndex]
+            );
           }}
         />
 
@@ -113,7 +162,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
         {/* Image counter */}
         <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-sm rounded-modern-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          {safeIndex + 1} / {images.length}
+          {safeIndex + 1} / {processedImages.length}
         </div>
 
         {/* Auto-play indicator */}
@@ -127,7 +176,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
       {/* Enhanced indicators */}
       <div className="flex gap-2 mt-4">
-        {images.map((_, idx) => (
+        {processedImages.map((_, idx) => (
           <button
             key={idx}
             className={`
