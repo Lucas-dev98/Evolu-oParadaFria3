@@ -161,8 +161,13 @@ const TarefaDetailModal: React.FC<TarefaDetailModalProps> = ({
                   {formatDate(tarefa.fim)}
                 </p>
                 <p className={`text-sm ${themeClasses.textSecondary}`}>
-                  Baseline: {formatDate(tarefa.fimBaseline)}
+                  Planejado: {formatDate(tarefa.fimBaseline)}
                 </p>
+                {tarefa.fimReal && (
+                  <p className={`text-sm ${themeClasses.textSecondary}`}>
+                    Real: {formatDate(tarefa.fimReal)}
+                  </p>
+                )}
               </div>
             </div>
           </div>

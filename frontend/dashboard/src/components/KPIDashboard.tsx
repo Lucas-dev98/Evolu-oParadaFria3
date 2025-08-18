@@ -72,14 +72,17 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({
 
     // 1. Progresso Geral
     const progressoMedio =
-      tasks.reduce((sum, task) => sum + task.percentualCompleto, 0) /
-      tasks.length;
+      tasks.length > 0
+        ? tasks.reduce((sum, task) => sum + task.percentualCompleto, 0) /
+          tasks.length
+        : 0;
 
     // 2. Tarefas Concluídas
     const tarefasConcluidas = tasks.filter(
       (task) => task.percentualCompleto === 100
     ).length;
-    const taxaConclusao = (tarefasConcluidas / tasks.length) * 100;
+    const taxaConclusao =
+      tasks.length > 0 ? (tarefasConcluidas / tasks.length) * 100 : 0;
 
     // 3. Tarefas Atrasadas
     const tarefasAtrasadas = tasks.filter((task) => {
@@ -105,12 +108,29 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({
     }).length;
 
     // 6. Eficiência (vs baseline)
-    const tarefasComDesvio = tasks.filter((task) => {
-      const fim = new Date(task.fim);
-      const fimBaseline = new Date(task.fimBaseline);
-      return fim > fimBaseline;
-    }).length;
-    const eficiencia = ((tasks.length - tarefasComDesvio) / tasks.length) * 100;
+    let eficiencia: number | string = 0;
+    // Eficiência física real vs planejado
+    const tarefasComPlanejado = tasks.filter(
+      (task) =>
+        typeof task.percentualFisico === 'number' &&
+        typeof task.percentualReplanejamento === 'number'
+    );
+    if (tarefasComPlanejado.length === 0) {
+      eficiencia = 'N/A';
+    } else {
+      const progressoFisicoReal = tarefasComPlanejado.reduce(
+        (acc, t) => acc + t.percentualFisico,
+        0
+      );
+      const progressoPlanejado = tarefasComPlanejado.reduce(
+        (acc, t) => acc + t.percentualReplanejamento,
+        0
+      );
+      eficiencia =
+        progressoPlanejado > 0
+          ? (progressoFisicoReal / progressoPlanejado) * 100
+          : 'N/A';
+    }
 
     // 7. Previsão de Conclusão
     const tarefasRestantes = tasks.filter(
@@ -121,7 +141,8 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({
       tarefasRestantes.length / Math.max(velocidadeDiaria, 0.1);
 
     // 8. Qualidade (simulado baseado em retrabalho)
-    const qualidade = 100 - (tarefasAtrasadas / tasks.length) * 20;
+    const qualidade =
+      tasks.length > 0 ? 100 - (tarefasAtrasadas / tasks.length) * 20 : 100;
 
     return [
       {
@@ -170,13 +191,16 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({
         detail: 'Últimos 7 dias',
       },
       {
-        title: 'Eficiência vs Baseline',
-        value: `${eficiencia.toFixed(1)}%`,
+        title: 'Eficiência vs Planejado',
+        value:
+          typeof eficiencia === 'number'
+            ? `${eficiencia.toFixed(1)}%`
+            : eficiencia,
         change: -3.1,
         trend: 'down',
         icon: <Gauge className="w-6 h-6" />,
         color: 'text-indigo-500',
-        detail: `${tarefasComDesvio} com desvio`,
+        detail: 'Físico realizado vs planejado',
       },
       {
         title: 'Previsão de Conclusão',

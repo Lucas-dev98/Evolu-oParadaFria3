@@ -23,6 +23,8 @@ import { processarCronogramaOperacional } from './utils/cronogramaOperacionalPro
 import { processarCronogramaPreparacao } from './utils/cronogramaPreparacaoProcessor';
 import TarefaDetailModal from './components/TarefaDetailModal';
 import ParadaHeader from './components/ParadaHeader';
+import ImageCarousel from './components/ImageCarousel';
+
 import PhasesNavigation from './components/PhasesNavigation';
 import TopNavigation from './components/TopNavigation';
 import PhaseExecutiveView from './components/PhaseExecutiveView';
@@ -53,6 +55,29 @@ import {
 import './App.css';
 
 function AppContent() {
+  // Estado para lista de imagens do carrossel
+  const [imageList, setImageList] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('/api/images')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Imagens recebidas da API:', data);
+        if (Array.isArray(data)) setImageList(data);
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar imagens:', err);
+        setImageList([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log('imageList para o carrossel:', imageList);
+  }, [imageList]);
+
+  useEffect(() => {
+    console.log('imageList para o carrossel:', imageList);
+  }, [imageList]);
   const themeClasses = useThemeClasses();
   const { isAuthenticated, isAdmin, user } = useAuth();
 
@@ -1042,97 +1067,54 @@ function AppContent() {
             humidity: 60 + Math.random() * 10,
           }));
 
-          // Atualizar estado com dados reais
-          setParadaData({ ...paradaData, phases: todasFases });
-          setResumoCronograma(resumoCombinado);
-          setEvolution(evolutionData);
-          setSummary(summaryData);
-          setAreas(areasData);
-          setModoCronograma(true);
-          setIsOnline(true);
-          setLastUpdate(new Date());
+          // Função para lidar com dados das fases carregados
+          const handlePhasesDataUpdated = (phasesData: Record<string, any>) => {
+            console.log('Dados das fases atualizados:', phasesData);
+            // ...existing code...
+            // Atualizar dados das fases no paradaData
+            const updatedPhases = paradaData.phases.map((phase) => {
+              const phaseData = phasesData[phase.id];
+              if (phaseData) {
+                return {
+                  ...phase,
+                  completedActivities:
+                    phaseData.activities?.filter(
+                      (a: any) => a.status === 'concluida'
+                    ).length || phase.completedActivities,
+                  delayedActivities:
+                    phaseData.activities?.filter(
+                      (a: any) => a.status === 'atrasada'
+                    ).length || phase.delayedActivities,
+                  criticalActivities:
+                    phaseData.activities?.filter(
+                      (a: any) => a.criticidade === 'alta'
+                    ).length || phase.criticalActivities,
+                  // Calcular progresso baseado nas atividades
+                  progress:
+                    phaseData.activities?.length > 0
+                      ? Math.round(
+                          (phaseData.activities.filter(
+                            (a: any) => a.status === 'concluida'
+                          ).length /
+                            phaseData.activities.length) *
+                            100
+                        )
+                      : phase.progress,
+                };
+              }
+              return phase;
+            });
 
-          console.log('✅ Dados reais carregados com sucesso!');
-          setIsLoading(false);
-          return;
-        } else {
-          console.log('⚠️ Arquivos CSV não encontrados');
-        }
-      } catch (csvError) {
-        console.error('❌ Erro ao carregar CSVs reais:', csvError);
-      }
+            setParadaData({
+              ...paradaData,
+              phases: updatedPhases,
+            });
 
-      // PRIORIDADE 2: Dados salvos localmente
-      console.log('📁 Verificando dados salvos localmente...');
-      const dadosLocaisExistem = existeCronogramaLocal();
-      if (dadosLocaisExistem) {
-        setLoadingStep('local');
-        const dadosSalvosCarregados = carregarDadosSalvos();
-        if (dadosSalvosCarregados) {
-          console.log('✅ Dados locais carregados com sucesso!');
-          setLastUpdate(new Date());
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      // PRIORIDADE 3: Backend (provavelmente falhará)
-      setLoadingStep('backend');
-      console.log('🔗 Tentando carregar cronograma do backend...');
-      const cronogramaCarregado = await loadCronogramaFromBackend();
-
-      if (cronogramaCarregado) {
-        console.log('✅ Cronograma carregado do backend com sucesso!');
-        setLastUpdate(new Date());
-        setIsLoading(false);
-        return;
-      }
-
-      // PRIORIDADE 4: Se falhou backend, tentar carregar do API dashboard
-      setLoadingStep('backend');
-      try {
-        console.log('📄 Carregando cronogramas reais do PFUS3...');
-
-        // Carregar cronograma operacional
-        console.log('📥 Iniciando fetch dos arquivos CSV...');
-        const [operacionalResponse, preparacaoResponse] = await Promise.all([
-          fetch('/cronograma-operacional.csv'),
-          fetch('/cronograma-preparacao-real.csv'),
-        ]);
-
-        console.log('📊 Status das respostas:', {
-          operacional: {
-            ok: operacionalResponse.ok,
-            status: operacionalResponse.status,
-          },
-          preparacao: {
-            ok: preparacaoResponse.ok,
-            status: preparacaoResponse.status,
-          },
-        });
-
-        if (operacionalResponse.ok && preparacaoResponse.ok) {
-          console.log('✅ CSVs encontrados! Processando dados reais...');
-
-          const [operacionalContent, preparacaoContent] = await Promise.all([
-            operacionalResponse.text(),
-            preparacaoResponse.text(),
-          ]);
-
-          console.log('📝 Conteúdo carregado:', {
-            operacional: `${operacionalContent.length} caracteres`,
-            preparacao: `${preparacaoContent.length} caracteres`,
-          });
-
-          // Importar processadores
-          console.log('🔧 Importando processadores...');
-          const { processarCronogramaOperacional } = await import(
-            './utils/cronogramaOperacionalProcessor'
-          );
-          const { processarCronogramaPreparacao } = await import(
-            './utils/cronogramaPreparacaoProcessor'
-          );
-
+            notifications.success(
+              'Dados Atualizados',
+              'Dados das fases foram atualizados com base nos arquivos carregados'
+            );
+          };
           // Processar ambos os cronogramas
           console.log('⚙️ Processando cronogramas...');
           try {
@@ -1271,6 +1253,149 @@ function AppContent() {
     }
   }, [loadCronogramaFromBackend, carregarDadosSalvos, isLoadingData]); // Adicionado isLoadingData
 
+  // Função para carregamento automático de CSV quando não há dados disponíveis
+  const autoLoadCSVData = useCallback(async () => {
+    console.log('🚀 Iniciando carregamento automático de CSV...');
+    try {
+      // Primeiro, tentar carregar preparação
+      try {
+        const responsePrep = await fetch('/cronograma-preparacao-real.csv');
+        if (responsePrep.ok) {
+          const csvTextPrep = await responsePrep.text();
+          console.log('✅ CSV Preparação carregado automaticamente!');
+          const dadosPreparacao =
+            await processarCronogramaPreparacao(csvTextPrep);
+
+          // Converter para o formato de categorias
+          const categoriaPreparacao: CategoriaCronograma = {
+            nome: 'Preparação PFUS3',
+            cor: '#10B981', // Verde
+            icone: '🔧',
+            progresso: Math.round(
+              dadosPreparacao.atividades.reduce(
+                (acc, a) => acc + a.percentual,
+                0
+              ) / dadosPreparacao.atividades.length
+            ),
+            tarefas: dadosPreparacao.atividades.map(
+              (atividade) =>
+                ({
+                  id: atividade.id || Math.random().toString(),
+                  nome: atividade.nome,
+                  percentualCompleto: atividade.percentual,
+                  percentualFisico: atividade.percentual,
+                  percentualReplanejamento: 0,
+                  percentualFisicoPrev: atividade.percentual,
+                  percentualFisicoReplan: atividade.percentual,
+                  percentualFisicoCalc: atividade.percentual,
+                  duracao: `${atividade.duracao || 1} days`,
+                  inicio:
+                    atividade.dataInicio ||
+                    new Date().toISOString().split('T')[0],
+                  fim:
+                    atividade.dataFim || new Date().toISOString().split('T')[0],
+                  inicioBaseline:
+                    atividade.dataInicio ||
+                    new Date().toISOString().split('T')[0],
+                  fimBaseline:
+                    atividade.dataFim || new Date().toISOString().split('T')[0],
+                  nivel: atividade.nivel || 0,
+                  categoria: 'Preparação',
+                  responsavel:
+                    (atividade as any).responsavel || 'Equipe Preparação',
+                  prioridade: atividade.critica ? 'alta' : 'media',
+                  status:
+                    atividade.percentual >= 100
+                      ? 'concluida'
+                      : atividade.percentual > 0
+                        ? 'em-andamento'
+                        : 'pendente',
+                  dependencias: (atividade as any).dependencias || [],
+                  recursos: (atividade as any).recursos || [],
+                  fase: 'Preparação',
+                }) as TarefaCronograma & {
+                  responsavel: string;
+                  prioridade: string;
+                  status: string;
+                  dependencias: any[];
+                  recursos: any[];
+                  fase: string;
+                }
+            ),
+          };
+
+          setCategoriasCronograma([categoriaPreparacao]);
+
+          const concluidas = dadosPreparacao.atividades.filter(
+            (a) => a.percentual >= 100
+          ).length;
+          const emAndamento = dadosPreparacao.atividades.filter(
+            (a) => a.percentual > 0 && a.percentual < 100
+          ).length;
+          const pendentes = dadosPreparacao.atividades.filter(
+            (a) => a.percentual === 0
+          ).length;
+
+          setResumoCronograma({
+            progressoGeral: Math.round(
+              (concluidas / dadosPreparacao.atividades.length) * 100
+            ),
+            totalTarefas: dadosPreparacao.atividades.length,
+            tarefasConcluidas: concluidas,
+            tarefasEmAndamento: emAndamento,
+            tarefasPendentes: pendentes,
+            diasRestantes: 30, // Valor padrão
+            dataPrevistaConclusao: new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000
+            )
+              .toISOString()
+              .split('T')[0],
+            statusGeral: {
+              totalAtividades: dadosPreparacao.atividades.length,
+              atividadesEmDia: emAndamento + concluidas,
+              atividadesAtrasadas: 0,
+              atividadesAdiantadas: 0,
+              atividadesCriticas: dadosPreparacao.atividades.filter(
+                (a) => a.critica
+              ).length,
+              progressoMedio: Math.round(
+                (concluidas / dadosPreparacao.atividades.length) * 100
+              ),
+            },
+          });
+          return; // Se conseguiu carregar preparação, não precisa tentar operacional
+        }
+      } catch (errorPrep) {
+        console.warn(
+          '⚠️ Erro ao carregar preparação automaticamente:',
+          errorPrep
+        );
+      }
+
+      // Se não conseguiu preparação, tentar operacional
+      try {
+        const responseOper = await fetch('/cronograma-operacional.csv');
+        if (responseOper.ok) {
+          const csvTextOper = await responseOper.text();
+          console.log('✅ CSV Operacional carregado automaticamente!');
+          const dadosOperacional =
+            await processarCronogramaOperacional(csvTextOper);
+
+          // Usar a função existente para converter os dados
+          console.log('📊 Dados operacionais carregados automaticamente');
+          // Aqui você pode adaptar os dados operacionais conforme necessário
+        }
+      } catch (errorOper) {
+        console.warn(
+          '⚠️ Erro ao carregar operacional automaticamente:',
+          errorOper
+        );
+      }
+    } catch (error) {
+      console.error('❌ Erro geral no carregamento automático:', error);
+    }
+  }, []);
+
   // Carregar dados iniciais - APENAS UMA VEZ
   useEffect(() => {
     loadData();
@@ -1364,6 +1489,22 @@ function AppContent() {
   //   }, 30000);
   //   return () => clearInterval(interval);
   // }, []);
+
+  // Carregar dados CSV automaticamente quando não há dados disponíveis
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (
+        modoCronograma &&
+        !resumoCronograma &&
+        categoriasCronograma.length === 0
+      ) {
+        console.log('📋 Nenhum dado disponível, carregando automaticamente...');
+        autoLoadCSVData();
+      }
+    }, 2000); // Aguardar 2 segundos para permitir que outros carregamentos terminem
+
+    return () => clearTimeout(timer);
+  }, [modoCronograma, resumoCronograma, categoriasCronograma, autoLoadCSVData]);
 
   // Função para alternar entre dashboard e cronograma
   const toggleMode = () => {
@@ -1511,7 +1652,6 @@ function AppContent() {
       if (phaseData) {
         return {
           ...phase,
-          activities: phaseData.activities?.length || phase.activities,
           completedActivities:
             phaseData.activities?.filter((a: any) => a.status === 'concluida')
               .length || phase.completedActivities,
@@ -1521,7 +1661,6 @@ function AppContent() {
           criticalActivities:
             phaseData.activities?.filter((a: any) => a.criticidade === 'alta')
               .length || phase.criticalActivities,
-          // Calcular progresso baseado nas atividades
           progress:
             phaseData.activities?.length > 0
               ? Math.round(
@@ -1761,6 +1900,15 @@ function AppContent() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Carrossel de Imagens da Planta */}
+        <div className="mb-4 sm:mb-6">
+          <ImageCarousel
+            images={imageList}
+            height="220px"
+            autoPlay={true}
+            interval={4000}
+          />
+        </div>
         {/* Cabeçalho da Parada */}
         <div className="mb-4 sm:mb-6">
           <ParadaHeader paradaData={paradaData} />
@@ -1938,13 +2086,7 @@ function AppContent() {
                   }}
                 />
               </div>
-            ) : (
-              /* Nenhum Dado */
-              <div className="text-center py-8">
-                <p>Nenhum dado de cronograma disponível</p>
-              </div>
-            )}
-            ) : modoAnalytics ? ( /* Visualização Analytics Avançados */
+            ) : null}
             <div>
               {/* Navegação das Abas de Analytics */}
               <div className={`mb-6 ${themeClasses.card} rounded-lg p-4`}>
@@ -2440,11 +2582,6 @@ function AppContent() {
                 </div>
               )}
             </div>
-            ) : (
-            <div className="text-center py-8">
-              <p>Nenhum dado de cronograma disponível</p>
-            </div>
-            )
           </div>
         ) : modoCronograma && !resumoCronograma ? (
           /* Modo Cronograma sem Dados - Welcome Screen */
