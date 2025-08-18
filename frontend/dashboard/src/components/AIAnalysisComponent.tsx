@@ -271,7 +271,7 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
                 </span>
                 {tipo !== 'todos' && (
                   <span className="ml-1 text-xs">
-                    ({analiseIA.insights.filter((i) => i.tipo === tipo).length})
+                    ({(analiseIA?.insights || []).filter((i) => i.tipo === tipo).length})
                   </span>
                 )}
               </button>
@@ -296,17 +296,18 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
             const tarefasCategoria = categoria.tarefas || [];
             const totalAtividades = tarefasCategoria.length;
             const atrasadas = tarefasCategoria.filter((t) => {
+              if (!t.fim) return false;
               const fim = new Date(t.fim);
               const hoje = new Date();
-              return fim < hoje && t.percentualCompleto < 100;
+              return fim < hoje && (t.percentualCompleto || 0) < 100;
             }).length;
             const criticas = tarefasCategoria.filter(
               (t) =>
-                t.nome.toLowerCase().includes('crític') ||
-                (t.percentualCompleto === 0 && new Date(t.fim) < new Date())
+                (t.nome && t.nome.toLowerCase().includes('crític')) ||
+                ((t.percentualCompleto || 0) === 0 && t.fim && new Date(t.fim) < new Date())
             ).length;
             const atencao = tarefasCategoria.filter(
-              (t) => t.percentualCompleto > 0 && t.percentualCompleto < 50
+              (t) => (t.percentualCompleto || 0) > 0 && (t.percentualCompleto || 0) < 50
             ).length;
 
             const getStatusColor = () => {
@@ -495,7 +496,7 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
                     </div>
                   )}
 
-                  {expandedInsights.has(insight.id) && (
+                  {expandedInsights.has(insight.id) && insight.recomendações && insight.recomendações.length > 0 && (
                     <div className="mt-4 p-3 bg-white/50 rounded-lg">
                       <h5
                         className={`font-medium ${themeClasses.textPrimary} mb-2 flex items-center`}
@@ -504,7 +505,7 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
                         Recomendações:
                       </h5>
                       <ul className="space-y-1">
-                        {insight.recomendações.map((rec, index) => (
+                        {(insight.recomendações || []).map((rec, index) => (
                           <li
                             key={index}
                             className={`text-sm ${themeClasses.textSecondary} flex items-start`}
@@ -553,7 +554,7 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
         </h3>
 
         <div className="space-y-3 sm:space-y-4">
-          {analiseIA.açõesRecomendadas.map((ação, index) => (
+          {(analiseIA?.açõesRecomendadas || []).map((ação, index) => (
             <div
               key={index}
               className={`p-3 sm:p-4 rounded-lg ${themeClasses.bgTertiary} border-l-4 ${
