@@ -239,15 +239,47 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ categorias }) => {
   const obterIconeTendencia = (tendencia: string) => {
     switch (tendencia) {
       case 'up':
-        return <TrendingUp className="w-4 h-4 text-green-500" />;
+        return (
+          <div className="flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+            <TrendingUp className="w-3 h-3 mr-1" />
+            Bom
+          </div>
+        );
       case 'down':
-        return <TrendingDown className="w-4 h-4 text-red-500" />;
+        return (
+          <div className="flex items-center px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+            <TrendingDown className="w-3 h-3 mr-1" />
+            Baixo
+          </div>
+        );
       case 'warning':
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+        return (
+          <div className="flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Atenção
+          </div>
+        );
       case 'critical':
-        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+        return (
+          <div className="flex items-center px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Crítico
+          </div>
+        );
+      case 'stable':
+        return (
+          <div className="flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+            <div className="w-3 h-3 bg-blue-500 rounded-full mr-1" />
+            Estável
+          </div>
+        );
       default:
-        return <div className="w-4 h-4 bg-gray-400 rounded-full" />;
+        return (
+          <div className="flex items-center px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+            <div className="w-3 h-3 bg-gray-400 rounded-full mr-1" />
+            Normal
+          </div>
+        );
     }
   };
 
@@ -264,46 +296,79 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ categorias }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">
-            Dashboard Executivo - PFUS3 2025
-          </h2>
-          <p className="text-gray-600 mt-1">
-            Métricas em tempo real do cronograma de preparação
-          </p>
-        </div>
-        <div className="text-sm text-gray-500">
-          Última atualização: {new Date().toLocaleString('pt-BR')}
-        </div>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {kpiCards.map((card, index) => (
           <div
             key={index}
-            className={`${themeClasses.card} rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow`}
+            className={`${themeClasses.card} relative overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className={card.cor}>{card.icone}</div>
-                  <h3 className="font-semibold text-gray-900">{card.titulo}</h3>
-                </div>
+            {/* Card Background Gradient */}
+            <div className="absolute top-0 right-0 w-24 h-24 opacity-10">
+              <div
+                className={`w-full h-full rounded-full ${
+                  card.cor.includes('green')
+                    ? 'bg-green-500'
+                    : card.cor.includes('yellow')
+                      ? 'bg-yellow-500'
+                      : card.cor.includes('red')
+                        ? 'bg-red-500'
+                        : 'bg-blue-500'
+                }`}
+                style={{ transform: 'translate(50%, -50%)' }}
+              />
+            </div>
 
-                <div className="space-y-1">
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-bold">{card.valor}</span>
-                    {obterIconeTendencia(card.tendencia)}
-                  </div>
-                  <p className="text-sm text-gray-600">{card.subtitulo}</p>
-                  {card.detalhes && (
-                    <p className="text-xs text-gray-500">{card.detalhes}</p>
-                  )}
+            <div className="relative p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`p-3 rounded-lg ${
+                    card.cor.includes('green')
+                      ? 'bg-green-100 dark:bg-green-900/30'
+                      : card.cor.includes('yellow')
+                        ? 'bg-yellow-100 dark:bg-yellow-900/30'
+                        : card.cor.includes('red')
+                          ? 'bg-red-100 dark:bg-red-900/30'
+                          : 'bg-blue-100 dark:bg-blue-900/30'
+                  }`}
+                >
+                  <div className={card.cor}>{card.icone}</div>
+                </div>
+                <div className="flex items-center">
+                  {obterIconeTendencia(card.tendencia)}
                 </div>
               </div>
+
+              {/* Title */}
+              <h3
+                className={`text-sm font-medium ${themeClasses.textSecondary} mb-2`}
+              >
+                {card.titulo}
+              </h3>
+
+              {/* Main Value */}
+              <div className="mb-3">
+                <span
+                  className={`text-3xl font-bold ${themeClasses.textPrimary}`}
+                >
+                  {card.valor}
+                </span>
+              </div>
+
+              {/* Subtitle */}
+              <p className={`text-sm ${themeClasses.textSecondary} mb-2`}>
+                {card.subtitulo}
+              </p>
+
+              {/* Details */}
+              {card.detalhes && (
+                <div
+                  className={`text-xs ${themeClasses.textTertiary} pt-2 border-t border-gray-200 dark:border-gray-700`}
+                >
+                  {card.detalhes}
+                </div>
+              )}
             </div>
           </div>
         ))}

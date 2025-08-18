@@ -322,7 +322,7 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
 
   return (
     <div
-      className={`space-y-6 ${themeClasses.bgSecondary} p-6 rounded-lg`}
+      className={`phase-activities-mobile space-y-6 ${themeClasses.bgSecondary} p-6 rounded-lg`}
       data-testid="phase-activities-manager"
     >
       {/* BOTÃO DE ACESSO DIRETO */}
@@ -423,45 +423,61 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
         )}
 
       {/* Header com estatísticas */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+      <div className="phase-header-mobile flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
         <div>
-          <h2 className={`text-2xl font-bold ${themeClasses.textPrimary}`}>
+          <h2
+            className={`phase-title-mobile text-2xl font-bold ${themeClasses.textPrimary}`}
+          >
             Atividades - {phaseName}
           </h2>
-          <p className={`text-sm ${themeClasses.textSecondary} mt-1`}>
+          <p
+            className={`phase-subtitle-mobile text-sm ${themeClasses.textSecondary} mt-1`}
+          >
             Gerencie e monitore as atividades desta fase
           </p>
         </div>
 
         {/* Estatísticas rápidas */}
-        <div className="flex space-x-4">
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${themeClasses.textPrimary}`}>
+        <div className="phase-stats-mobile flex space-x-4">
+          <div className="phase-stat-item-mobile text-center">
+            <div
+              className={`phase-stat-number-mobile text-2xl font-bold ${themeClasses.textPrimary}`}
+            >
               {stats.total}
             </div>
-            <div className={`text-xs ${themeClasses.textSecondary}`}>Total</div>
+            <div
+              className={`phase-stat-label-mobile text-xs ${themeClasses.textSecondary}`}
+            >
+              Total
+            </div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="phase-stat-item-mobile text-center">
+            <div className="phase-stat-number-mobile text-2xl font-bold text-green-600">
               {stats.concluidas}
             </div>
-            <div className={`text-xs ${themeClasses.textSecondary}`}>
+            <div
+              className={`phase-stat-label-mobile text-xs ${themeClasses.textSecondary}`}
+            >
               Concluídas
             </div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="phase-stat-item-mobile text-center">
+            <div className="phase-stat-number-mobile text-2xl font-bold text-blue-600">
               {stats.emAndamento}
             </div>
-            <div className={`text-xs ${themeClasses.textSecondary}`}>
+            <div
+              className={`phase-stat-label-mobile text-xs ${themeClasses.textSecondary}`}
+            >
               Em Andamento
             </div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">
+          <div className="phase-stat-item-mobile text-center">
+            <div className="phase-stat-number-mobile text-2xl font-bold text-yellow-600">
               {stats.pendentes}
             </div>
-            <div className={`text-xs ${themeClasses.textSecondary}`}>
+            <div
+              className={`phase-stat-label-mobile text-xs ${themeClasses.textSecondary}`}
+            >
               Pendentes
             </div>
           </div>
@@ -483,10 +499,10 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
               >
                 {/* Header da frente */}
                 <div
-                  className={`flex items-center justify-between p-4 cursor-pointer hover:${themeClasses.bgSecondary} transition-colors`}
+                  className={`phase-group-header-mobile flex items-center justify-between p-4 cursor-pointer hover:${themeClasses.bgSecondary} transition-colors`}
                   onClick={() => toggleFrente(frente)}
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="phase-group-info-mobile flex items-center space-x-3">
                     {expandedFrentes.includes(frente) ? (
                       <ChevronDown
                         size={20}
@@ -499,40 +515,40 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                       />
                     )}
                     <h3
-                      className={`text-lg font-semibold ${themeClasses.textPrimary}`}
+                      className={`phase-group-title-mobile text-lg font-semibold ${themeClasses.textPrimary}`}
                     >
                       {frente}
                     </h3>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                    <span className="phase-group-badge-mobile px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
                       {atividades.length} atividades
                     </span>
 
                     {/* Indicadores de Status Crítico */}
-                    <div className="flex items-center space-x-1">
+                    <div className="phase-group-badges-mobile flex items-center space-x-1">
                       {estatisticasCriticas.atrasadas > 0 && (
-                        <span className="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300">
+                        <span className="phase-group-badge-mobile px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300">
                           🚨 {estatisticasCriticas.atrasadas} atrasadas
                         </span>
                       )}
                       {estatisticasCriticas.criticas > 0 && (
-                        <span className="px-2 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+                        <span className="phase-group-badge-mobile px-2 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
                           ⚠️ {estatisticasCriticas.criticas} críticas
                         </span>
                       )}
                       {estatisticasCriticas.atencao > 0 && (
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-300">
+                        <span className="phase-group-badge-mobile px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-300">
                           ⚡ {estatisticasCriticas.atencao} atenção
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3">
+                  <div className="phase-group-status-mobile flex items-center space-x-3">
                     {/* Status mais crítico da frente */}
                     {(estatisticasCriticas.atrasadas > 0 ||
                       estatisticasCriticas.criticas > 0 ||
                       estatisticasCriticas.atencao > 0) && (
                       <div
-                        className={`px-3 py-1 rounded-lg ${estatisticasCriticas.statusMaisCritico.corFundo} border`}
+                        className={`phase-group-status-badge-mobile px-3 py-1 rounded-lg ${estatisticasCriticas.statusMaisCritico.corFundo} border`}
                       >
                         <span
                           className={`text-sm font-bold ${estatisticasCriticas.statusMaisCritico.corTexto}`}
@@ -544,8 +560,8 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                     )}
 
                     {/* Barra de progresso */}
-                    <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="phase-group-progress-mobile flex items-center space-x-2">
+                      <div className="phase-group-progress-bar-mobile w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-300 ${
                             estatisticasCriticas.atrasadas > 0
@@ -560,7 +576,7 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                         ></div>
                       </div>
                       <span
-                        className={`text-sm font-medium ${themeClasses.textSecondary}`}
+                        className={`phase-group-progress-text-mobile text-sm font-medium ${themeClasses.textSecondary}`}
                       >
                         {evolucaoPercentual}%
                       </span>

@@ -119,13 +119,13 @@ class AnalyticsService {
       }
     });
 
-    // Data final do projeto (maior data de fim)
-    const dataFinalProjeto = new Date(
+    // Data final do projeto (maior data de fim das tarefas)
+    const dataFinalTarefas = new Date(
       Math.max(...tarefasComData.map((t) => new Date(t.fim).getTime()))
     );
 
     const diasAteVencimento = Math.ceil(
-      (dataFinalProjeto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
+      (dataFinalTarefas.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     // Análise de performance por categoria
@@ -152,17 +152,35 @@ class AnalyticsService {
     const horasEstimadas = this.calcularHorasEstimadas(todasTarefas);
     const horasRealizadas = horasEstimadas * (progressoGeralFisico / 100);
 
-    // Calcular eficiência correta: Progresso Físico Real vs Progresso Planejado
-    const progressoPlanejadoTotal =
-      todasTarefas.reduce(
-        (acc, tarefa) => acc + tarefa.percentualReplanejamento,
-        0
-      ) / todasTarefas.length;
+    // Calcular eficiência: Progresso Real vs Progresso Esperado
+    // Usando uma fórmula mais robusta baseada no tempo decorrido vs progresso
+    const agora = new Date();
+    const dataInicialProjeto = new Date('2025-05-31'); // Data início PFUS3
+    const dataFinalProjetoPFUS3 = new Date('2025-10-14'); // Data fim PFUS3
 
+    const tempoTotalProjeto =
+      dataFinalProjetoPFUS3.getTime() - dataInicialProjeto.getTime();
+    const tempoDecorrido = agora.getTime() - dataInicialProjeto.getTime();
+    const progressoEsperado = Math.min(
+      100,
+      Math.max(0, (tempoDecorrido / tempoTotalProjeto) * 100)
+    );
+
+    // Eficiência = Progresso Real / Progresso Esperado * 100
     const eficienciaGeral =
-      progressoPlanejadoTotal > 0
-        ? (progressoGeralFisico / progressoPlanejadoTotal) * 100
-        : 0;
+      progressoEsperado > 0
+        ? Math.min(200, (progressoGeralFisico / progressoEsperado) * 100) // Cap em 200% para evitar valores absurdos
+        : progressoGeralFisico; // Se ainda não começou, usar progresso atual
+
+    console.log('📊 Cálculo de Eficiência:', {
+      progressoGeralFisico: progressoGeralFisico.toFixed(1) + '%',
+      progressoEsperado: progressoEsperado.toFixed(1) + '%',
+      eficienciaCalculada: eficienciaGeral.toFixed(1) + '%',
+      tempoDecorrido:
+        Math.round(tempoDecorrido / (1000 * 60 * 60 * 24)) + ' dias',
+      tempoTotal:
+        Math.round(tempoTotalProjeto / (1000 * 60 * 60 * 24)) + ' dias',
+    });
 
     // Previsão de conclusão baseada no ritmo atual
     const dataEstimadaConclusao = this.calcularDataEstimadaConclusao(

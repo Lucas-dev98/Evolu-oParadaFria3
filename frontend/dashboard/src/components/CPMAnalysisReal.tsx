@@ -58,6 +58,23 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
     }
   }, [categorias]);
 
+  // Calcular progresso esperado baseado no tempo decorrido
+  const calcularProgressoEsperado = (tarefa: TarefaCronograma): number => {
+    const inicio = new Date(tarefa.inicio);
+    const fim = new Date(tarefa.fim);
+    const hoje = new Date();
+
+    if (hoje < inicio) return 0;
+    if (hoje > fim) return 100;
+
+    const totalDias =
+      (fim.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24);
+    const diasDecorridos =
+      (hoje.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24);
+
+    return Math.min(100, Math.max(0, (diasDecorridos / totalDias) * 100));
+  };
+
   const obterTodasTarefas = (): TarefaCronograma[] => {
     try {
       const todas: TarefaCronograma[] = [];
@@ -131,23 +148,7 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
 
   const calcularDuracao = (tarefa: TarefaCronograma): number => {
     try {
-      // Extrai duração em dias de strings como "100 hrs", "5 days", "2656 hrs"
-      const durStr = tarefa.duracao || '1 day';
-
-      // Buscar por horas
-      const hoursMatch = durStr.match(/(\d+(?:\.\d+)?)\s*hrs?/i);
-      if (hoursMatch) {
-        const horas = parseFloat(hoursMatch[1]);
-        return Math.max(1, Math.ceil(horas / 8)); // Mínimo 1 dia, 8 horas = 1 dia
-      }
-
-      // Buscar por dias
-      const daysMatch = durStr.match(/(\d+(?:\.\d+)?)\s*(e?days?)/i);
-      if (daysMatch) {
-        return Math.max(1, Math.ceil(parseFloat(daysMatch[1])));
-      }
-
-      // Fallback: usar diferença entre datas
+      // CORREÇÃO: Priorizar cálculo baseado nas datas reais
       const inicio = new Date(tarefa.inicio);
       const fim = new Date(tarefa.fim);
 
@@ -156,6 +157,26 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
           (fim.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)
         );
         return Math.max(1, diffDays);
+      }
+
+      // Fallback: usar string de duração
+      const durStr = tarefa.duracao || '1 day';
+
+      // Buscar por dias primeiro
+      const daysMatch = durStr.match(/(\d+(?:\.\d+)?)\s*(e?days?)/i);
+      if (daysMatch) {
+        return Math.max(1, Math.ceil(parseFloat(daysMatch[1])));
+      }
+
+      // Buscar por horas (converter de forma mais conservadora)
+      const hoursMatch = durStr.match(/(\d+(?:\.\d+)?)\s*hrs?/i);
+      if (hoursMatch) {
+        const horas = parseFloat(hoursMatch[1]);
+        // Para tarefas de poucas horas, usar 1 dia. Para muitas horas, considerar dias úteis
+        if (horas <= 8) return 1;
+        if (horas <= 40) return Math.ceil(horas / 8); // Semana de 40h = 5 dias
+        // Para projetos grandes, usar conversão mais realística
+        return Math.ceil(horas / 24); // Assumir trabalho contínuo para grandes projetos
       }
 
       return 1; // Fallback mínimo
@@ -272,24 +293,26 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
     }
 
     // Backward Pass - Calcular datas mais tarde possível
-    const dataFinalProjeto = new Date(
-      Math.max(
-        ...tarefasCPMCalc.map((t) => t.fimMaisEdo.getTime()),
-        ...todas.map((t) => new Date(t.fim).getTime())
-      )
-    );
+    // CORREÇÃO: Usar data baseline do projeto PFUS3 como referência
+    const dataFinalProjeto = new Date('2025-08-14'); // Data baseline do PFUS3
+    const hoje = new Date();
 
     console.log(
-      '📅 Data final do projeto PFUS3:',
+      '📅 Data baseline PFUS3:',
       dataFinalProjeto.toLocaleDateString('pt-BR')
     );
+    console.log('📅 Data atual:', hoje.toLocaleDateString('pt-BR'));
 
-    // Inicializar todas as tarefas com a data final
+    // Inicializar tarefas com suas datas planejadas ou baseline
     tarefasCPMCalc.forEach((tarefaCPM) => {
+      const fimPlanejado = new Date(tarefaCPM.tarefa.fim);
+      // Usar a menor data entre planejado e baseline como referência
+      tarefaCPM.fimMaisTarde =
+        fimPlanejado <= dataFinalProjeto ? fimPlanejado : dataFinalProjeto;
+
       const duracao = calcularDuracao(tarefaCPM.tarefa);
-      tarefaCPM.fimMaisTarde = dataFinalProjeto;
       tarefaCPM.inicioMaisTarde = new Date(
-        dataFinalProjeto.getTime() - duracao * 24 * 60 * 60 * 1000
+        tarefaCPM.fimMaisTarde.getTime() - duracao * 24 * 60 * 60 * 1000
       );
     });
 
@@ -655,7 +678,9 @@ const CPMAnalysisReal: React.FC<CPMAnalysisRealProps> = ({
                       <p>Categoria: {tarefaCPM.tarefa.categoria}</p>
                       <p>
                         Progresso: {tarefaCPM.tarefa.percentualCompleto}%
-                        (Previsto: {tarefaCPM.tarefa.percentualReplanejamento}%)
+                        (Previsto:{' '}
+                        {calcularProgressoEsperado(tarefaCPM.tarefa).toFixed(1)}
+                        %)
                       </p>
                       <div className="flex space-x-4">
                         <span>

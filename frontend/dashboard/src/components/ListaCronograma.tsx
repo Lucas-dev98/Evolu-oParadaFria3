@@ -274,75 +274,75 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
             return (
               <div
                 key={categoria.nome}
-                className="border-2 border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 bg-white/60 backdrop-blur-sm"
+                className="border-2 border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 bg-white/60 backdrop-blur-sm mx-2 sm:mx-0"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
               >
                 {/* Cabeçalho da Categoria com visual aprimorado */}
                 <div
-                  className="bg-gradient-to-r from-gray-50 via-white to-gray-50 p-6 cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:via-white hover:to-purple-50 transition-all duration-300 relative overflow-hidden group"
+                  className="bg-gradient-to-r from-gray-50 via-white to-gray-50 p-4 sm:p-6 cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:via-white hover:to-purple-50 transition-all duration-300 relative overflow-hidden group"
                   onClick={() => toggleCategoria(categoria.nome)}
                 >
                   {/* Elemento decorativo */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
                         <div className="relative">
                           {isExpandida ? (
-                            <ChevronDown className="w-6 h-6 text-blue-600 transition-transform duration-300" />
+                            <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 transition-transform duration-300" />
                           ) : (
-                            <ChevronRight className="w-6 h-6 text-gray-600 transition-transform duration-300" />
+                            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 transition-transform duration-300" />
                           )}
                         </div>
                         <div
-                          className={`w-4 h-4 rounded-full ${categoria.cor} shadow-md`}
+                          className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${categoria.cor} shadow-md`}
                         />
                         <div>
-                          <h3 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                          <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
                             {categoria.nome}
                           </h3>
-                          <p className="text-sm text-gray-600 font-medium">
+                          <p className="text-xs sm:text-sm text-gray-600 font-medium">
                             {tarefasFiltradas.length} tarefa
                             {tarefasFiltradas.length !== 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-6">
+                      <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-6">
                         {/* Status da categoria com badges melhorados */}
                         {categoria.statusPrazo && (
-                          <div className="flex items-center space-x-2 text-xs">
+                          <div className="flex flex-wrap gap-1 sm:flex sm:items-center sm:space-x-2 text-xs">
                             {categoria.statusPrazo.atrasadas > 0 && (
-                              <div className="flex items-center space-x-1 bg-gradient-to-r from-red-100 to-red-50 text-red-700 px-3 py-1 rounded-full border border-red-200 shadow-sm">
+                              <div className="flex items-center space-x-1 bg-gradient-to-r from-red-100 to-red-50 text-red-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full border border-red-200 shadow-sm">
                                 <AlertTriangle className="w-3 h-3" />
-                                <span className="font-semibold">
+                                <span className="font-semibold text-xs">
                                   {categoria.statusPrazo.atrasadas} atrasadas
                                 </span>
                               </div>
                             )}
                             {categoria.statusPrazo.criticas > 0 && (
-                              <div className="flex items-center space-x-1 bg-gradient-to-r from-orange-100 to-orange-50 text-orange-700 px-3 py-1 rounded-full border border-orange-200 shadow-sm">
+                              <div className="flex items-center space-x-1 bg-gradient-to-r from-orange-100 to-orange-50 text-orange-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full border border-orange-200 shadow-sm">
                                 <Clock className="w-3 h-3" />
-                                <span className="font-semibold">
+                                <span className="font-semibold text-xs">
                                   {categoria.statusPrazo.criticas} críticas
                                 </span>
                               </div>
                             )}
                             {categoria.statusPrazo.adiantadas > 0 && (
-                              <div className="flex items-center space-x-1 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200 shadow-sm">
+                              <div className="flex items-center space-x-1 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full border border-blue-200 shadow-sm">
                                 <TrendingUp className="w-3 h-3" />
-                                <span className="font-semibold">
+                                <span className="font-semibold text-xs">
                                   {categoria.statusPrazo.adiantadas} adiantadas
                                 </span>
                               </div>
                             )}
                             {categoria.statusPrazo.concluidas > 0 && (
-                              <div className="flex items-center space-x-1 bg-gradient-to-r from-green-100 to-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200 shadow-sm">
+                              <div className="flex items-center space-x-1 bg-gradient-to-r from-green-100 to-green-50 text-green-700 px-2 py-1 sm:px-3 sm:py-1 rounded-full border border-green-200 shadow-sm">
                                 <CheckCircle className="w-3 h-3" />
-                                <span className="font-semibold">
+                                <span className="font-semibold text-xs">
                                   {categoria.statusPrazo.concluidas} concluídas
                                 </span>
                               </div>
@@ -351,10 +351,10 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
                         )}
 
                         {/* Progresso com design circular */}
-                        <div className="flex items-center space-x-4">
-                          <div className="relative w-16 h-16">
+                        <div className="flex justify-center sm:flex sm:items-center sm:space-x-4">
+                          <div className="relative w-12 h-12 sm:w-16 sm:h-16">
                             <svg
-                              className="w-16 h-16 transform -rotate-90"
+                              className="w-12 h-12 sm:w-16 sm:h-16 transform -rotate-90"
                               viewBox="0 0 36 36"
                             >
                               <path
@@ -382,7 +382,7 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
                               />
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-sm font-bold text-gray-700">
+                              <span className="text-xs sm:text-sm font-bold text-gray-700">
                                 {Math.round(categoria.progresso)}%
                               </span>
                             </div>
@@ -395,8 +395,8 @@ const ListaCronograma: React.FC<ListaCronogramaProps> = ({
 
                 {/* Lista de Tarefas com melhor espaçamento */}
                 {isExpandida && (
-                  <div className="p-6 bg-gradient-to-br from-gray-50 to-white">
-                    <div className="space-y-4">
+                  <div className="p-3 sm:p-6 bg-gradient-to-br from-gray-50 to-white">
+                    <div className="space-y-3 sm:space-y-4">
                       {tarefasFiltradas.map((tarefa, tarefaIndex) => (
                         <div
                           key={tarefa.id}

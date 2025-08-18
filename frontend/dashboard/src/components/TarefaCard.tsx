@@ -100,7 +100,7 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
   return (
     <div
       className={`
-        group relative overflow-hidden ${themeClasses.card} rounded-xl shadow-lg border-l-4 p-6 cursor-pointer
+        group relative overflow-hidden task-card-mobile ${themeClasses.card} rounded-xl shadow-lg border-l-4 cursor-pointer
         transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] transform-gpu
         ${getBorderColor(tarefa.percentualCompleto)}
         ${getNivelIndentation(tarefa.nivel)}
@@ -115,63 +115,63 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
       ></div>
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            {/* Botão de expansão para subatividades */}
-            {hasSubatividades && (
-              <button
-                onClick={toggleExpanded}
-                className={`p-1 rounded ${themeClasses.bgTertiary} hover:${themeClasses.bgSecondary} transition-colors`}
-                aria-label={
-                  expanded ? 'Recolher subatividades' : 'Expandir subatividades'
-                }
-              >
-                {expanded ? (
-                  <ChevronDown
-                    className={`w-4 h-4 ${themeClasses.textSecondary}`}
-                  />
-                ) : (
-                  <ChevronRight
-                    className={`w-4 h-4 ${themeClasses.textSecondary}`}
-                  />
-                )}
-              </button>
-            )}
-            <div className="relative">
-              {getStatusIcon(tarefa.percentualCompleto)}
-              {tarefa.percentualCompleto === 100 && (
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-              )}
-            </div>
-            <div>
-              <h3
-                className={`font-bold ${themeClasses.textPrimary} ${tarefa.nivel === 0 ? 'text-lg' : 'text-base'} group-hover:text-blue-700 transition-colors`}
-              >
-                {tarefa.nome}
-                {hasSubatividades && (
-                  <span
-                    className={`ml-2 text-xs ${themeClasses.textTertiary} ${themeClasses.bgTertiary} px-2 py-1 rounded-full`}
-                  >
-                    {tarefa.subatividades!.length} subatividade
-                    {tarefa.subatividades!.length > 1 ? 's' : ''}
-                  </span>
-                )}
-              </h3>
-              {tarefa.nivel > 0 && (
-                <p
-                  className={`text-xs ${themeClasses.textTertiary} font-medium`}
+        <div className="task-card-header">
+          <div className="task-card-title-section">
+            <div className="flex items-center space-x-3 mb-2">
+              {/* Botão de expansão para subatividades */}
+              {hasSubatividades && (
+                <button
+                  onClick={toggleExpanded}
+                  className={`p-1 rounded ${themeClasses.bgTertiary} hover:${themeClasses.bgSecondary} transition-colors`}
+                  aria-label={
+                    expanded
+                      ? 'Recolher subatividades'
+                      : 'Expandir subatividades'
+                  }
                 >
-                  Subtarefa • Nível {tarefa.nivel}
-                </p>
+                  {expanded ? (
+                    <ChevronDown
+                      className={`w-4 h-4 ${themeClasses.textSecondary}`}
+                    />
+                  ) : (
+                    <ChevronRight
+                      className={`w-4 h-4 ${themeClasses.textSecondary}`}
+                    />
+                  )}
+                </button>
               )}
+              <div className="relative">
+                {getStatusIcon(tarefa.percentualCompleto)}
+                {tarefa.percentualCompleto === 100 && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                )}
+              </div>
             </div>
+            <h3
+              className={`task-card-title font-bold ${themeClasses.textPrimary} group-hover:text-blue-700 transition-colors`}
+            >
+              {tarefa.nome}
+              {hasSubatividades && (
+                <span
+                  className={`ml-2 text-xs ${themeClasses.textTertiary} ${themeClasses.bgTertiary} px-2 py-1 rounded-full`}
+                >
+                  {tarefa.subatividades!.length} subatividade
+                  {tarefa.subatividades!.length > 1 ? 's' : ''}
+                </span>
+              )}
+            </h3>
+            {tarefa.nivel > 0 && (
+              <p className={`text-xs ${themeClasses.textTertiary} font-medium`}>
+                Subtarefa • Nível {tarefa.nivel}
+              </p>
+            )}
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="task-card-badges">
             {/* Badge de status de prazo aprimorado */}
             <span
               className={`
-              relative px-3 py-1 rounded-full text-xs font-bold shadow-md border
+              task-status-badge-mobile relative rounded-full font-bold shadow-md border
               ${
                 statusPrazo.color === 'green'
                   ? themeClasses.success
@@ -192,9 +192,9 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
 
             {/* Badge de progresso circular */}
             <div className="relative">
-              <div className="w-12 h-12 relative">
+              <div className="task-card-progress-circle relative">
                 <svg
-                  className="w-12 h-12 transform -rotate-90"
+                  className="w-full h-full transform -rotate-90"
                   viewBox="0 0 36 36"
                 >
                   <path
@@ -223,7 +223,7 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className={`text-xs font-bold ${themeClasses.textPrimary}`}
+                    className={`task-card-progress-text ${themeClasses.textPrimary}`}
                   >
                     {tarefa.percentualCompleto}%
                   </span>
@@ -234,12 +234,12 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
         </div>
 
         {/* Barra de progresso linear aprimorada */}
-        <div className="mb-4">
+        <div className="task-progress-bar-mobile">
           <div
-            className={`w-full ${themeClasses.bgTertiary} rounded-full h-3 overflow-hidden`}
+            className={`w-full ${themeClasses.bgTertiary} rounded-full h-full overflow-hidden`}
           >
             <div
-              className={`h-3 rounded-full bg-gradient-to-r ${getStatusColor(tarefa.percentualCompleto)} transition-all duration-1000 ease-out relative`}
+              className={`h-full rounded-full bg-gradient-to-r ${getStatusColor(tarefa.percentualCompleto)} transition-all duration-1000 ease-out relative`}
               style={{ width: `${tarefa.percentualCompleto}%` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
@@ -248,63 +248,59 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
         </div>
 
         {/* Informações de data e duração em cards */}
-        <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+        <div className="task-card-info-grid grid gap-3 text-sm">
           <div
-            className={`${themeClasses.bgSecondary} backdrop-blur-sm rounded-lg p-3 border ${themeClasses.border}`}
+            className={`task-card-info-item ${themeClasses.bgSecondary} backdrop-blur-sm rounded-lg border ${themeClasses.border}`}
           >
             <div
               className={`flex items-center space-x-2 ${themeClasses.textSecondary}`}
             >
               <Calendar className="w-4 h-4 text-blue-500" />
-              <div>
+              <div className="flex-1">
                 <p
-                  className={`text-xs font-semibold ${themeClasses.textTertiary} uppercase`}
+                  className={`task-card-info-label ${themeClasses.textTertiary}`}
                 >
                   Início
                 </p>
-                <p className={`font-bold ${themeClasses.textPrimary}`}>
+                <p
+                  className={`task-card-info-value ${themeClasses.textPrimary}`}
+                >
                   {new Date(tarefa.inicio).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-gray-200">
+          <div className="task-card-info-item bg-white/60 backdrop-blur-sm rounded-lg border border-gray-200">
             <div className="flex items-center space-x-2 text-gray-600">
               <Calendar className="w-4 h-4 text-purple-500" />
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase">
-                  Fim
-                </p>
-                <p className="font-bold text-gray-800">
+              <div className="flex-1">
+                <p className="task-card-info-label text-gray-500">Fim</p>
+                <p className="task-card-info-value text-gray-800">
                   {new Date(tarefa.fim).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-gray-200">
+          <div className="task-card-info-item bg-white/60 backdrop-blur-sm rounded-lg border border-gray-200">
             <div className="flex items-center space-x-2 text-gray-600">
               <Timer className="w-4 h-4 text-green-500" />
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase">
-                  Duração
-                </p>
-                <p className="font-bold text-gray-800">
+              <div className="flex-1">
+                <p className="task-card-info-label text-gray-500">Duração</p>
+                <p className="task-card-info-value text-gray-800">
                   {formatDuracao(tarefa.duracao)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-gray-200">
+          <div className="task-card-info-item bg-white/60 backdrop-blur-sm rounded-lg border border-gray-200">
             <div className="flex items-center space-x-2 text-gray-400">
               <Target className="w-4 h-4" />
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase">
-                  Baseline
-                </p>
-                <p className="font-bold text-gray-500">
+              <div className="flex-1">
+                <p className="task-card-info-label text-gray-400">Baseline</p>
+                <p className="task-card-info-value text-gray-500">
                   {new Date(tarefa.fimBaseline).toLocaleDateString('pt-BR')}
                 </p>
               </div>
@@ -314,16 +310,16 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
 
         {/* Alertas baseados no status com visual aprimorado */}
         {statusPrazo.status === 'atrasada' && (
-          <div className="bg-gradient-to-r from-red-100 to-red-50 border border-red-300 rounded-xl p-4 shadow-md">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="task-card-alert bg-gradient-to-r from-red-100 to-red-50 border border-red-300 rounded-xl shadow-md">
+            <div className="task-card-alert-content">
+              <div className="task-card-alert-icon bg-red-500 rounded-full flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="text-red-800 text-sm font-bold block">
+                <span className="task-card-alert-text-primary text-red-800 block">
                   Tarefa Atrasada
                 </span>
-                <span className="text-red-600 text-xs">
+                <span className="task-card-alert-text-secondary text-red-600">
                   Requer atenção imediata
                 </span>
               </div>
@@ -332,16 +328,16 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
         )}
 
         {statusPrazo.status === 'critica' && (
-          <div className="bg-gradient-to-r from-orange-100 to-orange-50 border border-orange-300 rounded-xl p-4 shadow-md">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+          <div className="task-card-alert bg-gradient-to-r from-orange-100 to-orange-50 border border-orange-300 rounded-xl shadow-md">
+            <div className="task-card-alert-content">
+              <div className="task-card-alert-icon bg-orange-500 rounded-full flex items-center justify-center">
                 <Clock className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="text-orange-800 text-sm font-bold block">
+                <span className="task-card-alert-text-primary text-orange-800 block">
                   Tarefa Crítica
                 </span>
-                <span className="text-orange-600 text-xs">
+                <span className="task-card-alert-text-secondary text-orange-600">
                   Prazo próximo ao vencimento
                 </span>
               </div>
@@ -350,16 +346,16 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
         )}
 
         {statusPrazo.status === 'adiantada' && (
-          <div className="bg-gradient-to-r from-blue-100 to-blue-50 border border-blue-300 rounded-xl p-4 shadow-md">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className="task-card-alert bg-gradient-to-r from-blue-100 to-blue-50 border border-blue-300 rounded-xl shadow-md">
+            <div className="task-card-alert-content">
+              <div className="task-card-alert-icon bg-blue-500 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="text-blue-800 text-sm font-bold block">
+                <span className="task-card-alert-text-primary text-blue-800 block">
                   Tarefa Adiantada
                 </span>
-                <span className="text-blue-600 text-xs">
+                <span className="task-card-alert-text-secondary text-blue-600">
                   Adiantada em relação ao baseline
                 </span>
               </div>
@@ -368,16 +364,16 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
         )}
 
         {tarefa.percentualCompleto === 100 && (
-          <div className="bg-gradient-to-r from-green-100 to-green-50 border border-green-300 rounded-xl p-4 shadow-md">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+          <div className="task-card-alert bg-gradient-to-r from-green-100 to-green-50 border border-green-300 rounded-xl shadow-md">
+            <div className="task-card-alert-content">
+              <div className="task-card-alert-icon bg-green-500 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="text-green-800 text-sm font-bold block">
+                <span className="task-card-alert-text-primary text-green-800 block">
                   Tarefa Concluída
                 </span>
-                <span className="text-green-600 text-xs">
+                <span className="task-card-alert-text-secondary text-green-600">
                   Parabéns! Tarefa finalizada com sucesso
                 </span>
               </div>
@@ -388,7 +384,7 @@ const TarefaCard: React.FC<TarefaCardProps> = ({
 
       {/* Renderização das subatividades com tema */}
       {hasSubatividades && expanded && (
-        <div className={`mt-4 pl-6 border-l-2 ${themeClasses.border}`}>
+        <div className={`task-subactivities-mobile ${themeClasses.border}`}>
           <div className="space-y-3">
             <h4
               className={`text-sm font-semibold ${themeClasses.textPrimary} mb-3 flex items-center`}

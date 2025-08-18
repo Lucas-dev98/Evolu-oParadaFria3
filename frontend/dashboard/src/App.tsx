@@ -55,29 +55,15 @@ import {
 import './App.css';
 
 function AppContent() {
-  // Estado para lista de imagens do carrossel
-  const [imageList, setImageList] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch('/api/images')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Imagens recebidas da API:', data);
-        if (Array.isArray(data)) setImageList(data);
-      })
-      .catch((err) => {
-        console.error('Erro ao buscar imagens:', err);
-        setImageList([]);
-      });
-  }, []);
-
-  useEffect(() => {
-    console.log('imageList para o carrossel:', imageList);
-  }, [imageList]);
-
-  useEffect(() => {
-    console.log('imageList para o carrossel:', imageList);
-  }, [imageList]);
+  // Estado para lista de imagens do carrossel - usando imagens locais
+  const imageList = [
+    '/static/img/1.jpg',
+    '/static/img/2.jpg',
+    '/static/img/3.jpg',
+    '/static/img/4.jpg',
+    '/static/img/5.jpg',
+    '/static/img/6.jpg',
+  ];
   const themeClasses = useThemeClasses();
   const { isAuthenticated, isAdmin, user } = useAuth();
 
@@ -2561,10 +2547,7 @@ function AppContent() {
 
               {abaAnalytics === 'tendencias' && resumoCronograma && (
                 <div className="space-y-6">
-                  <AIAnalysisComponent
-                    categorias={categoriasCronograma}
-                    resumo={resumoCronograma}
-                  />
+                  <AIAnalysisComponent categorias={categoriasCronograma} />
                   <KPIDashboard categorias={categoriasCronograma} />
                   <CPMAnalysis
                     categorias={categoriasCronograma}
