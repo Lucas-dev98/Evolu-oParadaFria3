@@ -1,6 +1,7 @@
 # 🔧 Troubleshooting: Carousel de Imagens
 
 ## 🎯 Problema Identificado
+
 O carousel de imagens não estava funcionando na aplicação deployada no Render porque:
 
 1. **Arquivos estáticos não servidos**: O backend não estava configurado para servir arquivos da pasta `/static/img/`
@@ -9,6 +10,7 @@ O carousel de imagens não estava funcionando na aplicação deployada no Render
 ## ✅ Correções Implementadas
 
 ### 1. **Backend - Servidor de Arquivos Estáticos**
+
 ```typescript
 // backend/src/index.ts - linha ~100
 // Servir arquivos estáticos da pasta static (imagens do carousel)
@@ -19,6 +21,7 @@ app.use(
 ```
 
 ### 2. **Frontend - Carregamento Dinâmico**
+
 ```typescript
 // App.tsx - estado reativo
 const [imageList, setImageList] = useState<string[]>([
@@ -47,6 +50,7 @@ useEffect(() => {
 ```
 
 ### 3. **Debugging Avançado**
+
 ```typescript
 // ImageCarousel.tsx - handlers de erro
 <img
@@ -59,6 +63,7 @@ useEffect(() => {
 ## 🔍 Como Verificar se Funciona
 
 ### 1. **Testar URLs das Imagens**
+
 ```bash
 # Teste direto no navegador ou curl
 https://evolu-oparadafria3.onrender.com/static/img/1.jpg
@@ -66,18 +71,22 @@ https://evolu-oparadafria3.onrender.com/static/img/2.jpg
 ```
 
 ### 2. **Verificar API de Imagens**
+
 ```bash
 # Endpoint da API
 https://evolu-oparadafria3.onrender.com/api/images
 ```
 
 ### 3. **Console do Navegador**
+
 Abra o DevTools (F12) e procure por:
+
 - ✅ `"🖼️ Carregando imagens do carrossel..."`
 - ✅ `"✅ Imagens carregadas da API: [...]"`
 - ✅ `"✅ Imagem carregada com sucesso: /static/img/X.jpg"`
 
 ### 4. **Erros Comuns**
+
 - ❌ `"❌ Erro ao carregar imagem: /static/img/X.jpg"` → Arquivo não encontrado
 - ❌ `"⚠️ API de imagens indisponível"` → Backend com problema
 - ❌ `404 Not Found` → Middleware de static não configurado
@@ -85,7 +94,7 @@ Abra o DevTools (F12) e procure por:
 ## 🚀 Status das Correções
 
 - ✅ **Middleware estático** adicionado ao backend
-- ✅ **Carregamento dinâmico** implementado no frontend  
+- ✅ **Carregamento dinâmico** implementado no frontend
 - ✅ **Fallback da API** configurado
 - ✅ **Debug completo** para troubleshooting
 - ✅ **Código commitado** e enviado para repositório
@@ -102,6 +111,7 @@ Abra o DevTools (F12) e procure por:
 ### Verificações Adicionais:
 
 1. **Confirme que as imagens existem no repositório**:
+
    ```
    frontend/dashboard/public/static/img/
    ├── 1.jpg
@@ -113,6 +123,7 @@ Abra o DevTools (F12) e procure por:
    ```
 
 2. **Verifique os logs do Render**:
+
    - Acesse dashboard do Render
    - Vá em "Logs"
    - Procure por erros relacionados a arquivos estáticos
@@ -126,6 +137,7 @@ Abra o DevTools (F12) e procure por:
 ## 💡 Próximos Passos
 
 Se o problema persistir, verificar:
+
 - Permissões de arquivo no servidor
 - Configurações de CDN/cache do Render
 - Possível necessidade de usar URLs absolutas com domínio

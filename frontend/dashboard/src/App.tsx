@@ -1416,7 +1416,10 @@ function AppContent() {
           console.log('⚠️ API de imagens indisponível, usando imagens padrão');
         }
       } catch (error) {
-        console.log('⚠️ Erro ao carregar imagens da API, usando imagens padrão:', error);
+        console.log(
+          '⚠️ Erro ao carregar imagens da API, usando imagens padrão:',
+          error
+        );
       }
     };
 

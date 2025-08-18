@@ -70,10 +70,24 @@ try {
 
   // 6. Garantir que as imagens estejam copiadas
   console.log('🖼️ Verificando e copiando imagens...');
-  const frontendImagesPath = path.join('frontend', 'dashboard', 'public', 'static', 'img');
-  const backendImagesPath = path.join('backend', 'dist', 'frontend', 'dashboard', 'build', 'static', 'img');
+  const frontendImagesPath = path.join(
+    'frontend',
+    'dashboard',
+    'public',
+    'static',
+    'img'
+  );
+  const backendImagesPath = path.join(
+    'backend',
+    'dist',
+    'frontend',
+    'dashboard',
+    'build',
+    'static',
+    'img'
+  );
   const backendImagesPath2 = path.join('backend', 'dist', 'static', 'img');
-  
+
   if (fs.existsSync(frontendImagesPath)) {
     // Copiar para o local padrão do build
     copyDirectory(frontendImagesPath, backendImagesPath);
