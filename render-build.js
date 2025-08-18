@@ -68,6 +68,22 @@ try {
     throw new Error('Build do frontend não encontrado!');
   }
 
+  // 6. Garantir que as imagens estejam copiadas
+  console.log('🖼️ Verificando e copiando imagens...');
+  const frontendImagesPath = path.join('frontend', 'dashboard', 'public', 'static', 'img');
+  const backendImagesPath = path.join('backend', 'dist', 'frontend', 'dashboard', 'build', 'static', 'img');
+  const backendImagesPath2 = path.join('backend', 'dist', 'static', 'img');
+  
+  if (fs.existsSync(frontendImagesPath)) {
+    // Copiar para o local padrão do build
+    copyDirectory(frontendImagesPath, backendImagesPath);
+    // Copiar também para um local alternativo que o backend possa encontrar
+    copyDirectory(frontendImagesPath, backendImagesPath2);
+    console.log('✅ Imagens copiadas com sucesso!');
+  } else {
+    console.warn('⚠️ Pasta de imagens não encontrada em:', frontendImagesPath);
+  }
+
   console.log('✅ Build concluído com sucesso!');
 } catch (error) {
   console.error('❌ Erro durante o build:', error.message);

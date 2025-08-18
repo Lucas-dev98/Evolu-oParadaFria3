@@ -99,10 +99,23 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Servir arquivos estáticos da pasta static (imagens do carousel)
-app.use(
-  '/static',
-  express.static(path.join(__dirname, '../../frontend/dashboard/public/static'))
-);
+// Tentar múltiplos caminhos para garantir funcionamento em dev e prod
+const staticPaths = [
+  // Produção: imagens no build
+  path.join(__dirname, '../../frontend/dashboard/build/static'),
+  // Desenvolvimento: imagens na public
+  path.join(__dirname, '../../frontend/dashboard/public/static'),
+  // Fallback para Render
+  path.join(__dirname, '../frontend/dashboard/build/static'),
+];
+
+for (const staticPath of staticPaths) {
+  if (fs.existsSync(staticPath)) {
+    console.log('📁 Configurando middleware estático para:', staticPath);
+    app.use('/static', express.static(staticPath));
+    break;
+  }
+}
 
 // Rota de teste simples
 app.get('/api/test', (req, res) => {
@@ -126,21 +139,45 @@ app.get('/healthz', (req, res) => {
 // Caminhos para os arquivos de dados
 // Rota para listar imagens do carrossel
 app.get('/api/images', (req, res) => {
-  const imgDir = path.join(
-    __dirname,
-    '../../frontend/dashboard/public/static/img'
-  );
-  fs.readdir(imgDir, (err, files) => {
-    if (err) {
-      console.error('Erro ao ler pasta de imagens:', err);
-      return res.status(500).json({ error: 'Erro ao ler imagens' });
+  // Definir caminhos para diferentes ambientes
+  const possiblePaths = [
+    // Produção: imagens copiadas para a pasta build
+    path.join(__dirname, '../../frontend/dashboard/build/static/img'),
+    // Desenvolvimento: imagens na pasta public
+    path.join(__dirname, '../../frontend/dashboard/public/static/img'),
+    // Fallback para estrutura alternativa no Render
+    path.join(__dirname, '../frontend/dashboard/build/static/img'),
+  ];
+
+  let imgDir: string | null = null;
+  let imageFiles: string[] = [];
+
+  // Tentar encontrar a pasta de imagens em um dos caminhos possíveis
+  for (const testPath of possiblePaths) {
+    try {
+      if (fs.existsSync(testPath)) {
+        console.log('📁 Pasta de imagens encontrada em:', testPath);
+        imgDir = testPath;
+        const files = fs.readdirSync(testPath);
+        imageFiles = files.filter((f) => /\.(jpg|jpeg|png|gif)$/i.test(f));
+        break;
+      }
+    } catch (error: any) {
+      console.log('⚠️ Tentativa de caminho falhou:', testPath, error.message);
     }
-    // Filtra apenas arquivos de imagem
-    const imageFiles = files.filter((f) => /\.(jpg|jpeg|png|gif)$/i.test(f));
-    // Retorna caminhos relativos para uso no frontend
-    res.json(imageFiles.map((f) => `/static/img/${f}`));
-  });
+  }
+
+  if (!imgDir || imageFiles.length === 0) {
+    console.log('❌ Nenhuma imagem encontrada. Retornando lista padrão.');
+    // Retorna lista padrão se não encontrar imagens
+    imageFiles = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'];
+  }
+
+  console.log('✅ Imagens encontradas:', imageFiles);
+  // Retorna caminhos relativos para uso no frontend
+  res.json(imageFiles.map((f) => `/static/img/${f}`));
 });
+
 const dataFilePath = path.join(__dirname, 'areas-data.json');
 const cronogramaFilePath = path.join(__dirname, 'cronograma-data.json');
 
