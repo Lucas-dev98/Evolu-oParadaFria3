@@ -81,6 +81,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           src={images[safeIndex]}
           alt={`Planta Industrial - Imagem ${safeIndex + 1}`}
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            console.error('❌ Erro ao carregar imagem:', images[safeIndex]);
+            // Opcional: adicionar imagem de fallback
+            // e.currentTarget.src = '/path/to/fallback-image.jpg';
+          }}
+          onLoad={() => {
+            console.log('✅ Imagem carregada com sucesso:', images[safeIndex]);
+          }}
         />
 
         {/* Gradient overlays */}

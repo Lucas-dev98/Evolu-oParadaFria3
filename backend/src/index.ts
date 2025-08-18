@@ -98,6 +98,12 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
+// Servir arquivos estáticos da pasta static (imagens do carousel)
+app.use(
+  '/static',
+  express.static(path.join(__dirname, '../../frontend/dashboard/public/static'))
+);
+
 // Rota de teste simples
 app.get('/api/test', (req, res) => {
   console.log('🧪 Rota de teste acessada');

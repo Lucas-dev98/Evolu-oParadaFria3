@@ -55,15 +55,15 @@ import {
 import './App.css';
 
 function AppContent() {
-  // Estado para lista de imagens do carrossel - usando imagens locais
-  const imageList = [
+  // Estado para lista de imagens do carrossel
+  const [imageList, setImageList] = useState<string[]>([
     '/static/img/1.jpg',
     '/static/img/2.jpg',
     '/static/img/3.jpg',
     '/static/img/4.jpg',
     '/static/img/5.jpg',
     '/static/img/6.jpg',
-  ];
+  ]);
   const themeClasses = useThemeClasses();
   const { isAuthenticated, isAdmin, user } = useAuth();
 
@@ -1399,6 +1399,29 @@ function AppContent() {
       console.log('🔄 Dados de cronograma carregados - modo atividades ativo');
     }
   }, [modoCronograma, resumoCronograma, navegacaoAtiva]);
+
+  // Carregar imagens do carrossel da API como fallback
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        console.log('🖼️ Carregando imagens do carrossel...');
+        const response = await fetch('/api/images');
+        if (response.ok) {
+          const images = await response.json();
+          if (images && images.length > 0) {
+            console.log('✅ Imagens carregadas da API:', images);
+            setImageList(images);
+          }
+        } else {
+          console.log('⚠️ API de imagens indisponível, usando imagens padrão');
+        }
+      } catch (error) {
+        console.log('⚠️ Erro ao carregar imagens da API, usando imagens padrão:', error);
+      }
+    };
+
+    loadImages();
+  }, []);
 
   // Debug: Estados de navegação em tempo real
   useEffect(() => {

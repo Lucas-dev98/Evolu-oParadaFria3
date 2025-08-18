@@ -61,9 +61,11 @@ REACT_APP_DASHBOARD_TOKEN_PREFIX=dashboard_token
 ## ⚡ Como fazer deploy agora:
 
 ### Opção 1: Auto-Deploy (Recomendado)
+
 - ✅ Já configurado! Qualquer push para `main` dispara deploy automático
 
-### Opção 2: Manual Deploy  
+### Opção 2: Manual Deploy
+
 1. Acesse o dashboard do Render
 2. Vá em "Manual Deploy"
 3. Clique em "Deploy latest commit"
@@ -71,10 +73,12 @@ REACT_APP_DASHBOARD_TOKEN_PREFIX=dashboard_token
 ## 🔍 Verificação pós-deploy:
 
 ### 1. Verifique os logs:
+
 - Acesse **Logs** no dashboard do Render
 - Procure por: `✅ Servidor rodando na porta XXXX`
 
 ### 2. Teste a aplicação:
+
 ```bash
 # Health check
 curl https://evolu-oparadafria3.onrender.com/healthz
@@ -89,14 +93,17 @@ https://evolu-oparadafria3.onrender.com
 ## ⚠️ Troubleshooting
 
 ### Build falha:
+
 - Verifique se todas as Environment Variables estão configuradas
 - Confirme que o Node.js version é compatível (18.x)
 
 ### App não carrega:
+
 - Verifique logs no dashboard do Render
 - Confirme se o health check está respondendo
 
 ### 502 Bad Gateway:
+
 - Aguarde alguns minutos (cold start)
 - Verifique se o processo está rodando na porta correta
 
