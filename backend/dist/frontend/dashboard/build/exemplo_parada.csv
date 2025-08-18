@@ -1,9 +1,0 @@
-ID,Atividade,Área,Responsável,Data Início,Data Fim,Status,Categoria,Criticidade,Risco
-PAR-001,Desligamento Total da Usina,Controle Central,Supervisor Turno,2025-01-25,2025-01-25,concluida,Operacional,crítica,Alto
-PAR-002,Isolamento Completo Vapor,Caldeiras,Operador A,2025-01-25,2025-01-25,concluida,Operacional,crítica,Alto
-PAR-003,Despressurização Sistema,Tubulações,Operador B,2025-01-25,2025-01-26,em_andamento,Operacional,alta,Médio
-PAR-004,Drenagem Completa,Reservatórios,Equipe Drenagem,2025-01-26,2025-01-27,pendente,Logística,média,Baixo
-PAR-005,Isolamento Combustível,Tanques,Especialista Combust,2025-01-26,2025-01-26,atrasada,Segurança,crítica,Alto
-PAR-006,Ventilação Forçada,Ambientes Conf,Equipe Ventilação,2025-01-27,2025-01-28,em_andamento,Segurança,alta,Médio
-PAR-007,Monitoramento Atmosfera,Todos os Locais,Equipe Segurança,2025-01-27,2025-02-10,em_andamento,Segurança,crítica,Alto
-PAR-008,Liberação para Trabalho,Áreas de Trabalho,Coordenação,2025-01-28,2025-01-28,pendente,Autorização,alta,Médio
