@@ -93,7 +93,9 @@ app.use(express.json({ limit: '10mb' }));
 
 // Servir arquivos estáticos do React build em produção
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dashboard/build')));
+  app.use(
+    express.static(path.join(__dirname, '../../frontend/dashboard/build'))
+  );
 }
 
 // Rota de teste simples
@@ -116,6 +118,23 @@ app.get('/healthz', (req, res) => {
 });
 
 // Caminhos para os arquivos de dados
+// Rota para listar imagens do carrossel
+app.get('/api/images', (req, res) => {
+  const imgDir = path.join(
+    __dirname,
+    '../../frontend/dashboard/public/static/img'
+  );
+  fs.readdir(imgDir, (err, files) => {
+    if (err) {
+      console.error('Erro ao ler pasta de imagens:', err);
+      return res.status(500).json({ error: 'Erro ao ler imagens' });
+    }
+    // Filtra apenas arquivos de imagem
+    const imageFiles = files.filter((f) => /\.(jpg|jpeg|png|gif)$/i.test(f));
+    // Retorna caminhos relativos para uso no frontend
+    res.json(imageFiles.map((f) => `/static/img/${f}`));
+  });
+});
 const dataFilePath = path.join(__dirname, 'areas-data.json');
 const cronogramaFilePath = path.join(__dirname, 'cronograma-data.json');
 
@@ -943,7 +962,7 @@ app.get('/api/csv/status', async (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     res.sendFile(
-      path.join(__dirname, '../frontend/dashboard/build/index.html')
+      path.join(__dirname, '../../frontend/dashboard/build/index.html')
     );
   });
 }
