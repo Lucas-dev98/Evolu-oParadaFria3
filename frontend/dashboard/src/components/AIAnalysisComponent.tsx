@@ -271,7 +271,12 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
                 </span>
                 {tipo !== 'todos' && (
                   <span className="ml-1 text-xs">
-                    ({(analiseIA?.insights || []).filter((i) => i.tipo === tipo).length})
+                    (
+                    {
+                      (analiseIA?.insights || []).filter((i) => i.tipo === tipo)
+                        .length
+                    }
+                    )
                   </span>
                 )}
               </button>
@@ -304,10 +309,14 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
             const criticas = tarefasCategoria.filter(
               (t) =>
                 (t.nome && t.nome.toLowerCase().includes('crític')) ||
-                ((t.percentualCompleto || 0) === 0 && t.fim && new Date(t.fim) < new Date())
+                ((t.percentualCompleto || 0) === 0 &&
+                  t.fim &&
+                  new Date(t.fim) < new Date())
             ).length;
             const atencao = tarefasCategoria.filter(
-              (t) => (t.percentualCompleto || 0) > 0 && (t.percentualCompleto || 0) < 50
+              (t) =>
+                (t.percentualCompleto || 0) > 0 &&
+                (t.percentualCompleto || 0) < 50
             ).length;
 
             const getStatusColor = () => {
@@ -496,27 +505,29 @@ const AIAnalysisComponent: React.FC<AIAnalysisComponentProps> = ({
                     </div>
                   )}
 
-                  {expandedInsights.has(insight.id) && insight.recomendações && insight.recomendações.length > 0 && (
-                    <div className="mt-4 p-3 bg-white/50 rounded-lg">
-                      <h5
-                        className={`font-medium ${themeClasses.textPrimary} mb-2 flex items-center`}
-                      >
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        Recomendações:
-                      </h5>
-                      <ul className="space-y-1">
-                        {(insight.recomendações || []).map((rec, index) => (
-                          <li
-                            key={index}
-                            className={`text-sm ${themeClasses.textSecondary} flex items-start`}
-                          >
-                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-2 flex-shrink-0" />
-                            {rec}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  {expandedInsights.has(insight.id) &&
+                    insight.recomendações &&
+                    insight.recomendações.length > 0 && (
+                      <div className="mt-4 p-3 bg-white/50 rounded-lg">
+                        <h5
+                          className={`font-medium ${themeClasses.textPrimary} mb-2 flex items-center`}
+                        >
+                          <Lightbulb className="w-4 h-4 mr-2" />
+                          Recomendações:
+                        </h5>
+                        <ul className="space-y-1">
+                          {(insight.recomendações || []).map((rec, index) => (
+                            <li
+                              key={index}
+                              className={`text-sm ${themeClasses.textSecondary} flex items-start`}
+                            >
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-2 flex-shrink-0" />
+                              {rec}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                 </div>
               </div>
 

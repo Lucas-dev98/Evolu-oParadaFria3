@@ -70,13 +70,13 @@ try {
 
   // 6. Garantir que as imagens estejam copiadas
   console.log('🖼️ Verificando e copiando imagens...');
-  const frontendImagesPath = path.join(
-    'frontend',
-    'dashboard',
-    'public',
-    'static',
-    'img'
-  );
+  
+  // Primeiro, tentar copiar da pasta public
+  const frontendImagesPath = path.join('frontend', 'dashboard', 'public', 'static', 'img');
+  
+  // Segundo, tentar copiar da pasta build (já construída)
+  const frontendBuildImagesPath = path.join('frontend', 'dashboard', 'build', 'static', 'img');
+  
   const backendImagesPath = path.join(
     'backend',
     'dist',
@@ -88,14 +88,32 @@ try {
   );
   const backendImagesPath2 = path.join('backend', 'dist', 'static', 'img');
 
+  let imagesCopied = false;
+
+  // Tentar copiar da pasta public primeiro
   if (fs.existsSync(frontendImagesPath)) {
-    // Copiar para o local padrão do build
+    console.log('📁 Copiando imagens da pasta public...');
     copyDirectory(frontendImagesPath, backendImagesPath);
-    // Copiar também para um local alternativo que o backend possa encontrar
     copyDirectory(frontendImagesPath, backendImagesPath2);
+    imagesCopied = true;
+  } else {
+    console.log('⚠️ Pasta de imagens public não encontrada em:', frontendImagesPath);
+  }
+
+  // Se não conseguir da public, tentar da pasta build
+  if (!imagesCopied && fs.existsSync(frontendBuildImagesPath)) {
+    console.log('📁 Copiando imagens da pasta build...');
+    copyDirectory(frontendBuildImagesPath, backendImagesPath);
+    copyDirectory(frontendBuildImagesPath, backendImagesPath2);
+    imagesCopied = true;
+  } else if (!imagesCopied) {
+    console.log('⚠️ Pasta de imagens build não encontrada em:', frontendBuildImagesPath);
+  }
+
+  if (imagesCopied) {
     console.log('✅ Imagens copiadas com sucesso!');
   } else {
-    console.warn('⚠️ Pasta de imagens não encontrada em:', frontendImagesPath);
+    console.warn('⚠️ Nenhuma pasta de imagens encontrada para copiar!');
   }
 
   console.log('✅ Build concluído com sucesso!');

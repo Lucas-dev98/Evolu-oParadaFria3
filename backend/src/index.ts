@@ -139,14 +139,27 @@ app.get('/healthz', (req, res) => {
 // Caminhos para os arquivos de dados
 // Rota para listar imagens do carrossel
 app.get('/api/images', (req, res) => {
+  console.log('🔍 Iniciando busca por imagens...');
+  console.log('📍 __dirname:', __dirname);
+  console.log('📍 process.cwd():', process.cwd());
+
   // Definir caminhos para diferentes ambientes
   const possiblePaths = [
+    // Produção: imagens copiadas para a pasta build (estrutura do Render)
+    path.join(__dirname, 'frontend/dashboard/build/static/img'),
+    // Produção: caminho alternativo do Render
+    path.join(__dirname, '../frontend/dashboard/build/static/img'),
     // Produção: imagens copiadas para a pasta build
     path.join(__dirname, '../../frontend/dashboard/build/static/img'),
     // Desenvolvimento: imagens na pasta public
     path.join(__dirname, '../../frontend/dashboard/public/static/img'),
-    // Fallback para estrutura alternativa no Render
-    path.join(__dirname, '../frontend/dashboard/build/static/img'),
+    // Fallback para pasta static no dist
+    path.join(__dirname, '../static/img'),
+    path.join(__dirname, 'static/img'),
+    // Paths absolutos para Render
+    '/opt/render/project/src/backend/dist/frontend/dashboard/build/static/img',
+    '/opt/render/project/src/backend/dist/static/img',
+    '/opt/render/project/src/frontend/dashboard/build/static/img',
   ];
 
   let imgDir: string | null = null;
@@ -155,15 +168,22 @@ app.get('/api/images', (req, res) => {
   // Tentar encontrar a pasta de imagens em um dos caminhos possíveis
   for (const testPath of possiblePaths) {
     try {
+      console.log('🔍 Testando caminho:', testPath);
       if (fs.existsSync(testPath)) {
-        console.log('📁 Pasta de imagens encontrada em:', testPath);
+        console.log('✅ Pasta de imagens encontrada em:', testPath);
         imgDir = testPath;
         const files = fs.readdirSync(testPath);
         imageFiles = files.filter((f) => /\.(jpg|jpeg|png|gif)$/i.test(f));
-        break;
+        console.log('📁 Arquivos encontrados:', files);
+        console.log('🖼️ Imagens filtradas:', imageFiles);
+        if (imageFiles.length > 0) {
+          break;
+        }
+      } else {
+        console.log('❌ Caminho não existe:', testPath);
       }
     } catch (error: any) {
-      console.log('⚠️ Tentativa de caminho falhou:', testPath, error.message);
+      console.log('⚠️ Erro ao testar caminho:', testPath, error.message);
     }
   }
 
