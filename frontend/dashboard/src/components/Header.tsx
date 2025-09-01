@@ -20,9 +20,14 @@ import {
 interface HeaderProps {
   lastUpdate?: Date;
   onFilesUpdated?: () => void;
+  onPFUS3PhasesUpdate?: (phases: any[]) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ lastUpdate, onFilesUpdated }) => {
+const Header: React.FC<HeaderProps> = ({
+  lastUpdate,
+  onFilesUpdated,
+  onPFUS3PhasesUpdate,
+}) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const themeClasses = useThemeClasses();
@@ -241,6 +246,7 @@ const Header: React.FC<HeaderProps> = ({ lastUpdate, onFilesUpdated }) => {
         isOpen={showCSVManager}
         onClose={() => setShowCSVManager(false)}
         onFilesUpdated={onFilesUpdated}
+        onPFUS3PhasesUpdate={onPFUS3PhasesUpdate}
       />
 
       {/* Overlay para fechar menu */}

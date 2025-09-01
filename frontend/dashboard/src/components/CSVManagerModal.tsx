@@ -6,23 +6,27 @@ import {
   Download,
   RefreshCw,
   Settings,
+  Zap,
 } from 'lucide-react';
 import CSVUploader from './CSVUploader';
+import PFUS3Uploader from './PFUS3Uploader';
 
 interface CSVManagerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFilesUpdated?: () => void;
+  onPFUS3PhasesUpdate?: (phases: any[]) => void;
 }
 
 const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
   isOpen,
   onClose,
   onFilesUpdated,
+  onPFUS3PhasesUpdate,
 }) => {
-  const [activeTab, setActiveTab] = useState<'upload' | 'status' | 'backup'>(
-    'upload'
-  );
+  const [activeTab, setActiveTab] = useState<
+    'upload' | 'status' | 'backup' | 'pfus3'
+  >('upload');
 
   if (!isOpen) return null;
 
@@ -34,6 +38,17 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
   const handleUploadError = (error: string) => {
     console.error('❌ Erro no upload:', error);
     alert(`Erro: ${error}`);
+  };
+
+  const handlePFUS3UploadSuccess = (message: string) => {
+    console.log('✅ PFUS3 carregado com sucesso!', message);
+    alert(`Sucesso: ${message}`);
+    onFilesUpdated?.();
+  };
+
+  const handlePFUS3UploadError = (error: string) => {
+    console.error('❌ Erro no upload PFUS3:', error);
+    alert(`Erro PFUS3: ${error}`);
   };
 
   // Verificar status dos arquivos
@@ -128,6 +143,17 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
             >
               <Download className="w-4 h-4 inline mr-2" />
               Backup
+            </button>
+            <button
+              onClick={() => setActiveTab('pfus3')}
+              className={`px-6 py-3 font-semibold transition-colors ${
+                activeTab === 'pfus3'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Zap className="w-4 h-4 inline mr-2" />
+              PFUS3
             </button>
           </nav>
         </div>
@@ -303,6 +329,54 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'pfus3' && (
+            <div>
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-blue-500" />
+                  Upload Cronograma PFUS3
+                </h3>
+                <p className="text-gray-600">
+                  Carregue o arquivo CSV do cronograma PFUS3 para gerenciar as
+                  fases de parada, manutenção e partida do sistema.
+                </p>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <Zap className="w-5 h-5 text-blue-500 mt-0.5" />
+                  <div>
+                    <div className="font-semibold text-blue-700 mb-2">
+                      Formato Esperado PFUS3
+                    </div>
+                    <div className="text-blue-600 text-sm space-y-1">
+                      <div>
+                        • <strong>Separador:</strong> Ponto e vírgula (;)
+                      </div>
+                      <div>
+                        • <strong>Headers:</strong> Id, EDT, Nome, Duração,
+                        Início, Término
+                      </div>
+                      <div>
+                        • <strong>Fases EDT:</strong> 1.7 (Parada), 1.8
+                        (Manutenção), 1.9 (Partida)
+                      </div>
+                      <div>
+                        • <strong>Encoding:</strong> UTF-8 com suporte a acentos
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <PFUS3Uploader
+                onPhasesUpdate={onPFUS3PhasesUpdate}
+                onUploadSuccess={handlePFUS3UploadSuccess}
+                onUploadError={handlePFUS3UploadError}
+              />
             </div>
           )}
         </div>

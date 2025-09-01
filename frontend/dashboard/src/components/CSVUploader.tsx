@@ -1,17 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import {
-  Upload,
-  FileText,
-  AlertCircle,
-  CheckCircle2,
-  Download,
-  RefreshCw,
-} from 'lucide-react';
-
-interface CSVUploaderProps {
-  onUploadSuccess?: () => void;
-  onUploadError?: (error: string) => void;
-}
+import { Upload, FileText, Download, Trash2, Eye, EyeOff } from 'lucide-react';
+import Papa from 'papaparse';
 
 export interface CSVPreview {
   headers: string[];
@@ -21,508 +10,451 @@ export interface CSVPreview {
   errors: string[];
 }
 
+interface CSVUploaderProps {
+  onUploadSuccess: (data: any[], type: 'preparacao' | 'pfus3') => void;
+  onUploadError: (error: string) => void;
+}
+
 const CSVUploader: React.FC<CSVUploaderProps> = ({
   onUploadSuccess,
   onUploadError,
 }) => {
+  const [csvType, setCsvType] = useState<'preparacao' | 'pfus3'>('preparacao');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [csvType, setCsvType] = useState<'preparacao' | 'operacional'>(
-    'preparacao'
-  );
-  const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<CSVPreview | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
-  // Validar estrutura do CSV
-  // Parser CSV mais robusto que lida com campos entre aspas
-  const parseCSVLine = (line: string): string[] => {
-    const result: string[] = [];
-    let current = '';
-    let inQuotes = false;
+  const validateCSV = (
+    data: any[],
+    type: 'preparacao' | 'pfus3'
+  ): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = [];
 
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-
-      if (char === '"' && (i === 0 || line[i - 1] === ',')) {
-        inQuotes = true;
-      } else if (
-        char === '"' &&
-        inQuotes &&
-        (i === line.length - 1 || line[i + 1] === ',')
-      ) {
-        inQuotes = false;
-      } else if (char === ',' && !inQuotes) {
-        result.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
+    if (!data || data.length === 0) {
+      errors.push('O arquivo CSV está vazio');
+      return { isValid: false, errors };
     }
-    result.push(current.trim());
-    return result;
-  };
 
-  const validateCSV = useCallback(
-    (csvText: string, type: 'preparacao' | 'operacional'): CSVPreview => {
-      const lines = csvText.trim().split('\n');
-      const headers = parseCSVLine(lines[0] || '');
+    if (type === 'preparacao') {
+      const requiredHeaders = [
+        'Area',
+        'Fase',
+        'Atividade',
+        'Duracao',
+        'Inicio',
+        'Fim',
+      ];
+      const headers = Object.keys(data[0] || {});
 
-      // Filtrar linhas para parar quando encontrar cabeçalhos de recursos
-      const filteredLines = lines.slice(1).filter((line, index) => {
-        const trimmedLine = line.trim();
-        // Parar quando encontrar linhas que começam com cabeçalhos de recursos
-        if (
-          trimmedLine.startsWith('﻿ ID,Indicators') ||
-          trimmedLine.startsWith('﻿ ID, Task name') ||
-          trimmedLine.startsWith('ID,Indicators') ||
-          trimmedLine.startsWith('ID, Task name') ||
-          trimmedLine === '' ||
-          (trimmedLine.split(',').length < 5 && index > 10)
-        ) {
-          return false;
+      for (const header of requiredHeaders) {
+        if (!headers.includes(header)) {
+          errors.push(`Coluna obrigatória '${header}' não encontrada`);
         }
-        return true;
-      });
-
-      const dataRows = filteredLines.map((line) => parseCSVLine(line));
-
-      const errors: string[] = [];
-
-      // Validações específicas por tipo
-      if (type === 'preparacao') {
-        const requiredHeaders = [
-          'ID',
-          'Nome da tarefa',
-          '% Complete',
-          'Physical % Complete',
-        ];
-        requiredHeaders.forEach((header) => {
-          if (
-            !headers.some((h) => h.toLowerCase().includes(header.toLowerCase()))
-          ) {
-            errors.push(`Header obrigatório não encontrado: ${header}`);
-          }
-        });
-
-        if (headers.length < 10) {
-          errors.push('CSV de preparação deve ter pelo menos 10 colunas');
-        }
-      } else {
-        const requiredHeaders = ['Activity ID', 'Activity Name', 'Duration'];
-        requiredHeaders.forEach((header) => {
-          if (
-            !headers.some((h) => h.toLowerCase().includes(header.toLowerCase()))
-          ) {
-            errors.push(`Header obrigatório não encontrado: ${header}`);
-          }
-        });
       }
 
-      // Validar dados
-      if (dataRows.length === 0) {
-        errors.push('CSV está vazio');
-      }
-
-      if (dataRows.length > 0) {
-        const firstRowLength = headers.length;
-        let inconsistentRows = 0;
-        dataRows.forEach((row, index) => {
-          // Permitir variação de ±2 colunas para lidar com campos com vírgulas
-          const difference = Math.abs(row.length - firstRowLength);
-          if (difference > 2) {
-            inconsistentRows++;
-            // Só reportar se houver muitas inconsistências (mais de 10% das linhas)
-            if (inconsistentRows <= Math.max(5, dataRows.length * 0.1)) {
-              errors.push(
-                `Linha ${index + 2}: número de colunas inconsistente (esperado: ${firstRowLength}, encontrado: ${row.length})`
-              );
-            }
-          }
-        });
-
-        // Se mais de 30% das linhas têm problemas, reportar erro geral
-        if (inconsistentRows > dataRows.length * 0.3) {
+      // Validar dados das primeiras linhas
+      const sampleRows = data.slice(0, 5);
+      for (let i = 0; i < sampleRows.length; i++) {
+        const row = sampleRows[i];
+        if (!row.Area || !row.Fase || !row.Atividade) {
           errors.push(
-            `Muitas linhas com colunas inconsistentes (${inconsistentRows} de ${dataRows.length}). Verifique se o arquivo está formatado corretamente.`
+            `Linha ${i + 2}: Campos obrigatórios vazios (Area, Fase, Atividade)`
           );
         }
       }
+    } else if (type === 'pfus3') {
+      const requiredHeaders = ['Id', 'EDT', 'Nome'];
+      const headers = Object.keys(data[0] || {});
 
-      return {
-        headers,
-        rows: dataRows.slice(0, 5), // Mostrar apenas 5 linhas no preview
-        totalRows: dataRows.length,
-        isValid: errors.length === 0,
-        errors,
-      };
+      // Verificar se tem pelo menos as colunas básicas
+      for (const header of requiredHeaders) {
+        if (!headers.includes(header)) {
+          errors.push(`Coluna obrigatória '${header}' não encontrada`);
+        }
+      }
+
+      // Validar dados das primeiras linhas
+      const sampleRows = data.slice(0, 5);
+      for (let i = 0; i < sampleRows.length; i++) {
+        const row = sampleRows[i];
+        if (!row.Id || !row.EDT || !row.Nome) {
+          errors.push(
+            `Linha ${i + 2}: Campos obrigatórios vazios (Id, EDT, Nome)`
+          );
+        }
+      }
+    }
+
+    return { isValid: errors.length === 0, errors };
+  };
+
+  const processCSV = useCallback(
+    (file: File) => {
+      setIsLoading(true);
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        delimiter: csvType === 'pfus3' ? ';' : ',',
+        complete: (results: any) => {
+          const validation = validateCSV(results.data, csvType);
+          const headers =
+            results.meta?.fields || Object.keys(results.data[0] || {});
+
+          const preview: CSVPreview = {
+            headers,
+            rows: results.data
+              .slice(0, 10)
+              .map((row: any) =>
+                headers.map((field: string) => String(row[field] || ''))
+              ),
+            totalRows: results.data.length,
+            isValid: validation.isValid,
+            errors: validation.errors,
+          };
+
+          setPreview(preview);
+          setIsLoading(false);
+        },
+        error: (error: any) => {
+          onUploadError(`Erro ao processar CSV: ${error.message}`);
+          setIsLoading(false);
+        },
+      });
     },
-    []
+    [csvType, onUploadError]
   );
 
-  // Processar arquivo selecionado
-  const handleFileSelect = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        onUploadError?.('Arquivo deve ser um CSV');
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.name.endsWith('.csv')) {
+        onUploadError('Por favor, selecione um arquivo CSV válido');
         return;
       }
-
       setSelectedFile(file);
-
-      // Ler e validar o arquivo
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const csvText = e.target?.result as string;
-        const validation = validateCSV(csvText, csvType);
-        setPreview(validation);
-        setShowPreview(true);
-      };
-      reader.readAsText(file);
-    },
-    [csvType, validateCSV, onUploadError]
-  );
-
-  // Fazer backup do arquivo atual
-  const backupCurrentFile = async (
-    type: 'preparacao' | 'operacional'
-  ): Promise<boolean> => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/csv/backup/${type}`
-      );
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download =
-          response.headers
-            .get('Content-Disposition')
-            ?.split('filename=')[1]
-            ?.replace(/"/g, '') || `backup-${type}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Erro ao fazer backup:', error);
-      return false;
+      processCSV(file);
     }
   };
 
-  // Upload do arquivo (versão simplificada que funciona localmente)
-  const handleUpload = async () => {
-    if (!selectedFile || !preview?.isValid) return;
-
-    setIsUploading(true);
-
-    try {
-      // Fazer backup do arquivo atual
-      await backupCurrentFile(csvType);
-
-      // Ler o conteúdo do arquivo
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const csvContent = e.target?.result as string;
-
-        try {
-          // Por enquanto, vamos mostrar instruções para atualização manual
-          // Em produção, usaríamos a API do backend
-
-          const fileName =
-            csvType === 'preparacao'
-              ? 'cronograma-preparacao-real.csv'
-              : 'cronograma-operacional.csv';
-
-          console.log('📤 Processando upload do arquivo:', fileName);
-          console.log('📊 Estatísticas:', {
-            nome: selectedFile.name,
-            tamanho: selectedFile.size,
-            linhas: preview.totalRows,
-            colunas: preview.headers.length,
-          });
-
-          // Criar blob para download manual do usuário
-          const blob = new Blob([csvContent], { type: 'text/csv' });
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-
-          // Mostrar instruções para o usuário
-          const instructions = `
-✅ Arquivo processado com sucesso!
-
-📋 PRÓXIMOS PASSOS:
-1. O arquivo "${fileName}" foi baixado automaticamente
-2. Substitua o arquivo na pasta: /frontend/dashboard/public/
-3. Clique em "🔄 Recarregar Aplicação" para ver as mudanças
-
-📊 DETALHES:
-• Arquivo: ${selectedFile.name}
-• Tamanho: ${(selectedFile.size / 1024).toFixed(1)} KB
-• Linhas: ${preview.totalRows}
-• Colunas: ${preview.headers.length}
-• Backup criado: Sim
-
-🔄 Após substituir o arquivo, use o botão "Recarregar Aplicação" no modal.
-          `;
-
-          alert(instructions);
-
-          onUploadSuccess?.();
-          setSelectedFile(null);
-          setPreview(null);
-          setShowPreview(false);
-        } catch (error) {
-          console.error('❌ Erro no processamento:', error);
-          onUploadError?.('Erro ao processar arquivo');
-        }
-      };
-
-      reader.readAsText(selectedFile);
-    } catch (error) {
-      console.error('❌ Erro no upload:', error);
-      onUploadError?.('Erro ao processar arquivo');
-    } finally {
-      setIsUploading(false);
+  const handleUpload = () => {
+    if (!selectedFile || !preview?.isValid) {
+      onUploadError('Selecione um arquivo CSV válido antes de fazer upload');
+      return;
     }
+
+    setIsLoading(true);
+
+    Papa.parse(selectedFile, {
+      header: true,
+      skipEmptyLines: true,
+      delimiter: csvType === 'pfus3' ? ';' : ',',
+      complete: (results: any) => {
+        onUploadSuccess(results.data, csvType);
+        setSelectedFile(null);
+        setPreview(null);
+        setIsLoading(false);
+      },
+      error: (error: any) => {
+        onUploadError(`Erro no upload: ${error.message}`);
+        setIsLoading(false);
+      },
+    });
   };
 
-  // Download do template
-  const downloadTemplate = (type: 'preparacao' | 'operacional') => {
+  const clearSelection = () => {
+    setSelectedFile(null);
+    setPreview(null);
+    setShowPreview(false);
+  };
+
+  const backupCurrentFile = (type: 'preparacao' | 'pfus3') => {
+    console.log(`Fazendo backup do arquivo ${type}`);
+    // Implementar lógica de backup se necessário
+  };
+
+  const downloadTemplate = (type: 'preparacao' | 'pfus3') => {
     let csvContent = '';
 
     if (type === 'preparacao') {
-      csvContent = [
-        'ID,Nome da tarefa,% Complete,Physical % Complete,% Previsto Replanejamento,Duration,Start,Finish,Actual Start,Actual Finish,Predecessors,Baseline Start,Baseline Finish,% Físico Prev. LB,% Físico Prev. Replanejado,% Físico Calculado',
-        '1,Projeto PFUS3 - Preparação,73%,0%,58,365 days,01/01/2025,31/12/2025,01/01/2025,NA,,01/01/2025,31/12/2025,24.25,20.09,20.09',
-        '2,  Logística,0%,0%,90,90 days,01/01/2025,31/03/2025,NA,NA,,01/01/2025,31/03/2025,0,0,0',
-        '3,    Mobilização de Equipamentos,0%,0%,100,30 days,01/01/2025,31/01/2025,NA,NA,,01/01/2025,31/01/2025,0,0,0',
-        '4,  Refratário,0%,0%,77,120 days,01/02/2025,31/05/2025,NA,NA,,01/02/2025,31/05/2025,0,0,0',
-        '5,    Remoção de Refratário Antigo,0%,0%,82,60 days,01/02/2025,31/03/2025,NA,NA,,01/02/2025,31/03/2025,0,0,0',
-      ].join('\n');
-    } else {
-      csvContent = [
-        'Activity ID,Activity Name,Duration,Start Date,Finish Date,% Complete,Resource Names,Predecessors',
-        'OP001,Início da Parada,1 day,15/06/2025,15/06/2025,0%,,',
-        'OP002,Isolamento de Equipamentos,2 days,16/06/2025,17/06/2025,0%,Operação,OP001',
-        'OP003,Drenagem de Linhas,3 days,18/06/2025,20/06/2025,0%,Operação,OP002',
-        'OP004,Abertura de Equipamentos,4 days,21/06/2025,24/06/2025,0%,Manutenção,OP003',
-      ].join('\n');
+      csvContent = 'Area,Fase,Atividade,Duracao,Inicio,Fim\n';
+      csvContent +=
+        'Exemplo Area,Exemplo Fase,Exemplo Atividade,5,2024-01-01,2024-01-05\n';
+    } else if (type === 'pfus3') {
+      csvContent =
+        'Id;Id_exclusiva;Nível_da_estrutura_de_tópicos;EDT;Nome;Porcentagem_Prev_Real;Porcentagem_Prev_LB;Duração;Início;Término;Início_da_Linha_de_Base;Término_da_linha_de_base;Área;Responsável_da_Tarefa;Dashboard;Desvio_LB\n';
+      csvContent +=
+        '1;1;1;1.1;Exemplo Atividade;0%;0%;5 dias;01/01/2024;05/01/2024;01/01/2024;05/01/2024;Exemplo;Responsável;Dashboard;0\n';
     }
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.style.display = 'none';
     a.href = url;
     a.download = `template-${type}.csv`;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   return (
     <div className="space-y-6">
-      {/* Seletor de Tipo */}
+      {/* Seleção do tipo de CSV - 2 colunas */}
       <div className="grid grid-cols-2 gap-4">
-        <button
-          onClick={() => setCsvType('preparacao')}
-          className={`p-4 rounded-lg border-2 transition-all ${
+        {/* Card Preparação */}
+        <div
+          className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
             csvType === 'preparacao'
-              ? 'border-blue-500 bg-blue-50 text-blue-700'
+              ? 'border-blue-500 bg-blue-50'
               : 'border-gray-200 hover:border-gray-300'
           }`}
+          onClick={() => setCsvType('preparacao')}
         >
-          <FileText className="w-8 h-8 mx-auto mb-2" />
-          <div className="font-semibold">Cronograma Preparação</div>
-          <div className="text-sm text-gray-500">
-            Atividades de preparação da parada
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Cronograma Preparação
+            </h3>
+            <div
+              className={`w-4 h-4 rounded-full border-2 ${
+                csvType === 'preparacao'
+                  ? 'bg-blue-500 border-blue-500'
+                  : 'border-gray-300'
+              }`}
+            />
           </div>
-        </button>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload do cronograma de preparação da parada
+          </p>
+          <div className="flex space-x-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                downloadTemplate('preparacao');
+              }}
+              className="flex-1 bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600 flex items-center justify-center gap-1"
+            >
+              <Download size={14} />
+              Template
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                backupCurrentFile('preparacao');
+              }}
+              className="bg-gray-500 text-white px-3 py-2 rounded text-sm hover:bg-gray-600"
+            >
+              Backup
+            </button>
+          </div>
+        </div>
 
-        <button
-          onClick={() => setCsvType('operacional')}
-          className={`p-4 rounded-lg border-2 transition-all ${
-            csvType === 'operacional'
-              ? 'border-green-500 bg-green-50 text-green-700'
+        {/* Card PFUS3 */}
+        <div
+          className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
+            csvType === 'pfus3'
+              ? 'border-green-500 bg-green-50'
               : 'border-gray-200 hover:border-gray-300'
           }`}
+          onClick={() => setCsvType('pfus3')}
         >
-          <RefreshCw className="w-8 h-8 mx-auto mb-2" />
-          <div className="font-semibold">Cronograma Operacional</div>
-          <div className="text-sm text-gray-500">
-            Atividades durante a parada
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Report PFUS3
+            </h3>
+            <div
+              className={`w-4 h-4 rounded-full border-2 ${
+                csvType === 'pfus3'
+                  ? 'bg-green-500 border-green-500'
+                  : 'border-gray-300'
+              }`}
+            />
           </div>
-        </button>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload do relatório PFUS3 (separado por ponto e vírgula)
+          </p>
+          <div className="flex space-x-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                downloadTemplate('pfus3');
+              }}
+              className="flex-1 bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 flex items-center justify-center gap-1"
+            >
+              <Download size={14} />
+              Template
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                backupCurrentFile('pfus3');
+              }}
+              className="bg-gray-500 text-white px-3 py-2 rounded text-sm hover:bg-gray-600"
+            >
+              Backup
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Download Template */}
-      <div className="flex justify-center">
-        <button
-          onClick={() => downloadTemplate(csvType)}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Baixar Template{' '}
-          {csvType === 'preparacao' ? 'Preparação' : 'Operacional'}
-        </button>
-      </div>
-
-      {/* Upload Area */}
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
-        <input
-          type="file"
-          accept=".csv"
-          onChange={handleFileSelect}
-          className="hidden"
-          id="csv-upload"
-        />
-        <label htmlFor="csv-upload" className="cursor-pointer">
-          <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+      {/* Área de upload */}
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
+        <div className="text-center">
           <div className="text-lg font-semibold mb-2">
             Selecionar arquivo CSV{' '}
-            {csvType === 'preparacao' ? 'de Preparação' : 'Operacional'}
+            {csvType === 'preparacao' ? 'de Preparação' : 'Report PFUS3'}
           </div>
-          <div className="text-gray-500">
-            Clique aqui ou arraste o arquivo CSV
+          <div className="text-sm text-gray-600 mb-4">
+            {csvType === 'preparacao'
+              ? 'Formato: CSV com vírgula (,) como separador'
+              : 'Formato: CSV com ponto e vírgula (;) como separador'}
           </div>
-        </label>
+
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileSelect}
+            className="hidden"
+            id="csv-upload"
+            disabled={isLoading}
+          />
+
+          <label
+            htmlFor="csv-upload"
+            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white ${
+              isLoading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : csvType === 'preparacao'
+                  ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+                  : 'bg-green-600 hover:bg-green-700 cursor-pointer'
+            } transition-colors duration-200`}
+          >
+            <Upload className="mr-2" size={20} />
+            {isLoading ? 'Processando...' : 'Selecionar Arquivo'}
+          </label>
+
+          {selectedFile && (
+            <div className="mt-4 text-sm text-gray-600">
+              Arquivo selecionado: {selectedFile.name}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Preview */}
-      {showPreview && preview && (
-        <div className="bg-white rounded-lg border p-6">
-          <div className="flex items-center gap-2 mb-4">
-            {preview.isValid ? (
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
-            ) : (
-              <AlertCircle className="w-5 h-5 text-red-500" />
-            )}
-            <h3 className="font-semibold">
-              Preview do Arquivo ({preview.totalRows} linhas)
+      {/* Preview e ações */}
+      {preview && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">
+              Preview do arquivo ({preview.totalRows} linhas)
             </h3>
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded"
+            >
+              {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
+              {showPreview ? 'Ocultar' : 'Mostrar'} Preview
+            </button>
           </div>
 
-          {/* Erros */}
-          {preview.errors.length > 0 && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
-              <div className="font-semibold text-red-700 mb-2">
-                Problemas encontrados:
-              </div>
-              <ul className="text-red-600 text-sm space-y-1">
+          {/* Status de validação */}
+          <div
+            className={`p-4 rounded-lg ${
+              preview.isValid
+                ? 'bg-green-50 border border-green-200'
+                : 'bg-red-50 border border-red-200'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  preview.isValid ? 'bg-green-500' : 'bg-red-500'
+                }`}
+              />
+              <span className="font-semibold">
+                {preview.isValid ? 'Arquivo válido' : 'Arquivo com problemas'}
+              </span>
+            </div>
+            {preview.errors.length > 0 && (
+              <ul className="mt-2 space-y-1">
                 {preview.errors.map((error, index) => (
-                  <li key={index}>• {error}</li>
+                  <li key={index} className="text-sm text-red-600">
+                    • {error}
+                  </li>
                 ))}
               </ul>
+            )}
+          </div>
+
+          {/* Tabela de preview */}
+          {showPreview && (
+            <div className="border rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      {preview.headers.map((header, index) => (
+                        <th
+                          key={index}
+                          className="px-3 py-2 text-left font-semibold text-gray-700 border-b"
+                        >
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {preview.rows.map((row, rowIndex) => (
+                      <tr key={rowIndex} className="hover:bg-gray-50">
+                        {row.map((cell, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            className="px-3 py-2 border-b text-gray-600"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {preview.totalRows > 10 && (
+                <div className="p-3 bg-gray-50 text-center text-sm text-gray-600">
+                  Mostrando 10 de {preview.totalRows} linhas
+                </div>
+              )}
             </div>
           )}
 
-          {/* Tabela Preview */}
-          <div className="overflow-x-auto mb-4">
-            <table className="min-w-full text-xs">
-              <thead>
-                <tr className="bg-gray-50">
-                  {preview.headers.map((header, index) => (
-                    <th
-                      key={index}
-                      className="px-2 py-1 text-left font-semibold"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {preview.rows.map((row, index) => (
-                  <tr key={index} className="border-t">
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex} className="px-2 py-1">
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Botões */}
+          {/* Botões de ação */}
           <div className="flex gap-3">
             <button
               onClick={handleUpload}
-              disabled={!preview.isValid || isUploading}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                preview.isValid && !isUploading
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+              disabled={!preview.isValid || isLoading}
+              className={`flex-1 px-6 py-3 rounded-lg font-semibold ${
+                preview.isValid && !isLoading
+                  ? csvType === 'preparacao'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                    : 'bg-green-600 hover:bg-green-700 text-white'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+              } transition-colors duration-200`}
             >
-              <Upload className="w-4 h-4" />
-              {isUploading ? 'Enviando...' : 'Confirmar Upload'}
+              <FileText className="inline mr-2" size={20} />
+              {isLoading ? 'Fazendo Upload...' : 'Confirmar Upload'}
             </button>
 
             <button
-              onClick={() => {
-                setSelectedFile(null);
-                setPreview(null);
-                setShowPreview(false);
-              }}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              onClick={clearSelection}
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
             >
-              Cancelar
+              <Trash2 className="inline mr-2" size={20} />
+              Limpar
             </button>
           </div>
         </div>
       )}
-
-      {/* Instruções */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="font-semibold text-blue-800 mb-2">
-          💡 Como Funciona o Sistema de Upload:
-        </div>
-        <div className="text-blue-700 text-sm space-y-2">
-          <div>
-            1. <strong>Validação:</strong> Arquivo é validado automaticamente
-            antes do upload
-          </div>
-          <div>
-            2. <strong>Backup:</strong> Backup automático do arquivo atual é
-            criado
-          </div>
-          <div>
-            3. <strong>Download:</strong> Novo arquivo é baixado automaticamente
-          </div>
-          <div>
-            4. <strong>Substituição Manual:</strong> Você substitui o arquivo na
-            pasta:
-          </div>
-          <div className="ml-4 font-mono text-xs bg-blue-100 p-2 rounded">
-            📁 /frontend/dashboard/public/
-            <br />• <code>cronograma-preparacao-real.csv</code>
-            <br />• <code>cronograma-operacional.csv</code>
-          </div>
-          <div>
-            5. <strong>Recarga:</strong> Use "🔄 Recarregar Aplicação" para
-            atualizar os dados
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

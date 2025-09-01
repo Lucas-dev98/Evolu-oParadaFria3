@@ -1,0 +1,11 @@
+name,value,baseline,sub_activities
+Pátio de Alimentação,"98,84",100,"IE - Pátio de Alimentação:97,68|100; Manutenção PQ - Pátio de Alimentação:100|100"
+Secagem,100,100,Projeto Briquetagem - Secagem:100|100; Manutenção PQ - Secagem:100|100
+Torre de Resfriamento,100,100,IE - Recuperação Civil - TR301TR - Torre de Resfriamento:100|100; Manutenção PQ - Torre de Resfriamento:100|100
+Mistura,100,100,Projeto Briquetagem - Mistura:100|100; IE - Mistura:100|100; Manutenção PQ - Mistura:100|100
+Briquetagem,"99,77",100,"Projeto Briquetagem - Briquetagem:99,44|100; IE - Briquetagem:100|100; Manutenção PQ - Briquetagem:100|100"
+Forno,"97,19","99,99","Manutenção do Meio do Forno:99,63|100; Substituição Viga do Quadro Móvel da Roda Abaixamento:100|100; Manutenção Região do Levantamento AH1:89,36|99,98; IE - Forno:100|100; Manutenção PQ - Forno:100|100"
+Ventiladores,"98,76",100,"IE - Ventiladores:97,57|100; Manutenção PQ - Ventiladores:100|100"
+Precipitadores,"97,48",100,"Precipitador AR1:100|100; Precipitador AR40:100|100; Projeto Briquetagem - Balanceamento AR80 - Precipitadores:85,86|100; Manutenção PQ - Precipitadores:100|100"
+Peneiramento,100,100,IE - Peneiramento:100|100; Manutenção PQ - Peneiramento:100|100
+Pátio de Briquete,"98,75",100,"Projeto Briquetagem - Pátio de Briquete:100|100; IE - Pátio de Briquete:96,27|100; Manutenção PQ - Pátio de Briquete:100|100"
