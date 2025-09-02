@@ -10,6 +10,10 @@ export interface ProcessedCronogramaActivity {
   finish: string;
   responsible: string;
   status?: string;
+  area?: string; // Nova propriedade para área/frente de trabalho
+  edt?: string; // Nova propriedade para EDT
+  percentualCompleto?: number; // Nova propriedade para percentual
+  nivel?: number; // Nova propriedade para nível hierárquico
 }
 
 export interface ProcessedCronograma {
@@ -42,6 +46,218 @@ export interface CronogramaPFUS3 {
   Desvio_LB: string;
 }
 
+// Interface para representar um ativo da usina
+export interface AtivoUsina {
+  id: string;
+  nome: string;
+  area: string;
+  edt: string;
+  tipo: string;
+  subatividades: ProcessedCronogramaActivity[];
+  percentualMedio: number;
+  status: string;
+  dataInicio: string;
+  dataFim: string;
+  // Novas propriedades para estrutura hierárquica
+  faseId?: string;
+  faseNome?: string;
+  nivel?: number;
+  totalSubatividades?: number;
+  subatividadesConcluidas?: number;
+  progresso?: number;
+}
+
+// Função para determinar o status de uma atividade
+function determineActivityStatus(row: CronogramaPFUS3): string {
+  const percentual = parseFloat(
+    row.Porcentagem_Prev_Real?.replace(',', '.') || '0'
+  );
+  const endDate = new Date(row['Término']);
+  const today = new Date();
+
+  if (percentual >= 100) return 'concluida';
+  if (endDate < today && percentual < 100) return 'atrasada';
+  if (percentual > 0) return 'em-andamento';
+  return 'pendente';
+}
+
+// Função para identificar frentes de trabalho baseada nos níveis hierárquicos do PFUS3
+export const identificarFrentesDeTrabalho = (
+  rows: CronogramaPFUS3[]
+): AtivoUsina[] => {
+  console.log(
+    '🏭 Identificando frentes de trabalho baseadas nos níveis hierárquicos do CSV...'
+  );
+
+  // Organizar por níveis conforme especificado pelo usuário:
+  // Nível 2 = Fases (Parada, Manutenção, Partida)
+  // Nível 3 = Frentes de trabalho (Ativos da usina)
+  // Nível 4+ = Subatividades
+
+  const fasesPrincipais = rows.filter(
+    (row) => parseInt(row.Nível_da_estrutura_de_tópicos) === 2
+  );
+
+  const frentesDeTrabalho = rows.filter(
+    (row) => parseInt(row.Nível_da_estrutura_de_tópicos) === 3
+  );
+
+  const subatividades = rows.filter(
+    (row) => parseInt(row.Nível_da_estrutura_de_tópicos) >= 4
+  );
+
+  console.log(`� Estrutura encontrada:`);
+  console.log(`  📋 Nível 2 (Fases): ${fasesPrincipais.length}`);
+  console.log(`  🏭 Nível 3 (Frentes/Ativos): ${frentesDeTrabalho.length}`);
+  console.log(`  🔧 Nível 4+ (Subatividades): ${subatividades.length}`);
+
+  // Log das fases principais encontradas
+  fasesPrincipais.forEach((fase) => {
+    console.log(`    📋 Fase: "${fase.Nome}" (EDT: ${fase.EDT})`);
+  });
+
+  // Log das frentes de trabalho encontradas
+  frentesDeTrabalho.forEach((frente) => {
+    console.log(`    🏭 Frente: "${frente.Nome}" (EDT: ${frente.EDT})`);
+  });
+
+  // Agrupar ativos por frente de trabalho
+  const ativosPorId: { [id: string]: AtivoUsina } = {};
+
+  // Processar cada frente de trabalho (nível 3) como ativo da usina
+  frentesDeTrabalho.forEach((frente) => {
+    console.log(`🔍 Processando frente: "${frente.Nome}"`);
+
+    // Encontrar todas as subatividades desta frente (níveis 4+)
+    const subatividadesFrente = subatividades.filter((row) => {
+      const edt = row.EDT;
+      // Verificar se é subatividade desta frente (EDT começa com EDT da frente)
+      return edt && frente.EDT && edt.startsWith(frente.EDT);
+    });
+
+    console.log(
+      `  🔧 Subatividades encontradas: ${subatividadesFrente.length}`
+    );
+
+    // Converter subatividades para o formato ProcessedCronogramaActivity
+    const subatividadesProcessadas: ProcessedCronogramaActivity[] =
+      subatividadesFrente.map((activity, index) => {
+        const percentual = parseFloat(
+          activity.Porcentagem_Prev_Real?.replace(',', '.') || '0'
+        );
+
+        return {
+          id: activity.Id || `${frente.Id}-sub-${index}`,
+          name: activity.Nome || 'Atividade sem nome',
+          duration: activity.Duração || '0 hrs',
+          start: activity.Início || '',
+          finish: activity.Término || '',
+          responsible: activity.Responsável_da_Tarefa || '',
+          status: determineActivityStatus(activity),
+          area: activity.Área || frente.Área || 'Geral',
+          edt: activity.EDT || '',
+          percentualCompleto: percentual,
+          nivel: parseInt(activity.Nível_da_estrutura_de_tópicos) || 4,
+        };
+      });
+
+    // Calcular percentual médio das subatividades
+    const percentualMedio =
+      subatividadesProcessadas.length > 0
+        ? subatividadesProcessadas.reduce(
+            (sum, sub) => sum + (sub.percentualCompleto || 0),
+            0
+          ) / subatividadesProcessadas.length
+        : parseFloat(frente.Porcentagem_Prev_Real?.replace(',', '.') || '0');
+
+    // Determinar tipo de ativo baseado no nome da frente
+    const tipoAtivo = determinarTipoAtivo(frente.Nome);
+
+    // Encontrar a fase pai (nível 2) desta frente
+    const fasePai = fasesPrincipais.find(
+      (fase) =>
+        frente.EDT.startsWith(fase.EDT) ||
+        frente.Nome.toLowerCase().includes(
+          fase.Nome.toLowerCase().split(' ')[0]
+        )
+    );
+
+    console.log(
+      `  📋 Fase pai identificada: ${fasePai?.Nome || 'Não encontrada'}`
+    );
+
+    // Criar o ativo da usina (frente de trabalho)
+    const ativo: AtivoUsina = {
+      id: frente.Id,
+      nome: frente.Nome,
+      area: frente.Área || 'Geral',
+      edt: frente.EDT,
+      tipo: tipoAtivo,
+      faseId: fasePai?.Id || '',
+      faseNome: fasePai?.Nome || 'Fase não identificada',
+      nivel: 3, // Nível da frente de trabalho
+      subatividades: subatividadesProcessadas,
+      percentualMedio: Math.round(percentualMedio),
+      status: determineActivityStatus(frente),
+      dataInicio: frente.Início,
+      dataFim: frente.Término,
+      totalSubatividades: subatividadesProcessadas.length,
+      subatividadesConcluidas: subatividadesProcessadas.filter(
+        (sub) => (sub.percentualCompleto || 0) >= 100
+      ).length,
+      progresso: Math.round(percentualMedio),
+    };
+
+    console.log(
+      `  ✅ Ativo criado: "${ativo.nome}" (${ativo.totalSubatividades} subatividades, ${ativo.progresso}% concluído)`
+    );
+
+    ativosPorId[frente.Id] = ativo;
+  });
+
+  const ativos = Object.values(ativosPorId);
+  console.log(
+    `✅ ${ativos.length} ativos da usina identificados com estrutura hierárquica completa`
+  );
+
+  // Log final da estrutura criada
+  ativos.forEach((ativo) => {
+    console.log(`🏭 Ativo: "${ativo.nome}" (Fase: ${ativo.faseNome})`);
+    console.log(
+      `    📊 ${ativo.totalSubatividades} subatividades, ${ativo.progresso}% concluído`
+    );
+    console.log(`    🎯 Tipo: ${ativo.tipo}, EDT: ${ativo.edt}`);
+  });
+
+  console.log(
+    `✅ ${ativos.length} ativos da usina identificados com estrutura hierárquica completa`
+  );
+
+  return ativos;
+};
+
+// Função auxiliar para determinar o tipo do ativo baseado no nome
+function determinarTipoAtivo(nome: string): string {
+  const nomeMinusculo = nome.toLowerCase();
+
+  if (nomeMinusculo.includes('precipitador')) return 'Precipitadores';
+  if (nomeMinusculo.includes('caldeira')) return 'Caldeira';
+  if (nomeMinusculo.includes('turbina')) return 'Turbina';
+  if (nomeMinusculo.includes('gerador')) return 'Gerador';
+  if (nomeMinusculo.includes('condensador')) return 'Condensador';
+  if (nomeMinusculo.includes('bomba')) return 'Bombas';
+  if (nomeMinusculo.includes('ventilador')) return 'Ventiladores';
+  if (nomeMinusculo.includes('chaminé')) return 'Chaminés';
+  if (nomeMinusculo.includes('transformador')) return 'Transformadores';
+  if (nomeMinusculo.includes('sistema')) return 'Sistemas';
+  if (nomeMinusculo.includes('espessador')) return 'Espessador';
+  if (nomeMinusculo.includes('moagem')) return 'Moagem';
+  if (nomeMinusculo.includes('alimentação')) return 'Alimentação';
+  if (nomeMinusculo.includes('forno')) return 'Forno';
+
+  return 'Outros';
+}
+
 export const processarCronogramaOperacional = (
   csvText: string
 ): Promise<ProcessedCronograma> => {
@@ -57,12 +273,22 @@ export const processarCronogramaOperacional = (
       },
       complete: async (results) => {
         try {
+          console.log('🔍 Iniciando processamento do CSV PFUS3...');
+          console.log('📊 Resultados do Papa Parse:', results);
+
           const data = results.data as CronogramaPFUS3[];
+          console.log('📊 Total de linhas parseadas:', data.length);
 
           // Filtrar linhas válidas
           const validRows = data.filter(
             (row) => row.Id && row.Nome && row.EDT && row.Nome.trim() !== ''
           );
+          console.log('✅ Linhas válidas filtradas:', validRows.length);
+
+          if (validRows.length === 0) {
+            console.error('❌ Nenhuma linha válida encontrada no CSV');
+            throw new Error('Arquivo CSV não contém dados válidos');
+          }
 
           // Extrair cronograma principal
           const cronogramaPrincipal = validRows.find(
@@ -80,6 +306,21 @@ export const processarCronogramaOperacional = (
           };
 
           // Separar por fases baseado no EDT
+          const preparacaoRows = validRows.filter(
+            (row) =>
+              row.EDT?.startsWith('1.1') ||
+              row.EDT?.startsWith('1.2') ||
+              row.EDT?.startsWith('1.3') ||
+              row.EDT?.startsWith('1.4') ||
+              row.EDT?.startsWith('1.5') ||
+              row.EDT?.startsWith('1.6') ||
+              row.Nome.toLowerCase().includes('preparação') ||
+              row.Nome.toLowerCase().includes('preparacao') ||
+              row.Nome.toLowerCase().includes('mobilização') ||
+              row.Nome.toLowerCase().includes('mobilizacao') ||
+              row.Nome.toLowerCase().includes('planejamento')
+          );
+
           const paradaRows = validRows.filter(
             (row) =>
               row.EDT?.startsWith('1.7') ||
@@ -101,7 +342,63 @@ export const processarCronogramaOperacional = (
               row.Nome.toLowerCase().includes('teste')
           );
 
+          // Debug: mostrar quantas atividades foram encontradas para cada fase
+          console.log('📋 Atividades por fase:');
+          console.log('  🟦 Preparação:', preparacaoRows.length);
+          console.log('  🟥 Parada:', paradaRows.length);
+          console.log('  🟧 Manutenção:', manutencaoRows.length);
+          console.log('  🟩 Partida:', partidaRows.length);
+
+          if (
+            preparacaoRows.length === 0 &&
+            paradaRows.length === 0 &&
+            manutencaoRows.length === 0 &&
+            partidaRows.length === 0
+          ) {
+            console.warn(
+              '⚠️ Nenhuma atividade encontrada para as fases conhecidas'
+            );
+            console.log(
+              '📊 Amostra de EDTs encontrados:',
+              validRows.slice(0, 10).map((r) => r.EDT)
+            );
+          }
+          console.log('🔍 PFUS3 - Atividades por fase:');
+          console.log(`📋 Preparação: ${preparacaoRows.length} atividades`);
+          console.log(`⏹️ Parada: ${paradaRows.length} atividades`);
+          console.log(`🔨 Manutenção: ${manutencaoRows.length} atividades`);
+          console.log(`▶️ Partida: ${partidaRows.length} atividades`);
+
+          // Debug: mostrar exemplos de EDTs encontrados
+          console.log('📊 Exemplos de EDTs por fase:');
+          console.log(
+            'Preparação EDTs:',
+            preparacaoRows.slice(0, 3).map((r) => r.EDT)
+          );
+          console.log(
+            'Parada EDTs:',
+            paradaRows.slice(0, 3).map((r) => r.EDT)
+          );
+          console.log(
+            'Manutenção EDTs:',
+            manutencaoRows.slice(0, 3).map((r) => r.EDT)
+          );
+          console.log(
+            'Partida EDTs:',
+            partidaRows.slice(0, 3).map((r) => r.EDT)
+          );
+
           const phases: Phase[] = [
+            createPhase(
+              'preparacao',
+              'Preparação PFUS3',
+              'Planejamento e preparação para a parada - Cronograma PFUS3 2025',
+              '📋',
+              'text-blue-600',
+              'bg-blue-50',
+              'border-blue-200',
+              preparacaoRows
+            ),
             createPhase(
               'parada',
               'Parada',
@@ -195,6 +492,42 @@ function createPhase(
     )
   );
 
+  // Processar atividades individuais do CSV
+  const processedActivities: ProcessedCronogramaActivity[] = rows.map(
+    (row, index) => ({
+      id: row.Id || `${id}-${index}`,
+      name: row.Nome,
+      duration: row.Duração || '1 day',
+      start: row['Início'] || new Date().toISOString().split('T')[0],
+      finish: row['Término'] || new Date().toISOString().split('T')[0],
+      responsible: row['Responsável_da_Tarefa'] || 'Não definido',
+      status: determineActivityStatus(row),
+      area: row['Área'] || 'Geral',
+      edt: row.EDT || '',
+      percentualCompleto: parseFloat(
+        row.Porcentagem_Prev_Real?.replace(',', '.') || '0'
+      ),
+    })
+  );
+
+  // Identificar e organizar frentes de trabalho (ativos da usina) automaticamente
+  const ativosIdentificados = identificarFrentesDeTrabalho(rows);
+
+  console.log(
+    `📋 Fase ${name}: ${processedActivities.length} atividades processadas`
+  );
+  console.log(
+    `🏭 Fase ${name}: ${ativosIdentificados.length} ativos identificados`
+  );
+  const uniqueAreas = Array.from(
+    new Set(processedActivities.map((a) => a.area).filter(Boolean))
+  );
+  const uniqueEdts = Array.from(
+    new Set(processedActivities.map((a) => a.edt).filter(Boolean))
+  ).slice(0, 5);
+  console.log('🔍 Áreas encontradas:', uniqueAreas);
+  console.log('📊 EDTs encontrados:', uniqueEdts);
+
   return {
     id,
     name,
@@ -220,6 +553,8 @@ function createPhase(
     pendingTasks: rows.length - completedCount,
     status: getPhaseStatus(rows),
     categories: [],
+    processedActivities: processedActivities, // Incluir atividades processadas
+    ativosIdentificados: ativosIdentificados, // Incluir ativos da usina identificados
   };
 }
 

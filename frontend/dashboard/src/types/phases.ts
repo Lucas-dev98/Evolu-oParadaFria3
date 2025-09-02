@@ -33,6 +33,10 @@ export interface Phase {
     progress: number;
     color?: string;
   }[];
+  // Nova propriedade para armazenar atividades processadas do PFUS3
+  processedActivities?: any[];
+  // Nova propriedade para armazenar ativos da usina identificados
+  ativosIdentificados?: any[];
 }
 
 export interface ParadaData {

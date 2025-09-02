@@ -26,6 +26,14 @@ interface Atividade {
   categoria: string;
   nivel: string | number;
   subatividades?: Atividade[];
+  // Novas propriedades para estrutura hierárquica
+  isAtivo?: boolean; // Se é um ativo principal da usina
+  isSubatividade?: boolean; // Se é uma subatividade
+  ativoParent?: string; // Nome do ativo pai (para subatividades)
+  totalSubatividades?: number; // Total de subatividades (para ativos)
+  subatividadesConcluidas?: number; // Subatividades concluídas
+  subatividadesEmAndamento?: number; // Subatividades em andamento
+  subatividadesAtrasadas?: number; // Subatividades atrasadas
 }
 
 interface PhaseActivitiesManagerProps {
@@ -129,6 +137,7 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
   // Inicializar todas as frentes como colapsadas (fechadas)
   const [expandedFrentes, setExpandedFrentes] = useState<string[]>([]);
   const [expandedAtividades, setExpandedAtividades] = useState<string[]>([]);
+  const [expandedAtivos, setExpandedAtivos] = useState<string[]>([]); // Novo estado para controlar expansão dos ativos
 
   // Remover o useEffect que expandia automaticamente todas as frentes
 
@@ -241,6 +250,18 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
       const newExpanded = prev.includes(atividadeId)
         ? prev.filter((id) => id !== atividadeId)
         : [...prev, atividadeId];
+      console.log('🔍 Atividades expandidas:', newExpanded);
+      return newExpanded;
+    });
+  };
+
+  // Função para alternar expansão de ativos da usina
+  const toggleAtivo = (ativoId: string) => {
+    setExpandedAtivos((prev) => {
+      const newExpanded = prev.includes(ativoId)
+        ? prev.filter((id) => id !== ativoId)
+        : [...prev, ativoId];
+      console.log('🏭 Ativos expandidos:', newExpanded);
       return newExpanded;
     });
   };
@@ -319,6 +340,190 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
   console.log('📊 expandedAtividades atual:', expandedAtividades);
   console.log('📦 activitiesData:', activitiesData);
   console.log('📈 Número de activitiesData:', activitiesData.length);
+
+  // Função para renderizar um ativo da usina com suas subatividades
+  const renderAtivo = (ativo: Atividade) => {
+    const isExpanded = expandedAtivos.includes(ativo.id);
+    const statusData = analisarStatusAtividade(ativo);
+
+    return (
+      <div key={ativo.id} className="mb-4">
+        {/* Cabeçalho do Ativo */}
+        <div
+          className={`${themeClasses.card} rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md border-l-4 ${
+            ativo.status === 'concluida'
+              ? 'border-green-500'
+              : ativo.status === 'atrasada'
+                ? 'border-red-500'
+                : ativo.status === 'em-andamento'
+                  ? 'border-blue-500'
+                  : 'border-gray-300'
+          }`}
+          onClick={() => toggleAtivo(ativo.id)}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {/* Ícone de expansão */}
+              {isExpanded ? (
+                <ChevronDown className="h-5 w-5 text-gray-500" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-gray-500" />
+              )}
+
+              {/* Ícone do ativo */}
+              <div className="text-2xl">🏭</div>
+
+              {/* Nome e informações do ativo */}
+              <div>
+                <h4 className={`font-semibold ${themeClasses.textPrimary}`}>
+                  {ativo.nome}
+                </h4>
+                <p className={`text-sm ${themeClasses.textSecondary}`}>
+                  {ativo.totalSubatividades} subatividades •{' '}
+                  {ativo.subatividadesConcluidas} concluídas
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              {/* Status do ativo */}
+              <div
+                className={`px-3 py-1 rounded-full text-xs font-medium ${statusData.corFundo} ${statusData.corTexto}`}
+              >
+                {statusData.icone} {statusData.tipo}
+              </div>
+
+              {/* Percentual de conclusão */}
+              <div className="text-right">
+                <div
+                  className={`text-lg font-bold ${themeClasses.textPrimary}`}
+                >
+                  {Math.round(ativo.percentualCompleto)}%
+                </div>
+                <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      ativo.percentualCompleto >= 100
+                        ? 'bg-green-500'
+                        : ativo.percentualCompleto >= 70
+                          ? 'bg-blue-500'
+                          : ativo.percentualCompleto >= 30
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
+                    }`}
+                    style={{
+                      width: `${Math.min(ativo.percentualCompleto, 100)}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Estatísticas do ativo */}
+          <div className="mt-3 flex space-x-4 text-sm">
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className={themeClasses.textSecondary}>
+                {ativo.subatividadesConcluidas} Concluídas
+              </span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span className={themeClasses.textSecondary}>
+                {ativo.subatividadesEmAndamento} Em Andamento
+              </span>
+            </div>
+            {ativo.subatividadesAtrasadas &&
+              ativo.subatividadesAtrasadas > 0 && (
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <span className={themeClasses.textSecondary}>
+                    {ativo.subatividadesAtrasadas} Atrasadas
+                  </span>
+                </div>
+              )}
+          </div>
+        </div>
+
+        {/* Subatividades (quando expandido) */}
+        {isExpanded && ativo.subatividades && (
+          <div className="ml-8 mt-3 space-y-2">
+            {ativo.subatividades.map((subatividade) => (
+              <div
+                key={subatividade.id}
+                className={`${themeClasses.card} rounded-lg p-3 border-l-2 ${
+                  subatividade.status === 'concluida'
+                    ? 'border-green-400'
+                    : subatividade.status === 'atrasada'
+                      ? 'border-red-400'
+                      : subatividade.status === 'em-andamento'
+                        ? 'border-blue-400'
+                        : 'border-gray-300'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="text-lg">⚙️</div>
+                    <div>
+                      <h5 className={`font-medium ${themeClasses.textPrimary}`}>
+                        {subatividade.nome}
+                      </h5>
+                      <p className={`text-xs ${themeClasses.textSecondary}`}>
+                        {subatividade.responsavel} • {subatividade.duracao}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    {/* Status da subatividade */}
+                    <div
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        subatividade.status === 'concluida'
+                          ? 'bg-green-100 text-green-800'
+                          : subatividade.status === 'atrasada'
+                            ? 'bg-red-100 text-red-800'
+                            : subatividade.status === 'em-andamento'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {subatividade.status}
+                    </div>
+
+                    {/* Percentual da subatividade */}
+                    <div className="text-right">
+                      <div
+                        className={`text-sm font-medium ${themeClasses.textPrimary}`}
+                      >
+                        {Math.round(subatividade.percentualCompleto)}%
+                      </div>
+                      <div className="w-16 bg-gray-200 rounded-full h-1">
+                        <div
+                          className={`h-1 rounded-full transition-all duration-300 ${
+                            subatividade.percentualCompleto >= 100
+                              ? 'bg-green-500'
+                              : subatividade.percentualCompleto >= 70
+                                ? 'bg-blue-500'
+                                : subatividade.percentualCompleto >= 30
+                                  ? 'bg-yellow-500'
+                                  : 'bg-red-500'
+                          }`}
+                          style={{
+                            width: `${Math.min(subatividade.percentualCompleto, 100)}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -492,6 +697,17 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
             const estatisticasCriticas =
               calcularEstatisticasCriticasFrente(atividades);
 
+            // Verificar se as atividades são ativos da usina
+            const temAtivos = atividades.some(
+              (atividade: Atividade) => atividade.isAtivo
+            );
+            const ativos = atividades.filter(
+              (atividade: Atividade) => atividade.isAtivo
+            );
+            const atividadesNormais = atividades.filter(
+              (atividade: Atividade) => !atividade.isAtivo
+            );
+
             return (
               <div
                 key={frente}
@@ -588,191 +804,250 @@ const PhaseActivitiesManager: React.FC<PhaseActivitiesManagerProps> = ({
                 {expandedFrentes.includes(frente) && (
                   <div className="px-4 pb-4">
                     <div className="space-y-3">
-                      {atividades.map((atividade) => (
-                        <div
-                          key={atividade.id}
-                          className={`border rounded-lg p-4 ${themeClasses.border} hover:${themeClasses.bgSecondary} transition-colors`}
-                        >
-                          {/* Header da atividade */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3 flex-1">
-                              <button
-                                onClick={() => {
-                                  console.log(
-                                    '🔘 Botão clicado para ID:',
-                                    atividade.id
-                                  );
-                                  toggleAtividade(atividade.id);
-                                }}
-                                className={`p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ${themeClasses.textSecondary}`}
+                      {/* Se há ativos da usina, renderizar ativos */}
+                      {temAtivos ? (
+                        <>
+                          {/* Renderizar ativos da usina */}
+                          {ativos.map((ativo) => renderAtivo(ativo))}
+
+                          {/* Se também há atividades normais, renderizar em seção separada */}
+                          {atividadesNormais.length > 0 && (
+                            <div className="mt-6">
+                              <h4
+                                className={`text-lg font-semibold ${themeClasses.textPrimary} mb-3`}
                               >
-                                {expandedAtividades.includes(atividade.id) ? (
-                                  <ChevronDown
-                                    size={16}
-                                    className="text-blue-600"
-                                  />
-                                ) : (
-                                  <ChevronRight size={16} />
-                                )}
-                              </button>
+                                📋 Outras Atividades
+                              </h4>
+                              {atividadesNormais.map((atividade) => (
+                                <div
+                                  key={atividade.id}
+                                  className={`border rounded-lg p-4 ${themeClasses.border} hover:${themeClasses.bgSecondary} transition-colors mb-3`}
+                                >
+                                  {/* Renderização de atividade normal aqui */}
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <div className="text-lg">📝</div>
+                                      <div>
+                                        <h5
+                                          className={`font-medium ${themeClasses.textPrimary}`}
+                                        >
+                                          {atividade.nome}
+                                        </h5>
+                                        <p
+                                          className={`text-sm ${themeClasses.textSecondary}`}
+                                        >
+                                          {atividade.responsavel} •{' '}
+                                          {atividade.duracao}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <div
+                                        className={`text-sm font-medium ${themeClasses.textPrimary}`}
+                                      >
+                                        {Math.round(
+                                          atividade.percentualCompleto
+                                        )}
+                                        %
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        /* Se não há ativos, renderizar atividades normais como antes */
+                        atividades.map((atividade) => (
+                          <div
+                            key={atividade.id}
+                            className={`border rounded-lg p-4 ${themeClasses.border} hover:${themeClasses.bgSecondary} transition-colors`}
+                          >
+                            {/* Header da atividade */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3 flex-1">
+                                <button
+                                  onClick={() => {
+                                    console.log(
+                                      '🔘 Botão clicado para ID:',
+                                      atividade.id
+                                    );
+                                    toggleAtividade(atividade.id);
+                                  }}
+                                  className={`p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ${themeClasses.textSecondary}`}
+                                >
+                                  {expandedAtividades.includes(atividade.id) ? (
+                                    <ChevronDown
+                                      size={16}
+                                      className="text-blue-600"
+                                    />
+                                  ) : (
+                                    <ChevronRight size={16} />
+                                  )}
+                                </button>
 
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-3">
-                                    <h4
-                                      className={`font-medium ${themeClasses.textPrimary}`}
-                                    >
-                                      {atividade.nome}
-                                    </h4>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <h4
+                                        className={`font-medium ${themeClasses.textPrimary}`}
+                                      >
+                                        {atividade.nome}
+                                      </h4>
 
-                                    {/* Indicador de Status Crítico Individual */}
+                                      {/* Indicador de Status Crítico Individual */}
+                                      {(() => {
+                                        const statusAnalise =
+                                          analisarStatusAtividade(atividade);
+                                        return (
+                                          <span
+                                            className={`px-3 py-1 rounded-lg text-xs font-bold border ${statusAnalise.corFundo} ${statusAnalise.corTexto} border-opacity-30`}
+                                          >
+                                            <div className="flex items-center space-x-1">
+                                              <span>{statusAnalise.icone}</span>
+                                              <span>{statusAnalise.tipo}</span>
+                                            </div>
+                                          </span>
+                                        );
+                                      })()}
+                                    </div>
+
+                                    {/* Mensagem de Status */}
                                     {(() => {
                                       const statusAnalise =
                                         analisarStatusAtividade(atividade);
                                       return (
                                         <span
-                                          className={`px-3 py-1 rounded-lg text-xs font-bold border ${statusAnalise.corFundo} ${statusAnalise.corTexto} border-opacity-30`}
+                                          className={`text-xs font-medium ${statusAnalise.corTexto}`}
                                         >
-                                          <div className="flex items-center space-x-1">
-                                            <span>{statusAnalise.icone}</span>
-                                            <span>{statusAnalise.tipo}</span>
-                                          </div>
+                                          {statusAnalise.mensagem}
                                         </span>
                                       );
                                     })()}
                                   </div>
 
-                                  {/* Mensagem de Status */}
+                                  <div
+                                    className={`text-sm ${themeClasses.textSecondary} mt-1`}
+                                  >
+                                    {/* ...removido duração do card principal... */}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Progress bar */}
+                              <div className="flex items-center space-x-3">
+                                <div className="text-right">
+                                  <div
+                                    className={`text-sm font-medium ${themeClasses.textPrimary}`}
+                                  >
+                                    {atividade.percentualCompleto}%
+                                  </div>
+                                  <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                    <div
+                                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                      style={{
+                                        width: `${atividade.percentualCompleto}%`,
+                                      }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Área expandida - TESTE VISUAL SIMPLES */}
+                            {expandedAtividades.includes(atividade.id) && (
+                              <div className="mt-4 ml-8 border-l-2 border-blue-500 pl-4">
+                                <div className="bg-green-500 text-white p-4 text-center font-bold rounded-lg mb-4">
+                                  ID: {atividade.id} | {atividade.nome}
+                                </div>
+                                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg space-y-2">
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Categoria:</b> {atividade.categoria}
+                                  </div>
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Nível:</b> {atividade.nivel}
+                                  </div>
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Prioridade:</b> {atividade.prioridade}
+                                  </div>
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Equipe:</b>{' '}
+                                    {atividade.responsavel || 'Não informado'}
+                                  </div>
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Progresso físico:</b>{' '}
+                                    {atividade.percentualFisico}%
+                                  </div>
+                                  <div className="text-sm text-gray-700 dark:text-gray-200">
+                                    <b>Progresso total:</b>{' '}
+                                    {atividade.percentualCompleto}%
+                                  </div>
+                                  <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                                    <span className="font-bold">
+                                      Planejado:
+                                    </span>{' '}
+                                    Início:{' '}
+                                    {(atividade as any).inicioBaseline ||
+                                      atividade.inicio}{' '}
+                                    | Fim:{' '}
+                                    {(atividade as any).fimBaseline ||
+                                      atividade.fim}
+                                  </div>
+                                  {(atividade as any).inicioReal &&
+                                    (atividade as any).fimReal && (
+                                      <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        <span className="font-bold">Real:</span>{' '}
+                                        Início: {(atividade as any).inicioReal}{' '}
+                                        | Fim: {(atividade as any).fimReal}
+                                      </div>
+                                    )}
+                                  {/* Dias de atraso */}
                                   {(() => {
-                                    const statusAnalise =
-                                      analisarStatusAtividade(atividade);
-                                    return (
-                                      <span
-                                        className={`text-xs font-medium ${statusAnalise.corTexto}`}
-                                      >
-                                        {statusAnalise.mensagem}
-                                      </span>
-                                    );
+                                    const fimPlanejado =
+                                      (atividade as any).fimBaseline ||
+                                      atividade.fim;
+                                    const fimReal = (atividade as any).fimReal;
+                                    if (fimPlanejado && fimReal) {
+                                      const dataFimPlanejado = new Date(
+                                        fimPlanejado
+                                      );
+                                      const dataFimReal = new Date(fimReal);
+                                      const diffMs =
+                                        dataFimReal.getTime() -
+                                        dataFimPlanejado.getTime();
+                                      const diffDias = Math.ceil(
+                                        diffMs / (1000 * 3600 * 24)
+                                      );
+                                      if (diffDias > 0) {
+                                        return (
+                                          <div className="text-sm font-bold text-red-600">
+                                            Atraso: {diffDias} dia(s)
+                                          </div>
+                                        );
+                                      } else if (diffDias < 0) {
+                                        return (
+                                          <div className="text-sm font-bold text-green-600">
+                                            Adiantada: {Math.abs(diffDias)}{' '}
+                                            dia(s)
+                                          </div>
+                                        );
+                                      } else {
+                                        return (
+                                          <div className="text-sm font-bold text-gray-600">
+                                            No prazo
+                                          </div>
+                                        );
+                                      }
+                                    }
+                                    return null;
                                   })()}
                                 </div>
-
-                                <div
-                                  className={`text-sm ${themeClasses.textSecondary} mt-1`}
-                                >
-                                  {/* ...removido duração do card principal... */}
-                                </div>
                               </div>
-                            </div>
-
-                            {/* Progress bar */}
-                            <div className="flex items-center space-x-3">
-                              <div className="text-right">
-                                <div
-                                  className={`text-sm font-medium ${themeClasses.textPrimary}`}
-                                >
-                                  {atividade.percentualCompleto}%
-                                </div>
-                                <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                  <div
-                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                    style={{
-                                      width: `${atividade.percentualCompleto}%`,
-                                    }}
-                                  ></div>
-                                </div>
-                              </div>
-                            </div>
+                            )}
                           </div>
-
-                          {/* Área expandida - TESTE VISUAL SIMPLES */}
-                          {expandedAtividades.includes(atividade.id) && (
-                            <div className="mt-4 ml-8 border-l-2 border-blue-500 pl-4">
-                              <div className="bg-green-500 text-white p-4 text-center font-bold rounded-lg mb-4">
-                                ID: {atividade.id} | {atividade.nome}
-                              </div>
-                              <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg space-y-2">
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Categoria:</b> {atividade.categoria}
-                                </div>
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Nível:</b> {atividade.nivel}
-                                </div>
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Prioridade:</b> {atividade.prioridade}
-                                </div>
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Equipe:</b>{' '}
-                                  {atividade.responsavel || 'Não informado'}
-                                </div>
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Progresso físico:</b>{' '}
-                                  {atividade.percentualFisico}%
-                                </div>
-                                <div className="text-sm text-gray-700 dark:text-gray-200">
-                                  <b>Progresso total:</b>{' '}
-                                  {atividade.percentualCompleto}%
-                                </div>
-                                <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                  <span className="font-bold">Planejado:</span>{' '}
-                                  Início:{' '}
-                                  {(atividade as any).inicioBaseline ||
-                                    atividade.inicio}{' '}
-                                  | Fim:{' '}
-                                  {(atividade as any).fimBaseline ||
-                                    atividade.fim}
-                                </div>
-                                {(atividade as any).inicioReal &&
-                                  (atividade as any).fimReal && (
-                                    <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                      <span className="font-bold">Real:</span>{' '}
-                                      Início: {(atividade as any).inicioReal} |
-                                      Fim: {(atividade as any).fimReal}
-                                    </div>
-                                  )}
-                                {/* Dias de atraso */}
-                                {(() => {
-                                  const fimPlanejado =
-                                    (atividade as any).fimBaseline ||
-                                    atividade.fim;
-                                  const fimReal = (atividade as any).fimReal;
-                                  if (fimPlanejado && fimReal) {
-                                    const dataFimPlanejado = new Date(
-                                      fimPlanejado
-                                    );
-                                    const dataFimReal = new Date(fimReal);
-                                    const diffMs =
-                                      dataFimReal.getTime() -
-                                      dataFimPlanejado.getTime();
-                                    const diffDias = Math.ceil(
-                                      diffMs / (1000 * 3600 * 24)
-                                    );
-                                    if (diffDias > 0) {
-                                      return (
-                                        <div className="text-sm font-bold text-red-600">
-                                          Atraso: {diffDias} dia(s)
-                                        </div>
-                                      );
-                                    } else if (diffDias < 0) {
-                                      return (
-                                        <div className="text-sm font-bold text-green-600">
-                                          Adiantada: {Math.abs(diffDias)} dia(s)
-                                        </div>
-                                      );
-                                    } else {
-                                      return (
-                                        <div className="text-sm font-bold text-gray-600">
-                                          No prazo
-                                        </div>
-                                      );
-                                    }
-                                  }
-                                  return null;
-                                })()}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </div>
                 )}

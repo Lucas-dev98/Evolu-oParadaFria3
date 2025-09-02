@@ -33,8 +33,6 @@ import PhaseDataManager from './components/PhaseDataManager';
 import CronogramaUpload from './components/CronogramaUpload';
 import PreparacaoUpload from './components/PreparacaoUpload';
 import PhaseActivitiesManager from './components/PhaseActivitiesManager';
-import { PhaseViewerPFUS3 } from './components/PhaseViewerPFUS3';
-import PFUS3Uploader from './components/PFUS3Uploader';
 import { NotificationContainer } from './components/NotificationToast';
 import { useNotifications } from './hooks/useNotifications';
 import { ThemeProvider, useThemeClasses } from './contexts/ThemeContext';
@@ -133,8 +131,12 @@ function AppContent() {
   // Função para carregar dados persistidos do backend
   const loadBackendData = useCallback(async () => {
     try {
-      console.log('🔄 Carregando dados persistidos do backend...');
+      console.log('🔄 Backend desabilitado - usando apenas dados locais...');
 
+      // TEMPORARIAMENTE DESABILITADO: chamadas da API estão causando timeouts
+      // Quando o backend estiver funcionando, descomente as linhas abaixo
+
+      /*
       // Carregar áreas do backend
       try {
         const areasData = await dashboardAPI.getAreas();
@@ -145,6 +147,7 @@ function AppContent() {
       } catch (error) {
         console.warn('⚠️ Erro ao carregar áreas do backend:', error);
       }
+      */
 
       // Carregar cronograma do backend
       try {
@@ -248,15 +251,74 @@ function AppContent() {
     });
   };
 
+  // Função para obter os dados corretos das fases (prioriza PFUS3)
+  const getActivePhases = () => {
+    return phasesPFUS3.length > 0 ? phasesPFUS3 : paradaData.phases;
+  };
+
   // Função para obter o nome da fase atual
   const getCurrentPhaseName = () => {
-    const phase = paradaData.phases.find((p) => p.id === selectedPhase);
+    const phase = getActivePhases().find((p) => p.id === selectedPhase);
     return phase ? phase.name : 'Preparação';
   };
 
   // Funções para gerenciar dados PFUS3
-  const loadPFUS3Data = useCallback(() => {
+  const loadPFUS3Data = useCallback(async () => {
     try {
+      console.log('🚀 loadPFUS3Data: Iniciando carregamento...');
+
+      // Sempre tentar recarregar do arquivo público para pegar mudanças no processador
+      try {
+        console.log('🔄 Recarregando dados PFUS3 do arquivo público...');
+
+        // Limpar dados salvos para forçar reprocessamento
+        localStorage.removeItem('pfus3_phases');
+        console.log('🗑️ Dados PFUS3 antigos removidos do localStorage');
+
+        const response = await fetch('/250820 - Report PFUS3.csv');
+        if (response.ok) {
+          const csvText = await response.text();
+          const { processarCronogramaOperacional } = await import(
+            './utils/cronogramaOperacionalProcessorPFUS3'
+          );
+          const processedData = await processarCronogramaOperacional(csvText);
+
+          console.log('✅ Dados PFUS3 reprocessados:', processedData.phases);
+          console.log(
+            '📊 Total de fases encontradas:',
+            processedData.phases.length
+          );
+
+          // Mostrar detalhes de cada fase
+          processedData.phases.forEach((phase: Phase) => {
+            console.log(
+              `📋 Fase: ${phase.name} (${phase.id}) - ${phase.activities} atividades - ${phase.progress}%`
+            );
+          });
+
+          setPhasesPFUS3(processedData.phases);
+
+          // Salvar dados atualizados
+          localStorage.setItem(
+            'pfus3_phases',
+            JSON.stringify(processedData.phases)
+          );
+          console.log('💾 Dados PFUS3 atualizados salvos no localStorage');
+
+          notifications.success(
+            'PFUS3 Atualizado',
+            `${processedData.phases.length} fases recarregadas automaticamente`
+          );
+          return;
+        }
+      } catch (reloadError) {
+        console.log(
+          '⚠️ Não foi possível recarregar do arquivo, usando dados salvos...',
+          reloadError
+        );
+      }
+
+      // Fallback: tentar carregar dados salvos
       const savedPhases = localStorage.getItem('pfus3_phases');
       if (savedPhases) {
         const phases = JSON.parse(savedPhases);
@@ -276,194 +338,459 @@ function AppContent() {
     } catch (error) {
       console.error('❌ Erro ao carregar dados PFUS3 salvos:', error);
     }
-  }, [notifications]);
+  }, []); // Removido notifications para evitar loops
 
   const handlePFUS3PhasesUpdate = useCallback(
     (phases: Phase[]) => {
+      console.log(
+        '🔄 handlePFUS3PhasesUpdate: Atualizando fases PFUS3:',
+        phases
+      );
       setPhasesPFUS3(phases);
       notifications.success(
         'Fases Atualizadas',
         `${phases.length} fases carregadas do cronograma PFUS3`
       );
     },
-    [notifications]
+    [] // Removido notifications para evitar loops
   );
 
   const handlePFUS3UploadSuccess = useCallback(
     (message: string) => {
       notifications.success('Upload Realizado', message);
     },
-    [notifications]
+    [] // Removido notifications para evitar loops
   );
 
   const handlePFUS3UploadError = useCallback(
     (error: string) => {
       notifications.error('Erro no Upload', error);
     },
-    [notifications]
+    [] // Removido notifications para evitar loops
   );
 
-  // Função para converter dados do cronograma em atividades organizadas por frente de trabalho
+  // Função para identificar ativos da usina baseado no nome da atividade
+  const identificarAtivoUsina = (nomeAtividade: string, area: string) => {
+    const nome = nomeAtividade.toLowerCase();
+    const areaLower = area.toLowerCase();
+
+    // Ativos principais da usina termoelétrica
+    if (nome.includes('precipitador') || areaLower.includes('precipitador')) {
+      return 'Precipitadores';
+    } else if (nome.includes('caldeira') || areaLower.includes('caldeira')) {
+      return 'Caldeiras';
+    } else if (nome.includes('turbina') || areaLower.includes('turbina')) {
+      return 'Turbinas';
+    } else if (nome.includes('gerador') || areaLower.includes('gerador')) {
+      return 'Geradores';
+    } else if (
+      nome.includes('condensador') ||
+      areaLower.includes('condensador')
+    ) {
+      return 'Condensadores';
+    } else if (nome.includes('bomba') || areaLower.includes('bomba')) {
+      return 'Sistema de Bombas';
+    } else if (
+      nome.includes('ventilador') ||
+      areaLower.includes('ventilador')
+    ) {
+      return 'Ventiladores';
+    } else if (
+      nome.includes('chaminé') ||
+      nome.includes('chamines') ||
+      areaLower.includes('chaminé')
+    ) {
+      return 'Chaminés';
+    } else if (
+      nome.includes('transformador') ||
+      areaLower.includes('transformador')
+    ) {
+      return 'Transformadores';
+    } else if (
+      nome.includes('sistema elétrico') ||
+      nome.includes('eletrico') ||
+      areaLower.includes('eletrico')
+    ) {
+      return 'Sistema Elétrico';
+    } else if (
+      nome.includes('sistema de água') ||
+      nome.includes('agua') ||
+      areaLower.includes('agua')
+    ) {
+      return 'Sistema de Água';
+    } else if (
+      nome.includes('sistema de combustível') ||
+      nome.includes('combustivel') ||
+      areaLower.includes('combustivel')
+    ) {
+      return 'Sistema de Combustível';
+    } else if (
+      nome.includes('instrumentação') ||
+      areaLower.includes('instrumentacao')
+    ) {
+      return 'Instrumentação e Controle';
+    } else if (
+      nome.includes('estrutura') ||
+      nome.includes('civil') ||
+      areaLower.includes('estrutura')
+    ) {
+      return 'Estruturas e Civil';
+    } else {
+      return 'Outros Equipamentos';
+    }
+  };
+
+  // Função para organizar atividades por ativos da usina
+  const organizarAtividadesPorAtivos = (atividades: any[]) => {
+    console.log('🏭 Organizando atividades por ativos da usina...');
+
+    const ativosPorFrente: { [frente: string]: { [ativo: string]: any[] } } =
+      {};
+
+    atividades.forEach((atividade) => {
+      const frente = atividade.frenteTrabalho;
+      const ativo = identificarAtivoUsina(atividade.nome, atividade.area || '');
+
+      // Inicializar estrutura se não existir
+      if (!ativosPorFrente[frente]) {
+        ativosPorFrente[frente] = {};
+      }
+      if (!ativosPorFrente[frente][ativo]) {
+        ativosPorFrente[frente][ativo] = [];
+      }
+
+      // Adicionar atividade como subatividade do ativo
+      ativosPorFrente[frente][ativo].push({
+        ...atividade,
+        isSubatividade: true,
+        ativoParent: ativo,
+      });
+    });
+
+    // Converter para formato hierárquico
+    const atividadesHierarquicas: any[] = [];
+
+    Object.keys(ativosPorFrente).forEach((frente) => {
+      Object.keys(ativosPorFrente[frente]).forEach((ativo) => {
+        const subatividades = ativosPorFrente[frente][ativo];
+
+        // Calcular métricas do ativo baseado nas subatividades
+        const percentualMedio =
+          subatividades.reduce(
+            (acc, sub) => acc + (sub.percentualCompleto || 0),
+            0
+          ) / subatividades.length;
+        const percentualFisicoMedio =
+          subatividades.reduce(
+            (acc, sub) => acc + (sub.percentualFisico || 0),
+            0
+          ) / subatividades.length;
+
+        // Determinar status do ativo baseado nas subatividades
+        let statusAtivo = 'pendente';
+        const concluidas = subatividades.filter(
+          (sub) => sub.status === 'concluida'
+        ).length;
+        const emAndamento = subatividades.filter(
+          (sub) => sub.status === 'em-andamento'
+        ).length;
+        const atrasadas = subatividades.filter(
+          (sub) => sub.status === 'atrasada'
+        ).length;
+
+        if (concluidas === subatividades.length) {
+          statusAtivo = 'concluida';
+        } else if (atrasadas > 0) {
+          statusAtivo = 'atrasada';
+        } else if (emAndamento > 0 || concluidas > 0) {
+          statusAtivo = 'em-andamento';
+        }
+
+        // Determinar prioridade do ativo
+        const prioridadesAltas = subatividades.filter(
+          (sub) => sub.prioridade === 'alta'
+        ).length;
+        let prioridadeAtivo: 'alta' | 'media' | 'baixa' = 'media';
+        if (prioridadesAltas > subatividades.length / 2) {
+          prioridadeAtivo = 'alta';
+        } else if (prioridadesAltas === 0) {
+          prioridadeAtivo = 'baixa';
+        }
+
+        // Criar o ativo principal
+        const ativoMain = {
+          id: `ativo-${frente.replace(/\s+/g, '-').toLowerCase()}-${ativo.replace(/\s+/g, '-').toLowerCase()}`,
+          nome: ativo,
+          frenteTrabalho: frente,
+          percentualCompleto: Math.round(percentualMedio),
+          percentualFisico: Math.round(percentualFisicoMedio),
+          duracao: `${subatividades.length} atividades`,
+          inicio:
+            subatividades.map((s) => s.inicio).sort()[0] ||
+            new Date().toISOString().split('T')[0],
+          fim:
+            subatividades
+              .map((s) => s.fim)
+              .sort()
+              .reverse()[0] || new Date().toISOString().split('T')[0],
+          responsavel: `Coordenador ${ativo}`,
+          prioridade: prioridadeAtivo,
+          status: statusAtivo,
+          dependencias: [],
+          recursos: [`Ativo: ${ativo}`, `Equipe ${frente}`],
+          fase: subatividades[0]?.fase || 'Operacional',
+          categoria: `Ativo da Usina - ${ativo}`,
+          nivel: 0, // Nível do ativo principal
+          source: 'PFUS3-Ativo',
+          edt: subatividades[0]?.edt || '',
+          area: ativo,
+          isAtivo: true, // Identificador de ativo principal
+          subatividades: subatividades.map((sub) => ({
+            ...sub,
+            nivel: 1, // Nível das subatividades
+          })),
+          totalSubatividades: subatividades.length,
+          subatividadesConcluidas: concluidas,
+          subatividadesEmAndamento: emAndamento,
+          subatividadesAtrasadas: atrasadas,
+        };
+
+        atividadesHierarquicas.push(ativoMain);
+      });
+    });
+
+    console.log('🏭 Ativos organizados:', atividadesHierarquicas.length);
+    console.log('📋 Detalhes dos ativos:');
+    atividadesHierarquicas.forEach((ativo) => {
+      console.log(
+        `  - ${ativo.nome}: ${ativo.totalSubatividades} subatividades (${ativo.subatividadesConcluidas} concluídas)`
+      );
+    });
+
+    return atividadesHierarquicas;
+  };
   const getAtividadesPorFase = (fase: PhaseType) => {
     console.log('🔍 getAtividadesPorFase chamada para fase:', fase);
-    console.log('📊 categoriasCronograma:', categoriasCronograma);
-    console.log('🚀 phasesPFUS3:', phasesPFUS3);
-    console.log(
-      '📈 categoriasCronograma.length:',
-      categoriasCronograma?.length || 0
-    );
+    console.log(' phasesPFUS3:', phasesPFUS3);
 
     const atividadesDaFase: any[] = [];
 
-    // PRIORIDADE 1: Usar dados do PFUS3 se disponíveis
+    // PRIORIDADE 1: Usar estrutura hierárquica do PFUS3 se disponível
     if (phasesPFUS3 && phasesPFUS3.length > 0) {
-      console.log('🚀 Usando dados PFUS3 para fase:', fase);
+      console.log('🏭 Usando estrutura hierárquica PFUS3 para fase:', fase);
 
-      // Mapear fases do PFUS3 para o tipo de fase atual
-      const phaseMapping: Record<PhaseType, string[]> = {
-        preparacao: ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6'], // Fases preparatórias
-        parada: ['1.7'], // Procedimentos de Parada
-        manutencao: ['1.8'], // Manutenções
-        partida: ['1.9'], // Procedimentos de Partida
-      };
+      // Encontrar a fase correspondente no PFUS3
+      const phaseFound = phasesPFUS3.find((phase) => {
+        // Mapear as fases do sistema para IDs do PFUS3
+        const phaseMap: Record<PhaseType, string[]> = {
+          preparacao: [
+            'preparacao',
+            'preparação',
+            'mobilização',
+            'mobilizacao',
+          ],
+          parada: ['parada', 'procedimento', 'desligamento'],
+          manutencao: ['manutencao', 'manutenção', 'manutenacao'],
+          partida: ['partida', 'startup', 'comissionamento'],
+        };
 
-      const relevantPhases = phaseMapping[fase] || [];
-      console.log('🎯 Fases relevantes para', fase, ':', relevantPhases);
-
-      phasesPFUS3.forEach((phase) => {
-        // Verificar se a fase é relevante baseada no EDT
-        const isRelevant = relevantPhases.some(
-          (prefix) =>
-            phase.name.includes(prefix) ||
-            phase.id.includes(prefix) ||
-            (phase as any).edt?.startsWith(prefix)
+        const keywords = phaseMap[fase] || [];
+        return keywords.some(
+          (keyword) =>
+            phase.id.toLowerCase().includes(keyword) ||
+            phase.name.toLowerCase().includes(keyword)
         );
-
-        if (isRelevant) {
-          console.log('✅ Adicionando atividades da fase PFUS3:', phase.name);
-
-          // Como phase.activities é um número, vamos criar atividades simuladas
-          // ou buscar dados reais do processador PFUS3
-          const activitiesCount =
-            typeof phase.activities === 'number' ? phase.activities : 0;
-
-          // Gerar atividades baseadas na fase PFUS3
-          for (let index = 0; index < Math.max(activitiesCount, 5); index++) {
-            // Determinar frente de trabalho baseada no nome da fase
-            let frenteTrabalho = 'Outras Atividades';
-            const phaseName = phase.name || '';
-
-            if (fase === 'preparacao') {
-              if (phaseName.includes('Logística') || index % 4 === 0)
-                frenteTrabalho = 'Logística e Suprimentos';
-              else if (phaseName.includes('Refratário') || index % 4 === 1)
-                frenteTrabalho = 'Refratário';
-              else if (
-                phaseName.includes('Mobilização') ||
-                phaseName.includes('Canteiro') ||
-                index % 4 === 2
-              )
-                frenteTrabalho = 'Mobilização e Canteiro';
-              else if (phaseName.includes('Preparação') || index % 4 === 3)
-                frenteTrabalho = 'Preparação Geral';
-            } else if (
-              fase === 'parada' ||
-              fase === 'manutencao' ||
-              fase === 'partida'
-            ) {
-              if (
-                phaseName.includes('Parada') ||
-                phaseName.includes('1.7') ||
-                index % 5 === 0
-              )
-                frenteTrabalho = 'Parada de Unidades';
-              else if (
-                phaseName.includes('Manutenção') ||
-                phaseName.includes('1.8') ||
-                index % 5 === 1
-              )
-                frenteTrabalho = 'Manutenção';
-              else if (
-                phaseName.includes('Partida') ||
-                phaseName.includes('1.9') ||
-                index % 5 === 2
-              )
-                frenteTrabalho = 'Partida de Unidades';
-              else if (phaseName.includes('Teste') || index % 5 === 3)
-                frenteTrabalho = 'Testes e Comissionamento';
-              else if (phaseName.includes('Inspeção') || index % 5 === 4)
-                frenteTrabalho = 'Inspeção e Controle';
-            }
-
-            // Determinar status baseado no progresso da fase
-            let status = 'pendente';
-            const progress = phase.progress || 0;
-            if (progress >= 100) status = 'concluida';
-            else if (progress > 0) status = 'em-andamento';
-
-            // Verificar se está atrasada baseado na data estimada
-            const today = new Date();
-            const endDate = phase.endDate
-              ? new Date(phase.endDate)
-              : new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
-            if (endDate < today && progress < 100) {
-              status = 'atrasada';
-            }
-
-            const atividade = {
-              id: `pfus3-${phase.id}-${index}`,
-              nome: `${phaseName} - Atividade ${index + 1}`,
-              frenteTrabalho,
-              percentualCompleto: Math.max(
-                0,
-                progress + (Math.random() - 0.5) * 20
-              ),
-              percentualFisico: Math.max(
-                0,
-                progress + (Math.random() - 0.5) * 15
-              ),
-              duracao: `${Math.floor(Math.random() * 10) + 1} days`,
-              inicio: phase.startDate
-                ? phase.startDate.toISOString().split('T')[0]
-                : new Date().toISOString().split('T')[0],
-              fim: endDate.toISOString().split('T')[0],
-              responsavel: `Coordenador ${frenteTrabalho}`,
-              prioridade:
-                Math.random() > 0.7
-                  ? 'alta'
-                  : Math.random() > 0.4
-                    ? 'media'
-                    : 'baixa',
-              status,
-              dependencias: [],
-              recursos: [`Recurso ${index + 1}`, `Equipamento ${index + 1}`],
-              fase: fase === 'preparacao' ? 'Preparação' : 'Operacional',
-              categoria: `PFUS3 - ${phase.name}`,
-              nivel: 0,
-              source: 'PFUS3', // Identificador para debugging
-            };
-
-            atividadesDaFase.push(atividade);
-          }
-        }
       });
 
-      console.log(
-        '🚀 Total de atividades PFUS3 encontradas:',
-        atividadesDaFase.length
-      );
+      if (
+        phaseFound &&
+        phaseFound.ativosIdentificados &&
+        phaseFound.ativosIdentificados.length > 0
+      ) {
+        console.log(
+          '✅ Encontrada fase PFUS3 com ativos identificados:',
+          phaseFound.name
+        );
+        console.log(
+          '🏭 Ativos identificados:',
+          phaseFound.ativosIdentificados.length
+        );
 
-      // Se encontrou atividades PFUS3, retornar elas
-      if (atividadesDaFase.length > 0) {
-        console.log('✅ Retornando atividades PFUS3 para fase:', fase);
-        return atividadesDaFase;
+        // Converter ativos identificados para o formato esperado pelo componente
+        phaseFound.ativosIdentificados.forEach((ativo, index) => {
+          console.log(
+            `🏭 Processando ativo: ${ativo.nome} (${ativo.subatividades?.length || 0} subatividades)`
+          );
+
+          // Determinar status do ativo baseado nas subatividades
+          let statusAtivo = 'pendente';
+          const subatividades = ativo.subatividades || [];
+          const concluidas = subatividades.filter(
+            (sub: any) => (sub.percentualCompleto || 0) >= 100
+          ).length;
+          const emAndamento = subatividades.filter(
+            (sub: any) =>
+              (sub.percentualCompleto || 0) > 0 &&
+              (sub.percentualCompleto || 0) < 100
+          ).length;
+          const atrasadas = subatividades.filter(
+            (sub: any) => sub.status === 'atrasada'
+          ).length;
+
+          if (concluidas === subatividades.length) {
+            statusAtivo = 'concluida';
+          } else if (atrasadas > 0) {
+            statusAtivo = 'atrasada';
+          } else if (emAndamento > 0 || concluidas > 0) {
+            statusAtivo = 'em-andamento';
+          }
+
+          // Determinar prioridade do ativo
+          const prioridadesAltas = subatividades.filter(
+            (sub: any) =>
+              sub.status === 'atrasada' ||
+              sub.name?.toLowerCase().includes('crítica')
+          ).length;
+          let prioridadeAtivo: 'alta' | 'media' | 'baixa' = 'media';
+          if (prioridadesAltas > subatividades.length / 2) {
+            prioridadeAtivo = 'alta';
+          } else if (prioridadesAltas === 0) {
+            prioridadeAtivo = 'baixa';
+          }
+
+          // Criar ativo principal para renderização
+          const ativoMain = {
+            id: ativo.id || `ativo-${index}`,
+            nome: ativo.nome || `Ativo ${index + 1}`,
+            frenteTrabalho: ativo.faseNome || phaseFound.name,
+            percentualCompleto: ativo.progresso || 0,
+            percentualFisico: Math.max(0, (ativo.progresso || 0) - 5),
+            duracao: `${subatividades.length} atividades`,
+            inicio: ativo.dataInicio || new Date().toISOString().split('T')[0],
+            fim: ativo.dataFim || new Date().toISOString().split('T')[0],
+            responsavel: `Coordenador ${ativo.tipo}`,
+            prioridade: prioridadeAtivo,
+            status: statusAtivo,
+            dependencias: [],
+            recursos: [`Ativo: ${ativo.tipo}`, `Equipe ${ativo.nome}`],
+            fase: fase === 'preparacao' ? 'Preparação' : 'Operacional',
+            categoria: `Ativo da Usina - ${ativo.tipo}`,
+            nivel: ativo.nivel || 3,
+            source: 'PFUS3-Hierarquico',
+            edt: ativo.edt || '',
+            area: ativo.area || ativo.tipo,
+
+            // Propriedades específicas para ativos da usina
+            isAtivo: true,
+            tipo: ativo.tipo,
+            totalSubatividades: subatividades.length,
+            subatividadesConcluidas: concluidas,
+            subatividadesEmAndamento: emAndamento,
+            subatividadesAtrasadas: atrasadas,
+
+            // Subatividades convertidas para o formato do componente
+            subatividades: subatividades.map((sub: any, subIndex: number) => ({
+              id: sub.id || `${ativo.id}-sub-${subIndex}`,
+              nome: sub.name || `Subatividade ${subIndex + 1}`,
+              frenteTrabalho: ativo.nome,
+              percentualCompleto: sub.percentualCompleto || 0,
+              percentualFisico: Math.max(0, (sub.percentualCompleto || 0) - 3),
+              duracao: sub.duration || '1 day',
+              inicio: sub.start || new Date().toISOString().split('T')[0],
+              fim: sub.finish || new Date().toISOString().split('T')[0],
+              responsavel: sub.responsible || 'Técnico',
+              prioridade: sub.status === 'atrasada' ? 'alta' : ('media' as any),
+              status: sub.status || ('pendente' as any),
+              dependencias: [],
+              recursos: [`Recurso ${subIndex + 1}`],
+              fase: fase === 'preparacao' ? 'Preparação' : 'Operacional',
+              categoria: `Subatividade - ${ativo.tipo}`,
+              nivel: sub.nivel || 4,
+              source: 'PFUS3-Subatividade',
+              edt: sub.edt || '',
+              area: sub.area || ativo.area,
+
+              // Propriedades para subatividades
+              isSubatividade: true,
+              ativoParent: ativo.nome,
+            })),
+          };
+
+          atividadesDaFase.push(ativoMain);
+        });
+
+        console.log(
+          '🏭 Total de ativos PFUS3 hierárquicos processados:',
+          atividadesDaFase.length
+        );
+        console.log('🎯 Ativos encontrados:');
+        atividadesDaFase.forEach((ativo) => {
+          console.log(
+            `  - ${ativo.nome}: ${ativo.totalSubatividades} subatividades (${ativo.subatividadesConcluidas} concluídas)`
+          );
+        });
+
+        if (atividadesDaFase.length > 0) {
+          console.log(
+            '✅ Retornando ativos PFUS3 hierárquicos para fase:',
+            fase
+          );
+          return atividadesDaFase;
+        }
+      }
+
+      // FALLBACK: Se não tem ativos identificados, usar o método anterior com processedActivities
+      if (
+        phaseFound &&
+        phaseFound.processedActivities &&
+        phaseFound.processedActivities.length > 0
+      ) {
+        console.log('⚠️ Fallback: usando processedActivities da fase PFUS3');
+
+        // Usar o código anterior como fallback
+        phaseFound.processedActivities.forEach((activity, index) => {
+          // ... código anterior para processar atividades individuais
+          const atividade = {
+            id: activity.id || `pfus3-${fase}-${index}`,
+            nome: activity.name || `Atividade ${index + 1}`,
+            frenteTrabalho: activity.area || 'Outras Atividades',
+            percentualCompleto: activity.percentualCompleto || 0,
+            percentualFisico: Math.max(
+              0,
+              (activity.percentualCompleto || 0) - 5
+            ),
+            duracao: activity.duration || '1 day',
+            inicio: activity.start || new Date().toISOString().split('T')[0],
+            fim: activity.finish || new Date().toISOString().split('T')[0],
+            responsavel: activity.responsible || 'Coordenador',
+            prioridade: 'media' as any,
+            status: activity.status || ('pendente' as any),
+            dependencias: [],
+            recursos: [`Recurso ${activity.area}`, `Equipamento ${index + 1}`],
+            fase: fase === 'preparacao' ? 'Preparação' : 'Operacional',
+            categoria: `PFUS3 - ${activity.area || 'Geral'}`,
+            nivel: activity.nivel || 0,
+            source: 'PFUS3-Fallback',
+            edt: activity.edt || '',
+            area: activity.area || '',
+          };
+
+          atividadesDaFase.push(atividade);
+        });
+
+        if (atividadesDaFase.length > 0) {
+          console.log(
+            '✅ Retornando atividades PFUS3 fallback para fase:',
+            fase
+          );
+          return atividadesDaFase;
+        }
       }
     }
 
     console.log('✅ getAtividadesPorFase finalizada');
     console.log('📊 Total de atividades encontradas:', atividadesDaFase.length);
     console.log('🎯 Primeiras 3 atividades:', atividadesDaFase.slice(0, 3));
-    console.log('� Todas as atividades:', atividadesDaFase);
 
     return atividadesDaFase;
   };
@@ -1536,8 +1863,8 @@ function AppContent() {
   useEffect(() => {
     loadData();
     loadBackendData(); // Carregar dados persistidos do backend
-    loadPFUS3Data(); // Carregar dados PFUS3 salvos
-  }, []); // Array de dependências vazio para executar apenas uma vez
+    loadPFUS3Data(); // Carregar dados PFUS3 salvos (com reprocessamento automático)
+  }, []); // Array vazio para executar apenas uma vez na montagem
 
   // Ativar automaticamente o modo atividades quando há dados de cronograma
   useEffect(() => {
@@ -2097,7 +2424,7 @@ function AppContent() {
           )}
 
           <PhasesNavigation
-            phases={paradaData.phases}
+            phases={getActivePhases()}
             currentPhase={selectedPhase}
             onPhaseSelect={(phaseId: PhaseType) => {
               setSelectedPhase(phaseId);
@@ -2247,7 +2574,7 @@ function AppContent() {
                 <PhaseActivitiesManager
                   activities={getAtividadesFiltradas(selectedPhase)}
                   phaseName={
-                    paradaData.phases.find((p) => p.id === selectedPhase)
+                    getActivePhases().find((p) => p.id === selectedPhase)
                       ?.name || selectedPhase
                   }
                   filtroStatus={filtroStatus}
@@ -2364,26 +2691,6 @@ function AppContent() {
                       <div className="flex items-center space-x-1">
                         <Activity className="w-4 h-4" />
                         <span>IA</span>
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        console.log(
-                          '🔧 Fases clicado - mudando para:',
-                          'fases'
-                        );
-                        setAbaAnalytics('fases');
-                      }}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        abaAnalytics === 'fases'
-                          ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
-                          : `${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
-                      }`}
-                    >
-                      <div className="flex items-center space-x-1">
-                        <Users className="w-4 h-4" />
-                        <span>Fases</span>
                       </div>
                     </button>
                   </div>
@@ -2778,49 +3085,6 @@ function AppContent() {
                   <TestGeminiAPI />
                 </div>
               )}
-
-              {abaAnalytics === 'fases' && (
-                <div className="space-y-6">
-                  {/* Informações sobre integração automática */}
-                  <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-medium text-blue-800 mb-2">
-                      🔄 Sistema Integrado
-                    </h4>
-                    <p className="text-sm text-blue-700">
-                      As fases são carregadas automaticamente do sistema
-                      operacional.
-                      {phasesPFUS3.length > 0 ? (
-                        <span className="ml-2 text-green-700 font-medium">
-                          ✅ {phasesPFUS3.length} fases PFUS3 carregadas
-                        </span>
-                      ) : (
-                        <span className="ml-2 text-orange-700">
-                          ⚠️ Aguardando carregamento automático...
-                        </span>
-                      )}
-                    </p>
-                  </div>
-
-                  {/* Upload manual como backup (opcional) */}
-                  <details className="border rounded-lg">
-                    <summary className="p-4 cursor-pointer bg-gray-50 hover:bg-gray-100 rounded-lg">
-                      📁 Upload Manual (Opcional)
-                    </summary>
-                    <div className="p-4">
-                      <PFUS3Uploader
-                        onPhasesUpdate={handlePFUS3PhasesUpdate}
-                        onUploadSuccess={handlePFUS3UploadSuccess}
-                        onUploadError={handlePFUS3UploadError}
-                      />
-                    </div>
-                  </details>
-
-                  {/* Visualizador de fases sempre ativo */}
-                  <div>
-                    <PhaseViewerPFUS3 externalPhases={phasesPFUS3} />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         ) : modoCronograma && !resumoCronograma ? (
@@ -2852,7 +3116,7 @@ function AppContent() {
                     da fase
                   </div>
                   <div className="text-xs text-gray-500">
-                    {paradaData.phases.find((p) => p.id === selectedPhase)
+                    {getActivePhases().find((p) => p.id === selectedPhase)
                       ?.progress || 0}
                     % concluído
                   </div>
