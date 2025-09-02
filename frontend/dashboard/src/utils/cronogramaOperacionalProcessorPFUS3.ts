@@ -1,5 +1,7 @@
 import Papa from 'papaparse';
 import { Phase, PhaseType } from '../types/phases';
+import { cacheManager } from './cacheManager';
+import { CSVValidator, ValidationResult } from './csvValidator';
 
 // Interface para compatibilidade com o cronograma operacional
 export interface ProcessedCronogramaActivity {
@@ -262,14 +264,45 @@ export const processarCronogramaOperacional = (
   csvText: string
 ): Promise<ProcessedCronograma> => {
   return new Promise((resolve, reject) => {
+    try {
+      // Verificar cache primeiro
+      const cacheKey = 'pfus3_processed';
+      const cached = cacheManager.get(cacheKey, csvText);
+      if (cached) {
+        console.log('✅ Dados recuperados do cache');
+        resolve(cached);
+        return;
+      }
+
+      console.log('🔄 Processando CSV PFUS3 (não encontrado no cache)...');
+    } catch (error) {
+      console.error('❌ Erro ao verificar cache:', error);
+    }
+
     Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
       delimiter: ';', // CSV usa ponto e vírgula
-      encoding: 'ISO-8859-1', // Encoding para caracteres acentuados
+      encoding: 'UTF-8', // Mudança para UTF-8
       transformHeader: (header) => {
-        // Manter headers em português mas limpar caracteres especiais invisíveis
-        return header.trim().replace(/[\u00A0\uFEFF]/g, '');
+        // Normalizar headers com caracteres especiais
+        const normalizedHeader = header
+          .trim()
+          .replace(/[\u00A0\uFEFF]/g, '')
+          .replace(
+            /N�vel_da_estrutura_de_t�picos/g,
+            'Nível_da_estrutura_de_tópicos'
+          )
+          .replace(/Dura��o/g, 'Duração')
+          .replace(/In�cio/g, 'Início')
+          .replace(/T�rmino/g, 'Término')
+          .replace(/�rea/g, 'Área')
+          .replace(/Respons�vel_da_Tarefa/g, 'Responsável_da_Tarefa');
+
+        console.log(
+          `📝 Header normalizado: "${header}" → "${normalizedHeader}"`
+        );
+        return normalizedHeader;
       },
       complete: async (results) => {
         try {
@@ -278,6 +311,27 @@ export const processarCronogramaOperacional = (
 
           const data = results.data as CronogramaPFUS3[];
           console.log('📊 Total de linhas parseadas:', data.length);
+
+          // Validar dados antes do processamento
+          console.log('🔍 Validando estrutura dos dados...');
+          const validation = CSVValidator.validatePFUS3(data);
+
+          if (!validation.isValid) {
+            console.error('❌ Dados inválidos encontrados:');
+            validation.errors.forEach((error) => console.error(`  - ${error}`));
+            throw new Error(
+              `Dados CSV inválidos: ${validation.errors.join('; ')}`
+            );
+          }
+
+          if (validation.warnings.length > 0) {
+            console.warn('⚠️ Avisos encontrados:');
+            validation.warnings.forEach((warning) =>
+              console.warn(`  - ${warning}`)
+            );
+          }
+
+          console.log('📈 Estatísticas da validação:', validation.stats);
 
           // Filtrar linhas válidas
           const validRows = data.filter(
@@ -431,10 +485,19 @@ export const processarCronogramaOperacional = (
             ),
           ];
 
-          resolve({
+          const result = {
             phases,
             metadata,
-          });
+          };
+
+          // Salvar no cache
+          try {
+            cacheManager.set('pfus3_processed', csvText, result);
+          } catch (cacheError) {
+            console.warn('⚠️ Erro ao salvar no cache:', cacheError);
+          }
+
+          resolve(result);
         } catch (error) {
           console.error('Erro ao processar formato PFUS3:', error);
           reject(error);

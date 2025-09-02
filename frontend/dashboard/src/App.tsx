@@ -35,6 +35,8 @@ import PreparacaoUpload from './components/PreparacaoUpload';
 import PhaseActivitiesManager from './components/PhaseActivitiesManager';
 import { NotificationContainer } from './components/NotificationToast';
 import { useNotifications } from './hooks/useNotifications';
+import SystemStatus from './components/SystemStatus';
+import PerformanceMonitor from './components/PerformanceMonitor';
 import { ThemeProvider, useThemeClasses } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { MobileProvider } from './contexts/MobileContext';
@@ -93,6 +95,9 @@ function AppContent() {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [showUpload, setShowUpload] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showSystemStatus, setShowSystemStatus] = useState(false);
+  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
+  const [dataLoadTime, setDataLoadTime] = useState<number>(0);
   const [uploadMode, setUploadMode] = useState<
     'traditional' | 'phases' | 'cronograma' | 'preparacao'
   >('traditional');
@@ -3187,6 +3192,37 @@ function AppContent() {
         onClose={() => setShowAdminPanel(false)}
         onDataUpdate={loadData}
       />
+
+      {/* System Status */}
+      <SystemStatus
+        isVisible={showSystemStatus}
+        onClose={() => setShowSystemStatus(false)}
+      />
+
+      {/* Performance Monitor */}
+      <PerformanceMonitor
+        visible={showPerformanceMonitor}
+        dataLoaded={areas.length > 0}
+        activitiesCount={areas.length}
+      />
+
+      {/* Dev Tools (only in development) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 left-4 space-y-2">
+          <button
+            onClick={() => setShowSystemStatus(!showSystemStatus)}
+            className="block px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+          >
+            📊 Status
+          </button>
+          <button
+            onClick={() => setShowPerformanceMonitor(!showPerformanceMonitor)}
+            className="block px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+          >
+            ⚡ Performance
+          </button>
+        </div>
+      )}
     </div>
   );
 }
