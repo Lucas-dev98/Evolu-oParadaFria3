@@ -261,7 +261,7 @@ export const PhaseViewer: React.FC<PhaseViewerProps> = ({ csvData }) => {
 
         if (!dataToProcess) {
           // Try to load from public folder
-          const response = await fetch('/250619 - Report - PFBT1.csv');
+          const response = await fetch('/api/csv/pfbt1');
           if (!response.ok) {
             throw new Error('Não foi possível carregar o arquivo CSV');
           }

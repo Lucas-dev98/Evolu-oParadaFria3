@@ -196,7 +196,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
       console.log(`🔄 Carregando seção ${secao} do PFUS3...`);
 
       // Verificar se arquivo PFUS3 existe
-      const response = await fetch('/report/250820 - Report PFUS3.csv');
+      const response = await fetch('/api/csv/report');
       if (!response.ok) {
         throw new Error('Arquivo PFUS3 não encontrado');
       }
@@ -284,18 +284,48 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
 
   const downloadCurrentFile = async (fileName: string) => {
     try {
-      const response = await fetch(`/${fileName}`);
+      let url = `/${fileName}`;
+      let downloadName = fileName;
+
+      // Mapear para os novos endpoints do backend
+      if (
+        fileName.includes('preparacao') ||
+        fileName === '290805 - Cronograma Preparação - PFUS3.csv'
+      ) {
+        url = '/api/csv/preparacao';
+        downloadName = '290805 - Cronograma Preparação - PFUS3.csv';
+      } else if (
+        fileName.includes('report') ||
+        fileName === '250820 - Report PFUS3.csv'
+      ) {
+        url = '/api/csv/report';
+        downloadName = '250820 - Report PFUS3.csv';
+      } else if (
+        fileName.includes('cronograma-operacional') ||
+        fileName === 'cronograma-operacional.csv'
+      ) {
+        url = '/api/csv/cronograma-operacional';
+        downloadName = 'cronograma-operacional.csv';
+      } else if (
+        fileName.includes('pfbt1') ||
+        fileName === '250619 - Report - PFBT1.csv'
+      ) {
+        url = '/api/csv/pfbt1';
+        downloadName = '250619 - Report - PFBT1.csv';
+      }
+
+      const response = await fetch(url);
       if (response.ok) {
         const csvContent = await response.text();
         const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
+        const downloadUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
-        a.href = url;
-        a.download = fileName;
+        a.href = downloadUrl;
+        a.download = downloadName;
         document.body.appendChild(a);
         a.click();
-        window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(downloadUrl);
         document.body.removeChild(a);
       } else {
         alert('Arquivo não encontrado');
@@ -418,11 +448,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() =>
-                        downloadCurrentFile(
-                          'preparacao/290805 - Cronograma Preparação - PFUS3.csv'
-                        )
-                      }
+                      onClick={() => downloadCurrentFile('preparacao')}
                       className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
                     >
                       Baixar
@@ -431,8 +457,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                 </div>
                 <div className="text-xs text-gray-600 space-y-1">
                   <div>
-                    📍 Localização: /public/preparacao/290805 - Cronograma
-                    Preparação - PFUS3.csv
+                    📍 Localização: /api/csv/preparacao (servidor backend)
                   </div>
                   <div>🕒 Carregado na inicialização da aplicação</div>
                   <div>📊 Usado em: Analytics → KPIs, Gantt, CPM, Fases</div>
@@ -456,7 +481,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   <div className="flex gap-2">
                     <button
                       onClick={() =>
-                        downloadCurrentFile('cronograma-operacional.csv')
+                        downloadCurrentFile('cronograma-operacional')
                       }
                       className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
                     >
@@ -465,7 +490,10 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 space-y-1">
-                  <div>📍 Localização: /public/cronograma-operacional.csv</div>
+                  <div>
+                    📍 Localização: /api/csv/cronograma-operacional (servidor
+                    backend)
+                  </div>
                   <div>🕒 Carregado na inicialização da aplicação</div>
                   <div>📊 Usado em: Modo Detalhado → Lista e resumo</div>
                 </div>
@@ -485,9 +513,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() =>
-                        downloadCurrentFile('report/250820 - Report PFUS3.csv')
-                      }
+                      onClick={() => downloadCurrentFile('report')}
                       className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors"
                     >
                       Baixar
@@ -495,9 +521,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 space-y-1">
-                  <div>
-                    📍 Localização: /public/report/250820 - Report PFUS3.csv
-                  </div>
+                  <div>📍 Localização: /api/csv/report (servidor backend)</div>
                   <div>🕒 Contém todas as fases do cronograma operacional</div>
                   <div>📊 Usado em: Analytics → Hierarquia completa PFUS3</div>
                   <div>
@@ -553,9 +577,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                       const timestamp = new Date()
                         .toISOString()
                         .replace(/[:.]/g, '-');
-                      downloadCurrentFile(
-                        'preparacao/290805 - Cronograma Preparação - PFUS3.csv'
-                      );
+                      downloadCurrentFile('preparacao');
                     }}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                   >
@@ -577,7 +599,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                       const timestamp = new Date()
                         .toISOString()
                         .replace(/[:.]/g, '-');
-                      downloadCurrentFile('cronograma-operacional.csv');
+                      downloadCurrentFile('cronograma-operacional');
                     }}
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
                   >

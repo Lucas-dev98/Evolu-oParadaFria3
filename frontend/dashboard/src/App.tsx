@@ -502,7 +502,7 @@ function AppContent() {
         localStorage.removeItem('pfus3_phases');
         console.log('🗑️ Dados PFUS3 antigos removidos do localStorage');
 
-        const response = await fetch('/report/250820 - Report PFUS3.csv');
+        const response = await fetch('/api/csv/report');
         if (response.ok) {
           const csvText = await response.text();
           const { processarCronogramaOperacional } = await import(
@@ -1445,9 +1445,9 @@ function AppContent() {
         );
         const [operacionalResponse, preparacaoResponse, pfus3Response] =
           await Promise.all([
-            fetch('/cronograma-operacional.csv'),
-            fetch('/preparacao/290805 - Cronograma Preparação - PFUS3.csv'),
-            fetch('/report/250820 - Report PFUS3.csv'),
+            fetch('/api/csv/cronograma-operacional'),
+            fetch('/api/csv/preparacao'),
+            fetch('/api/csv/report'),
           ]);
 
         console.log('📊 Status das respostas:', {
@@ -2491,7 +2491,7 @@ function AppContent() {
 
       // Se não conseguiu preparação, tentar operacional
       try {
-        const responseOper = await fetch('/cronograma-operacional.csv');
+        const responseOper = await fetch('/api/csv/cronograma-operacional');
         if (responseOper.ok) {
           const csvTextOper = await responseOper.text();
           console.log('✅ CSV Operacional carregado automaticamente!');
@@ -3446,7 +3446,7 @@ function AppContent() {
                               fetch(
                                 '/preparacao/290805 - Cronograma Preparação - PFUS3.csv'
                               ),
-                              fetch('/cronograma-operacional.csv'),
+                              fetch('/api/csv/cronograma-operacional'),
                             ]);
 
                           const [csvPreparacao, csvOperacional] =

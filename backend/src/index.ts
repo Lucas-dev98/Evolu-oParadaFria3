@@ -160,6 +160,81 @@ app.get('/healthz', (req, res) => {
 });
 
 // Caminhos para os arquivos de dados
+const dataPath = path.join(__dirname, '../data');
+
+// Endpoints para servir arquivos CSV
+app.get('/api/csv/preparacao', (req, res) => {
+  const csvPath = path.join(
+    dataPath,
+    'preparacao',
+    '290805 - Cronograma Preparação - PFUS3.csv'
+  );
+  console.log('📄 Tentando servir arquivo de preparação:', csvPath);
+
+  if (fs.existsSync(csvPath)) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="290805 - Cronograma Preparação - PFUS3.csv"'
+    );
+    fs.createReadStream(csvPath).pipe(res);
+  } else {
+    console.error('❌ Arquivo de preparação não encontrado:', csvPath);
+    res.status(404).json({ error: 'Arquivo de preparação não encontrado' });
+  }
+});
+
+app.get('/api/csv/report', (req, res) => {
+  const csvPath = path.join(dataPath, 'report', '250820 - Report PFUS3.csv');
+  console.log('📄 Tentando servir arquivo de report:', csvPath);
+
+  if (fs.existsSync(csvPath)) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="250820 - Report PFUS3.csv"'
+    );
+    fs.createReadStream(csvPath).pipe(res);
+  } else {
+    console.error('❌ Arquivo de report não encontrado:', csvPath);
+    res.status(404).json({ error: 'Arquivo de report não encontrado' });
+  }
+});
+
+app.get('/api/csv/cronograma-operacional', (req, res) => {
+  const csvPath = path.join(dataPath, 'cronograma-operacional.csv');
+  console.log('📄 Tentando servir cronograma operacional:', csvPath);
+
+  if (fs.existsSync(csvPath)) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="cronograma-operacional.csv"'
+    );
+    fs.createReadStream(csvPath).pipe(res);
+  } else {
+    console.error('❌ Cronograma operacional não encontrado:', csvPath);
+    res.status(404).json({ error: 'Cronograma operacional não encontrado' });
+  }
+});
+
+app.get('/api/csv/pfbt1', (req, res) => {
+  const csvPath = path.join(dataPath, '250619 - Report - PFBT1.csv');
+  console.log('📄 Tentando servir arquivo PFBT1:', csvPath);
+
+  if (fs.existsSync(csvPath)) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="250619 - Report - PFBT1.csv"'
+    );
+    fs.createReadStream(csvPath).pipe(res);
+  } else {
+    console.error('❌ Arquivo PFBT1 não encontrado:', csvPath);
+    res.status(404).json({ error: 'Arquivo PFBT1 não encontrado' });
+  }
+});
+
 // Rota para listar imagens do carrossel
 app.get('/api/images', (req, res) => {
   console.log('🔍 Iniciando busca por imagens...');

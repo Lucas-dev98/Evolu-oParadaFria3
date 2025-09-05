@@ -1,0 +1,38 @@
+ID,Nome da tarefa,% Complete,Physical % Complete,% Previsto Replanejamento,Duration,Start,Finish,Actual Start,Actual Finish,Predecessors,Baseline Start,Baseline Finish,% Físico Prev. LB,% Físico Prev. Replanejado,% Físico Calculado
+1,    Início da Parada,100%,100%,0,0 hrs,Thu 8/14/25,Thu 8/14/25,Thu 8/14/25,Thu 8/14/25,,Thu 8/14/25,Thu 8/14/25,0,0.0,0.0
+2,    Início da Preparação,100%,100%,100,0 hrs,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,,Tue 7/15/25,Tue 7/15/25,0,0.0,0.0
+3,    Mobilização da Equipe de Apoio de Elétrica,100%,100%,86,75 edays,Sat 5/31/25,Thu 8/14/25,Sat 5/31/25,Thu 8/14/25,,Sat 5/31/25,Thu 8/14/25,0,0.0,0.0
+4,    Mobilização da Equipe de Refratário,100%,100%,77,45 edays,Mon 6/30/25,Thu 8/14/25,Mon 6/30/25,Thu 8/14/25,3SS+102.86 days,Mon 6/30/25,Thu 8/14/25,0,0.0,0.0
+5,    Mobilização da Equipe de Preparação,100%,100%,82,60 edays,Sun 6/15/25,Thu 8/14/25,Sun 6/15/25,Thu 8/14/25,3SS+51.43 days,Sun 6/15/25,Thu 8/14/25,0,0.0,0.0
+6,    Mobilização da Equipe da Mecânica do Forno,100%,100%,77,45 edays,Mon 6/30/25,Thu 8/14/25,Mon 6/30/25,Thu 8/14/25,3SS+102.86 days,Mon 6/30/25,Thu 8/14/25,0,0.0,0.0
+7,    Mobilização da Equipe de Barramentos,100%,100%,74,40 edays,Sat 7/05/25,Thu 8/14/25,Sat 7/05/25,Thu 8/14/25,3SS+120 days,Sat 7/05/25,Thu 8/14/25,0,0.0,0.0
+8,    Canteiros Administrativos e Operacionais,100%,0%,100,800 hrs,Fri 6/27/25,Wed 7/30/25,Fri 6/27/25,Wed 7/30/25,,Fri 6/27/25,Thu 7/31/25,0,0.0,0.0
+9,        Realizar Mobilização do Canteiro da Reframax,100%,100%,100,29.33 edays,Tue 7/01/25,Wed 7/30/25,Tue 7/01/25,Wed 7/30/25,,Tue 7/01/25,Thu 7/31/25,0,0.0,0.0
+10,        Mobilizar Canteiro da RIP,100%,100%,100,5 days,Fri 6/27/25,Thu 7/03/25,Fri 6/27/25,Thu 7/03/25,3SS+92.57 days,Fri 6/27/25,Thu 7/03/25,0,0.0,0.0
+120,        Início da Montagem do Canteiro da Empresa de Refratário,100%,100%,100,0 days,Sun 7/20/25,Sun 7/20/25,Sun 7/20/25,Sun 7/20/25,4SS+68.57 days,Sun 7/20/25,Sun 7/20/25,0,0.0,0.0
+128,        Preparar e Concretar Caixas Externas,100%,100%,100,2 days,Mon 7/28/25,Tue 7/29/25,Mon 7/28/25,Tue 7/29/25,120FS+5 days,Mon 7/28/25,Wed 7/30/25,0.37,0.37,0.37
+129,        Fabricar e Transportar as Rampas de Acesso das Máquinas de Demolição,100%,100%,100,0 days,Tue 7/29/25,Tue 7/29/25,Tue 7/29/25,Tue 7/29/25,128,Thu 7/31/25,Wed 8/06/25,0.24,0.61,0.61
+209,            Fabricação dos dispositivos de pré-montagem das caixas secas,100%,100%,100,6 days,Tue 7/15/25,Thu 7/31/25,Tue 7/15/25,Thu 7/31/25,208SS,Tue 7/15/25,Mon 7/28/25,0.11,0.11,0.11
+218,            Programar empilhadeira para carregamento e descarregamento,100%,100%,100,7 hrs,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,217,Fri 8/01/25,Fri 8/01/25,0,0.0,0.0
+228,            Solicitar e preparar area da manutenção centralizada para montagem das caixas secas,100%,100%,100,1 day,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,Tue 7/15/25,2,Tue 7/15/25,Tue 7/15/25,0.03,0.03,0.03
+229,            Separar caixas secas,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,228,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+230,            Separar vigotas,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,229SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+231,            Separar pés de paredes,100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,230SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+232,"            Requisição de materiais (tirantes, parafusos, porcas e arruelas) pela contratante",100%,100%,100,1 day,Wed 7/30/25,Fri 8/01/25,Wed 7/30/25,Fri 8/01/25,231SS,Wed 7/16/25,Wed 7/16/25,0.03,0.03,0.03
+234,            Fabricar e/ou contar quantidade de dispositivo para armazenagem da caixa seca presentes no laminado,100%,100%,100,0.42 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,233,Fri 8/01/25,Fri 7/18/25,0.07,0.07,0.07
+236,            Transporte blocos refratarios para area de preparação da caixa seca,100%,100%,100,0.71 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,235,Tue 7/22/25,Tue 7/22/25,0.03,0.03,0.03
+237,            Montagem de 1° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Wed 7/23/25,Wed 7/23/25,Wed 7/23/25,Wed 7/23/25,236,Wed 7/23/25,Wed 7/23/25,0.03,0.03,0.03
+238,            Montagem de 2° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Thu 7/24/25,Thu 7/24/25,Thu 7/24/25,Thu 7/24/25,237,Thu 7/24/25,Thu 7/24/25,0.03,0.03,0.03
+239,            Montagem de 3° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Fri 7/25/25,Fri 7/25/25,Fri 7/25/25,Fri 7/25/25,238,Fri 7/25/25,Fri 7/25/25,0.03,0.03,0.03
+240,            Montagem de 4° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Mon 7/28/25,Mon 7/28/25,Mon 7/28/25,Mon 7/28/25,239,Mon 7/28/25,Mon 7/28/25,0.03,0.03,0.03
+241,            Montagem de 5° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Mon 7/28/25,Tue 7/29/25,Mon 7/28/25,Tue 7/29/25,240,Tue 7/29/25,Tue 7/29/25,0.03,0.03,0.03
+242,            Montagem de 6° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,Wed 7/30/25,241,Wed 7/30/25,Wed 7/30/25,0.03,0.03,0.03
+243,            Montagem de 7° lote de dois (2) conjunto de caixa seca ,100%,100%,100,1 day,Fri 8/01/25,Fri 8/01/25,Fri 8/01/25,Fri 8/01/25,242,Thu 7/31/25,Thu 7/31/25,0.03,0.03,0.03
+244,            Montagem de 8° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,243,Fri 8/01/25,Fri 8/01/25,0.03,0.03,0.03
+245,            Montagem de 9° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,244,Mon 8/04/25,Mon 8/04/25,0,0.03,0.03
+246,            Montagem de 10° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,245,Tue 8/05/25,Tue 8/05/25,0,0.03,0.03
+247,            Montagem de 11° lote de dois (2) conjunto de caixa seca ,100%,100%,100,0 days,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,Thu 7/31/25,246,Wed 8/06/25,Wed 8/06/25,0,0.0,0.0
+271,"            Requisição e transportar selagens para patio de laminados, conferindo quantidade e tamanho",100%,0%,0,0 days,Tue 8/05/25,Tue 8/05/25,Tue 8/05/25,Tue 8/05/25,210;219,Tue 8/05/25,Tue 8/05/25,0,0.0,0.0
+293,        Preparação da Selagem Superior Concluída,100%,100%,100,0 hrs,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,,Sat 5/31/25,Sat 5/31/25,0,0.0,0.0
+333,        Fabricação do Berço para Apoio e Transporte da Engrenagem Concluída (Oficina Mecânica),100%,100%,100,0 days,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,Sat 5/31/25,,Sat 5/31/25,Sat 5/31/25,0,0.0,0.0
+335,        Fabricação dos Berços para Apoio dos Macacos da Roda de Levantamento Concluída (Oficina Mecânica),100%,100%,100,1 day,Mon 7/14/25,Mon 7/14/25,Mon 7/14/25,Mon 7/14/25,,Sat 5/31/25,Sat 5/31/25,0,0.0,0.0
