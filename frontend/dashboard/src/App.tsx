@@ -1424,6 +1424,12 @@ function AppContent() {
       setLoadingStep('csv');
       try {
         console.log('📄 Carregando cronogramas reais do PFUS3...');
+        console.log('🔗 Sistema configurado para carregar automaticamente da pasta public/');
+        console.log('📁 Arquivos disponíveis:');
+        console.log('  - /cronograma-operacional.csv (dados básicos)');
+        console.log('  - /290805 - Cronograma Preparação - PFUS3.csv (preparação)');
+        console.log('  - /250820 - Report PFUS3.csv (cronograma completo)');
+        console.log('✅ Esta abordagem funciona tanto local quanto no deploy (Render)!');
 
         // Carregar cronograma operacional, preparação E arquivo PFUS3
         console.log('📥 Iniciando fetch dos arquivos CSV...');

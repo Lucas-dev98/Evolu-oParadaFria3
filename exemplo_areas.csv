@@ -1,8 +1,0 @@
-nome,categoria,capacidade,ocupacao_atual,status,temperatura,umidade
-Palco Principal,Entretenimento,5000,3200,Ativo,24,65
-Área de Alimentação,Serviços,1500,890,Ativo,26,70
-Stand de Exposições,Comercial,2000,1350,Ativo,23,60
-Área VIP,Premium,300,245,Ativo,22,55
-Estacionamento,Infraestrutura,1000,780,Ativo,20,45
-Área de Descanso,Bem-estar,800,320,Ativo,25,58
-Nova Área,Teste,1200,600,Ativo,25,60
