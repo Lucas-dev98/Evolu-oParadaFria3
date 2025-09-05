@@ -1,5 +1,5 @@
 import fs from 'fs';
-import Papa from 'papaparse';
+const Papa = require('papaparse');
 
 export function processarCronogramaOperacional(csvPath: string) {
   const csvText = fs.readFileSync(csvPath, 'utf8');

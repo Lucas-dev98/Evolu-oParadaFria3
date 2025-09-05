@@ -13,18 +13,20 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/multer": "^2.0.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "multer": "^2.0.2",
+    "papaparse": "^5.5.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/papaparse": "^5.3.16",
+    "concurrently": "^9.2.0",
+    "cross-env": "^10.0.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  },
-  "devDependencies": {
-    "concurrently": "^9.2.0",
-    "cross-env": "^10.0.0"
   }
 }
