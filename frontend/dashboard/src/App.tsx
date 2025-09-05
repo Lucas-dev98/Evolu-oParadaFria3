@@ -502,7 +502,7 @@ function AppContent() {
         localStorage.removeItem('pfus3_phases');
         console.log('🗑️ Dados PFUS3 antigos removidos do localStorage');
 
-        const response = await fetch('/250820 - Report PFUS3.csv');
+        const response = await fetch('/report/250820 - Report PFUS3.csv');
         if (response.ok) {
           const csvText = await response.text();
           const { processarCronogramaOperacional } = await import(
@@ -1424,20 +1424,30 @@ function AppContent() {
       setLoadingStep('csv');
       try {
         console.log('📄 Carregando cronogramas reais do PFUS3...');
-        console.log('🔗 Sistema configurado para carregar automaticamente da pasta public/');
+        console.log(
+          '🔗 Sistema configurado para carregar automaticamente das pastas organizadas:'
+        );
         console.log('📁 Arquivos disponíveis:');
         console.log('  - /cronograma-operacional.csv (dados básicos)');
-        console.log('  - /290805 - Cronograma Preparação - PFUS3.csv (preparação)');
-        console.log('  - /250820 - Report PFUS3.csv (cronograma completo)');
-        console.log('✅ Esta abordagem funciona tanto local quanto no deploy (Render)!');
+        console.log(
+          '  - /preparacao/290805 - Cronograma Preparação - PFUS3.csv (preparação)'
+        );
+        console.log(
+          '  - /report/250820 - Report PFUS3.csv (cronograma completo)'
+        );
+        console.log(
+          '✅ Esta abordagem funciona tanto local quanto no deploy (Render)!'
+        );
 
         // Carregar cronograma operacional, preparação E arquivo PFUS3
-        console.log('📥 Iniciando fetch dos arquivos CSV...');
+        console.log(
+          '📥 Iniciando fetch dos arquivos CSV das pastas organizadas...'
+        );
         const [operacionalResponse, preparacaoResponse, pfus3Response] =
           await Promise.all([
             fetch('/cronograma-operacional.csv'),
-            fetch('/290805 - Cronograma Preparação - PFUS3.csv'),
-            fetch('/250820 - Report PFUS3.csv'),
+            fetch('/preparacao/290805 - Cronograma Preparação - PFUS3.csv'),
+            fetch('/report/250820 - Report PFUS3.csv'),
           ]);
 
         console.log('📊 Status das respostas:', {
@@ -2353,7 +2363,7 @@ function AppContent() {
       // Primeiro, tentar carregar preparação
       try {
         const responsePrep = await fetch(
-          '/290805 - Cronograma Preparação - PFUS3.csv'
+          '/preparacao/290805 - Cronograma Preparação - PFUS3.csv'
         );
         if (responsePrep.ok) {
           const csvTextPrep = await responsePrep.text();
@@ -3434,7 +3444,7 @@ function AppContent() {
                           const [responsePreparacao, responseOperacional] =
                             await Promise.all([
                               fetch(
-                                '/290805 - Cronograma Preparação - PFUS3.csv'
+                                '/preparacao/290805 - Cronograma Preparação - PFUS3.csv'
                               ),
                               fetch('/cronograma-operacional.csv'),
                             ]);

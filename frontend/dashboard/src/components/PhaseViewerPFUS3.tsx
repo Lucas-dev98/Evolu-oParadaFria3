@@ -46,7 +46,7 @@ export const PhaseViewerPFUS3: React.FC<PhaseViewerProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/250820 - Report PFUS3.csv');
+      const response = await fetch('/report/250820 - Report PFUS3.csv');
       if (!response.ok) {
         throw new Error('Falha ao carregar cronograma operacional');
       }

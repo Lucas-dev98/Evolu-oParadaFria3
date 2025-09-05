@@ -196,7 +196,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
       console.log(`🔄 Carregando seção ${secao} do PFUS3...`);
 
       // Verificar se arquivo PFUS3 existe
-      const response = await fetch('/250820 - Report PFUS3.csv');
+      const response = await fetch('/report/250820 - Report PFUS3.csv');
       if (!response.ok) {
         throw new Error('Arquivo PFUS3 não encontrado');
       }
@@ -420,7 +420,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                     <button
                       onClick={() =>
                         downloadCurrentFile(
-                          '290805 - Cronograma Preparação - PFUS3.csv'
+                          'preparacao/290805 - Cronograma Preparação - PFUS3.csv'
                         )
                       }
                       className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
@@ -431,8 +431,8 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                 </div>
                 <div className="text-xs text-gray-600 space-y-1">
                   <div>
-                    📍 Localização: /public/290805 - Cronograma Preparação -
-                    PFUS3.csv
+                    📍 Localização: /public/preparacao/290805 - Cronograma
+                    Preparação - PFUS3.csv
                   </div>
                   <div>🕒 Carregado na inicialização da aplicação</div>
                   <div>📊 Usado em: Analytics → KPIs, Gantt, CPM, Fases</div>
@@ -486,7 +486,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   <div className="flex gap-2">
                     <button
                       onClick={() =>
-                        downloadCurrentFile('250820 - Report PFUS3.csv')
+                        downloadCurrentFile('report/250820 - Report PFUS3.csv')
                       }
                       className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors"
                     >
@@ -495,7 +495,9 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 space-y-1">
-                  <div>📍 Localização: /public/250820 - Report PFUS3.csv</div>
+                  <div>
+                    📍 Localização: /public/report/250820 - Report PFUS3.csv
+                  </div>
                   <div>🕒 Contém todas as fases do cronograma operacional</div>
                   <div>📊 Usado em: Analytics → Hierarquia completa PFUS3</div>
                   <div>
@@ -552,7 +554,7 @@ const CSVManagerModal: React.FC<CSVManagerModalProps> = ({
                         .toISOString()
                         .replace(/[:.]/g, '-');
                       downloadCurrentFile(
-                        '290805 - Cronograma Preparação - PFUS3.csv'
+                        'preparacao/290805 - Cronograma Preparação - PFUS3.csv'
                       );
                     }}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
