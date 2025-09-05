@@ -9,6 +9,8 @@ import {
   Settings,
 } from 'lucide-react';
 import { processarCronogramaOperacional } from '../utils/cronogramaOperacionalProcessorPFUS3';
+import { processarCronogramaPreparacao } from '../utils/cronogramaPreparacaoProcessor';
+import { PFUS3FileDetectorComponent } from '../utils/PFUS3FileDetectorComponent';
 import { Phase } from '../types/phases';
 
 interface PFUS3UploaderProps {
@@ -59,29 +61,72 @@ const PFUS3Uploader: React.FC<PFUS3UploaderProps> = ({
             return;
           }
 
-          const headers = lines[0].split(';').map((h) => h.trim());
+          // Detectar separador baseado no primeiro header
+          const firstLine = lines[0];
+          const hasSemicolon = firstLine.includes(';');
+          const hasComma = firstLine.includes(',');
+          const separator = hasSemicolon && !hasComma ? ';' : ',';
+
+          const headers = lines[0].split(separator).map((h) => h.trim());
           const rows = lines
             .slice(1, 6)
-            .map((line) => line.split(';').map((cell) => cell.trim()));
+            .map((line) => line.split(separator).map((cell) => cell.trim()));
 
-          // Validar estrutura esperada
-          const requiredHeaders = [
-            'Id',
-            'EDT',
-            'Nome',
-            'Porcentagem_Prev_Real',
-            'Duração',
-            'Início',
-            'Término',
-          ];
+          console.log('🔍 Análise do CSV:', {
+            fileName: file.name,
+            separator,
+            headers: headers.slice(0, 5), // Primeiros 5 headers
+            totalLines: lines.length,
+          });
+
           const errors: string[] = [];
+          let requiredHeaders: string[] = [];
 
+          // Detectar tipo de arquivo e aplicar validação correspondente
+          if (
+            headers.includes('ID') &&
+            headers.includes('Nome da tarefa') &&
+            headers.includes('Duration')
+          ) {
+            // Arquivo de Preparação
+            requiredHeaders = [
+              'ID',
+              'Nome da tarefa',
+              '% Complete',
+              'Duration',
+              'Start',
+              'Finish',
+            ];
+            console.log('📁 Tipo detectado: Arquivo de Preparação');
+          } else if (
+            headers.some((h) => h.includes('Id')) &&
+            headers.some((h) => h.includes('EDT')) &&
+            headers.some((h) => h.includes('Nome'))
+          ) {
+            // Arquivo Report PFUS3
+            requiredHeaders = [
+              'Id',
+              'EDT',
+              'Nome',
+              'Porcentagem_Prev_Real',
+              'Duração',
+              'Início',
+              'Término',
+            ];
+            console.log('📁 Tipo detectado: Arquivo Report PFUS3');
+          } else {
+            errors.push(
+              'Formato de arquivo não reconhecido. Verifique se é um arquivo PFUS3 válido.'
+            );
+          }
+
+          // Validar headers obrigatórios
           const missingHeaders = requiredHeaders.filter(
             (required) =>
               !headers.some((header) =>
                 header
                   .toLowerCase()
-                  .includes(required.toLowerCase().replace('_', ''))
+                  .includes(required.toLowerCase().replace(/[_%]/g, ''))
               )
           );
 
@@ -91,17 +136,37 @@ const PFUS3Uploader: React.FC<PFUS3UploaderProps> = ({
             );
           }
 
-          // Contar atividades por fase
+          // Contar atividades por fase (ajustado para ambos os formatos)
           const allLines = lines.slice(1);
-          const paradaCount = allLines.filter((line) =>
-            line.includes('1.7')
-          ).length;
-          const manutencaoCount = allLines.filter((line) =>
-            line.includes('1.8')
-          ).length;
-          const partidaCount = allLines.filter((line) =>
-            line.includes('1.9')
-          ).length;
+          let paradaCount = 0;
+          let manutencaoCount = 0;
+          let partidaCount = 0;
+
+          if (headers.includes('Nome da tarefa')) {
+            // Formato de Preparação
+            paradaCount = allLines.filter((line) =>
+              line.toLowerCase().includes('parada')
+            ).length;
+            manutencaoCount = allLines.filter(
+              (line) =>
+                line.toLowerCase().includes('manutenção') ||
+                line.toLowerCase().includes('manutencao')
+            ).length;
+            partidaCount = allLines.filter((line) =>
+              line.toLowerCase().includes('partida')
+            ).length;
+          } else {
+            // Formato Report
+            paradaCount = allLines.filter((line) =>
+              line.includes('1.7')
+            ).length;
+            manutencaoCount = allLines.filter((line) =>
+              line.includes('1.8')
+            ).length;
+            partidaCount = allLines.filter((line) =>
+              line.includes('1.9')
+            ).length;
+          }
 
           resolve({
             headers,
@@ -174,8 +239,32 @@ const PFUS3Uploader: React.FC<PFUS3UploaderProps> = ({
         try {
           const csvText = e.target?.result as string;
 
-          // Processar CSV usando o processador PFUS3
-          const processedData = await processarCronogramaOperacional(csvText);
+          // Detectar tipo de arquivo
+          const fileType = PFUS3FileDetectorComponent.detectFileType(
+            csvText,
+            selectedFile.name
+          );
+
+          console.log('🔍 Tipo de arquivo detectado:', fileType);
+
+          let processedData;
+
+          if (fileType === 'preparacao') {
+            // Usar processador de preparação
+            console.log('📊 Processando com processador de preparação...');
+            const preparacaoData = await processarCronogramaPreparacao(csvText);
+
+            // Converter para formato esperado
+            processedData = {
+              phases: [preparacaoData.fase], // ProcessedPreparacao.fase é uma Phase
+              activities: preparacaoData.atividades,
+              summary: preparacaoData.metadata,
+            };
+          } else {
+            // Usar processador operacional (report)
+            console.log('📊 Processando com processador operacional...');
+            processedData = await processarCronogramaOperacional(csvText);
+          }
 
           // Atualizar as fases
           if (onPhasesUpdate) {

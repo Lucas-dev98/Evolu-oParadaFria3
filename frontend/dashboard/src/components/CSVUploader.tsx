@@ -37,30 +37,69 @@ const CSVUploader: React.FC<CSVUploaderProps> = ({
     }
 
     if (type === 'preparacao') {
-      const requiredHeaders = [
-        'Area',
-        'Fase',
-        'Atividade',
-        'Duracao',
-        'Inicio',
-        'Fim',
-      ];
+      // Verificar se é o formato novo (250805) ou antigo
       const headers = Object.keys(data[0] || {});
 
-      for (const header of requiredHeaders) {
-        if (!headers.includes(header)) {
-          errors.push(`Coluna obrigatória '${header}' não encontrada`);
-        }
-      }
+      // Formato novo: ID, Nome da tarefa, % Complete, Duration, Start, Finish
+      const isNewFormat =
+        headers.includes('ID') &&
+        headers.includes('Nome da tarefa') &&
+        headers.includes('Duration');
 
-      // Validar dados das primeiras linhas
-      const sampleRows = data.slice(0, 5);
-      for (let i = 0; i < sampleRows.length; i++) {
-        const row = sampleRows[i];
-        if (!row.Area || !row.Fase || !row.Atividade) {
-          errors.push(
-            `Linha ${i + 2}: Campos obrigatórios vazios (Area, Fase, Atividade)`
-          );
+      if (isNewFormat) {
+        const requiredHeaders = [
+          'ID',
+          'Nome da tarefa',
+          '% Complete',
+          'Duration',
+          'Start',
+          'Finish',
+        ];
+
+        for (const header of requiredHeaders) {
+          if (!headers.includes(header)) {
+            errors.push(`Coluna obrigatória '${header}' não encontrada`);
+          }
+        }
+
+        // Validar dados das primeiras linhas (ignorar linha 0 se for cabeçalho)
+        const sampleRows = data
+          .filter((row) => row.ID && row.ID !== '0')
+          .slice(0, 5);
+        for (let i = 0; i < sampleRows.length; i++) {
+          const row = sampleRows[i];
+          if (!row.ID || !row['Nome da tarefa']) {
+            errors.push(
+              `Linha ${i + 2}: Campos obrigatórios vazios (ID, Nome da tarefa)`
+            );
+          }
+        }
+      } else {
+        // Formato antigo: Area, Fase, Atividade, Duracao, Inicio, Fim
+        const requiredHeaders = [
+          'Area',
+          'Fase',
+          'Atividade',
+          'Duracao',
+          'Inicio',
+          'Fim',
+        ];
+
+        for (const header of requiredHeaders) {
+          if (!headers.includes(header)) {
+            errors.push(`Coluna obrigatória '${header}' não encontrada`);
+          }
+        }
+
+        // Validar dados das primeiras linhas
+        const sampleRows = data.slice(0, 5);
+        for (let i = 0; i < sampleRows.length; i++) {
+          const row = sampleRows[i];
+          if (!row.Area || !row.Fase || !row.Atividade) {
+            errors.push(
+              `Linha ${i + 2}: Campos obrigatórios vazios (Area, Fase, Atividade)`
+            );
+          }
         }
       }
     } else if (type === 'pfus3') {
@@ -93,35 +132,62 @@ const CSVUploader: React.FC<CSVUploaderProps> = ({
     (file: File) => {
       setIsLoading(true);
 
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        delimiter: csvType === 'pfus3' ? ';' : ',',
-        complete: (results: any) => {
-          const validation = validateCSV(results.data, csvType);
-          const headers =
-            results.meta?.fields || Object.keys(results.data[0] || {});
+      // Primeiro, ler o arquivo para detectar o separador
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const firstLine = text.split('\n')[0] || '';
 
-          const preview: CSVPreview = {
-            headers,
-            rows: results.data
-              .slice(0, 10)
-              .map((row: any) =>
-                headers.map((field: string) => String(row[field] || ''))
-              ),
-            totalRows: results.data.length,
-            isValid: validation.isValid,
-            errors: validation.errors,
-          };
+        // Detectar separador baseado no conteúdo
+        const hasSemicolon = firstLine.includes(';');
+        const hasComma = firstLine.includes(',');
+        let delimiter = ','; // padrão
 
-          setPreview(preview);
-          setIsLoading(false);
-        },
-        error: (error: any) => {
-          onUploadError(`Erro ao processar CSV: ${error.message}`);
-          setIsLoading(false);
-        },
-      });
+        if (hasSemicolon && !hasComma) {
+          delimiter = ';';
+        } else if (hasComma) {
+          delimiter = ',';
+        }
+
+        console.log('🔍 Separador detectado:', delimiter);
+
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          delimiter: delimiter,
+          complete: (results: any) => {
+            const validation = validateCSV(results.data, csvType);
+            const headers =
+              results.meta?.fields || Object.keys(results.data[0] || {});
+
+            const preview: CSVPreview = {
+              headers,
+              rows: results.data
+                .slice(0, 10)
+                .map((row: any) =>
+                  headers.map((field: string) => String(row[field] || ''))
+                ),
+              totalRows: results.data.length,
+              isValid: validation.isValid,
+              errors: validation.errors,
+            };
+
+            setPreview(preview);
+            setIsLoading(false);
+          },
+          error: (error: any) => {
+            onUploadError(`Erro ao processar CSV: ${error.message}`);
+            setIsLoading(false);
+          },
+        });
+      };
+
+      reader.onerror = () => {
+        onUploadError('Erro ao ler arquivo');
+        setIsLoading(false);
+      };
+
+      reader.readAsText(file, 'UTF-8');
     },
     [csvType, onUploadError]
   );

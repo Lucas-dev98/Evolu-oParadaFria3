@@ -3,7 +3,109 @@ import { Phase, PhaseType } from '../types/phases';
 import { cacheManager } from './cacheManager';
 import { CSVValidator, ValidationResult } from './csvValidator';
 
-// Interface para compatibilidade com o cronograma operacional
+// Função para normalizar caracteres corrompidos do CSV
+function normalizeCorruptedText(text: string): string {
+  if (!text || typeof text !== 'string') return text;
+
+  const corrections: { [key: string]: string } = {
+    // Headers corrompidos
+    'N�vel_da_estrutura_de_t�picos': 'Nível_da_estrutura_de_tópicos',
+    'Dura��o': 'Duração',
+    'In�cio': 'Início',
+    'T�rmino': 'Término',
+    '�rea': 'Área',
+    'Respons�vel_da_Tarefa': 'Responsável_da_Tarefa',
+    'T�rmino_da_linha_de_base': 'Término_da_linha_de_base',
+    'In�cio_da_Linha_de_Base': 'Início_da_Linha_de_Base',
+
+    // Dados corrompidos comuns
+    'Produ��o': 'Produção',
+    'P�tio': 'Pátio',
+    'Alimenta��o': 'Alimentação',
+    'Manuten��es': 'Manutenções',
+    'Manuten��o': 'Manutenção',
+    'Comiss�o': 'Comissão',
+    Limpeza: 'Limpeza',
+    'Configura��o': 'Configuração',
+    'Instala��o': 'Instalação',
+    'Verifica��o': 'Verificação',
+    'Inspe��o': 'Inspeção',
+    'Reposi��o': 'Reposição',
+    'Opera��o': 'Operação',
+    'M�quina': 'Máquina',
+    'El�trica': 'Elétrica',
+    'El�trico': 'Elétrico',
+    'Hidr�ulica': 'Hidráulica',
+    'Pneum�tica': 'Pneumática',
+    'Mec�nica': 'Mecânica',
+    'Qu�mica': 'Química',
+    'Revis�o': 'Revisão',
+    'Substitui��o': 'Substituição',
+    'Lubrifica��o': 'Lubrificação',
+    'Eletromec�nica': 'Eletromecânica',
+    'Seguran�a': 'Segurança',
+    'Calibra��o': 'Calibração',
+    'Regula��o': 'Regulagem',
+    'Instrumenta��o': 'Instrumentação',
+    'Conex�o': 'Conexão',
+    'Conex�es': 'Conexões',
+    'Energiza��o': 'Energização',
+    'Desconex�o': 'Desconexão',
+    'Pressuriza��o': 'Pressurização',
+    'Despressuriza��o': 'Despressurização',
+    'Integra��o': 'Integração',
+    'Documenta��o': 'Documentação',
+    'Conclus�o': 'Conclusão',
+    'Finaliza��o': 'Finalização',
+    'Aprova��o': 'Aprovação',
+    'T�cnico': 'Técnico',
+    'T�cnicos': 'Técnicos',
+    'Coordena��o': 'Coordenação',
+    'Supervis�o': 'Supervisão',
+  };
+
+  let normalized = text;
+
+  // Aplicar correções específicas
+  Object.keys(corrections).forEach((corrupted) => {
+    const correct = corrections[corrupted];
+    normalized = normalized.replace(new RegExp(corrupted, 'g'), correct);
+  });
+
+  // Correção adicional para caracteres restantes
+  normalized = normalized
+    .replace(/�/g, 'ã') // Casos gerais de ã
+    .replace(/ção/g, 'ção') // Garantir ção
+    .replace(/são/g, 'são') // Garantir são
+    .replace(/ão/g, 'ão') // Garantir ão
+    .replace(/á/g, 'á') // Garantir á
+    .replace(/é/g, 'é') // Garantir é
+    .replace(/í/g, 'í') // Garantir í
+    .replace(/ó/g, 'ó') // Garantir ó
+    .replace(/ú/g, 'ú') // Garantir ú
+    .replace(/ê/g, 'ê') // Garantir ê
+    .replace(/ô/g, 'ô') // Garantir ô
+    .replace(/â/g, 'â') // Garantir â
+    .replace(/à/g, 'à') // Garantir à
+    .replace(/ç/g, 'ç'); // Garantir ç
+
+  return normalized;
+}
+
+// Função para normalizar um objeto CSV completo
+function normalizeCSVRow(row: any): any {
+  const normalizedRow: any = {};
+
+  Object.keys(row).forEach((key) => {
+    const normalizedKey = normalizeCorruptedText(key);
+    const value = row[key];
+    const normalizedValue =
+      typeof value === 'string' ? normalizeCorruptedText(value) : value;
+    normalizedRow[normalizedKey] = normalizedValue;
+  });
+
+  return normalizedRow;
+}
 export interface ProcessedCronogramaActivity {
   id: string;
   name: string;
@@ -285,24 +387,21 @@ export const processarCronogramaOperacional = (
       delimiter: ';', // CSV usa ponto e vírgula
       encoding: 'UTF-8', // Mudança para UTF-8
       transformHeader: (header) => {
-        // Normalizar headers com caracteres especiais
-        const normalizedHeader = header
+        // Usar a função de normalização completa para headers
+        const normalizedHeader = normalizeCorruptedText(header)
           .trim()
-          .replace(/[\u00A0\uFEFF]/g, '')
-          .replace(
-            /N�vel_da_estrutura_de_t�picos/g,
-            'Nível_da_estrutura_de_tópicos'
-          )
-          .replace(/Dura��o/g, 'Duração')
-          .replace(/In�cio/g, 'Início')
-          .replace(/T�rmino/g, 'Término')
-          .replace(/�rea/g, 'Área')
-          .replace(/Respons�vel_da_Tarefa/g, 'Responsável_da_Tarefa');
+          .replace(/[\u00A0\uFEFF]/g, ''); // Remove caracteres invisíveis
 
         console.log(
           `📝 Header normalizado: "${header}" → "${normalizedHeader}"`
         );
         return normalizedHeader;
+      },
+      transform: (value, column) => {
+        // Normalizar valores de células também
+        return typeof value === 'string'
+          ? normalizeCorruptedText(value)
+          : value;
       },
       complete: async (results) => {
         try {
@@ -529,7 +628,7 @@ function createPhase(
   ).length;
 
   const progress =
-    rows.length > 0 ? Math.round((completedCount / rows.length) * 100) : 0;
+    rows.length > 0 ? Math.round((completedCount / rows.length) * 100) : 100; // Alterado default para 100% em vez de 0%
 
   const delayedCount = rows.filter(
     (row) =>

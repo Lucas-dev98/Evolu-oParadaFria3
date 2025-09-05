@@ -50,11 +50,26 @@ const PreparacaoUpload: React.FC<PreparacaoUploadProps> = ({
       setError('');
 
       try {
+        console.log('🔄 Iniciando processamento do arquivo:', file.name);
         const text = await file.text();
+        console.log(
+          '📄 Texto do arquivo carregado:',
+          text.length,
+          'caracteres'
+        );
+
         const processed = await processarCronogramaPreparacao(text);
+        console.log('✅ Processamento concluído:', {
+          fase: processed.fase,
+          atividades: processed.atividades?.length,
+          status: processed.fase?.status,
+          progress: processed.fase?.progress,
+        });
 
         setProcessedData(processed);
         setUploadState('success');
+
+        console.log('🚀 Chamando onPreparacaoProcessed com:', processed);
         onPreparacaoProcessed(processed);
 
         // Salvar no backend para persistência global

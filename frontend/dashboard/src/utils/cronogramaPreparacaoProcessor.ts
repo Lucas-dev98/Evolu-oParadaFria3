@@ -383,10 +383,10 @@ export const processarCronogramaPreparacao = (
             categories: [
               { name: 'Mobilização', progress: 100, delayed: 0, critical: 5 },
               { name: 'Canteiros', progress: 100, delayed: 0, critical: 2 },
-              { name: 'Logística', progress: 32, delayed: 8, critical: 10 },
-              { name: 'Refratário', progress: 33, delayed: 6, critical: 8 },
-              { name: 'Elétrica', progress: 50, delayed: 4, critical: 12 },
-              { name: 'Mecânica', progress: 27, delayed: 15, critical: 18 },
+              { name: 'Logística', progress: 100, delayed: 0, critical: 10 },
+              { name: 'Refratário', progress: 100, delayed: 0, critical: 8 },
+              { name: 'Elétrica', progress: 100, delayed: 0, critical: 12 },
+              { name: 'Mecânica', progress: 100, delayed: 0, critical: 18 },
             ],
           };
 

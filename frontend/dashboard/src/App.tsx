@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   BarChart3,
   Route,
@@ -35,8 +35,6 @@ import PreparacaoUpload from './components/PreparacaoUpload';
 import PhaseActivitiesManager from './components/PhaseActivitiesManager';
 import { NotificationContainer } from './components/NotificationToast';
 import { useNotifications } from './hooks/useNotifications';
-import SystemStatus from './components/SystemStatus';
-import PerformanceMonitor from './components/PerformanceMonitor';
 import { ThemeProvider, useThemeClasses } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { MobileProvider } from './contexts/MobileContext';
@@ -54,6 +52,7 @@ import {
   PhaseType,
   Phase,
   getPhasesMockData,
+  updateParadaDataWithCalculatedProgress,
 } from './types/phases';
 import {
   carregarCronogramaLocal,
@@ -95,8 +94,6 @@ function AppContent() {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [showUpload, setShowUpload] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [showSystemStatus, setShowSystemStatus] = useState(false);
-  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
   const [dataLoadTime, setDataLoadTime] = useState<number>(0);
   const [uploadMode, setUploadMode] = useState<
     'traditional' | 'phases' | 'cronograma' | 'preparacao'
@@ -116,6 +113,8 @@ function AppContent() {
   const [abaAnalytics, setAbaAnalytics] = useState<
     'kpi' | 'gantt' | 'cpm' | 'tendencias' | 'teste' | 'fases'
   >('kpi');
+  const [faseAnalyticsSelecionada, setFaseAnalyticsSelecionada] =
+    useState<string>('todas'); // 'todas', 'preparacao', 'parada', 'manutencao', 'partida'
   const [modalTarefaDetalhes, setModalTarefaDetalhes] = useState(false);
   const [dadosPreparacaoProcessados, setDadosPreparacaoProcessados] =
     useState<any>(null);
@@ -123,15 +122,191 @@ function AppContent() {
   const [navegacaoAtiva, setNavegacaoAtiva] = useState(false);
 
   // Estados para controle das fases da parada
-  const [paradaData, setParadaData] = useState<ParadaData>(getPhasesMockData());
+  const [paradaData, setParadaData] = useState<ParadaData>(() => {
+    // Tentar carregar dados de preparação salvos na inicialização
+    try {
+      const savedPreparacao = localStorage.getItem('preparacao_data');
+      if (savedPreparacao) {
+        const dadosPreparacao = JSON.parse(savedPreparacao);
+        console.log('🔄 Inicializando com dados de preparação salvos');
+        return getPhasesMockData(dadosPreparacao);
+      }
+    } catch (error) {
+      console.warn('⚠️ Erro ao carregar dados salvos na inicialização:', error);
+    }
+    return getPhasesMockData();
+  });
   const [selectedPhase, setSelectedPhase] = useState<PhaseType>('preparacao');
   const [phasesPFUS3, setPhasesPFUS3] = useState<Phase[]>([]);
+
+  // Função auxiliar para atualizar ParadaData com recálculo automático do progresso geral
+  const updateParadaData = useCallback((newParadaData: ParadaData) => {
+    const dataWithCalculatedProgress =
+      updateParadaDataWithCalculatedProgress(newParadaData);
+    setParadaData(dataWithCalculatedProgress);
+    console.log(
+      '📊 Progresso geral recalculado:',
+      dataWithCalculatedProgress.overallProgress + '%'
+    );
+  }, []);
+
+  // Função auxiliar para atualizar dados de preparação dinamicamente
+  const updatePreparacaoData = useCallback(
+    (dadosPreparacao: any) => {
+      console.log(
+        '🔄 Atualizando dados de preparação dinamicamente:',
+        dadosPreparacao
+      );
+      const progressoCalculado =
+        dadosPreparacao.fase?.progress ||
+        dadosPreparacao.metadata?.progressoGeral ||
+        100;
+      console.log(
+        '📊 Progresso da preparação calculado:',
+        progressoCalculado + '%'
+      );
+
+      // Regenerar ParadaData com os novos dados de preparação
+      const newParadaData = getPhasesMockData(dadosPreparacao);
+      console.log(
+        '📈 Nova fase de preparação gerada:',
+        newParadaData.phases.find((p) => p.id === 'preparacao')
+      );
+
+      // Preservar outras fases que podem ter sido atualizadas
+      const updatedParadaData = {
+        ...newParadaData,
+        phases: newParadaData.phases.map((newPhase) => {
+          if (newPhase.id === 'preparacao') {
+            return newPhase; // Use os novos dados de preparação
+          }
+          // Manter os dados existentes das outras fases
+          const existingPhase = paradaData.phases.find(
+            (p) => p.id === newPhase.id
+          );
+          return existingPhase || newPhase;
+        }),
+      };
+
+      updateParadaData(updatedParadaData);
+      console.log('✅ Dados de preparação atualizados dinamicamente');
+    },
+    [paradaData.phases, updateParadaData]
+  );
 
   // Estados para filtros de atividades
   const [filtroStatus, setFiltroStatus] = useState<string>('');
   const [filtroPrioridade, setFiltroPrioridade] = useState<string>('');
   const [filtroFrente, setFiltroFrente] = useState<string>('');
   const [termoPesquisa, setTermoPesquisa] = useState<string>('');
+
+  // Função para calcular progresso de preparação dinamicamente
+  const getPreparacaoProgress = useCallback((): number => {
+    try {
+      const savedPreparacao = localStorage.getItem('preparacao_data');
+      if (savedPreparacao) {
+        const dadosPreparacao = JSON.parse(savedPreparacao);
+        return (
+          dadosPreparacao.fase?.progress ||
+          dadosPreparacao.metadata?.progressoGeral ||
+          100
+        );
+      }
+    } catch (error) {
+      console.warn('Erro ao carregar progresso de preparação:', error);
+    }
+    return 100; // Default para 100% se não houver dados salvos
+  }, []);
+
+  // Efeito para sincronizar fases quando dados do CSV Manager mudarem
+  useEffect(() => {
+    const syncPhasesWithCSVData = () => {
+      try {
+        const savedPreparacao = localStorage.getItem('preparacao_data');
+        if (savedPreparacao) {
+          const dadosPreparacao = JSON.parse(savedPreparacao);
+          const progressoReal =
+            dadosPreparacao.fase?.progress ||
+            dadosPreparacao.metadata?.progressoGeral ||
+            100;
+
+          console.log(
+            '🔄 Sincronizando fases com dados do CSV Manager - Progresso:',
+            progressoReal + '%'
+          );
+
+          // Force update das fases para refletir os novos dados
+          setParadaData((prevData) => {
+            const updatedPhases = prevData.phases.map((phase) => {
+              if (phase.id === 'preparacao') {
+                return {
+                  ...phase,
+                  progress: progressoReal,
+                  status: (progressoReal === 100
+                    ? 'completed'
+                    : progressoReal > 0
+                      ? 'in-progress'
+                      : 'not-started') as
+                    | 'not-started'
+                    | 'in-progress'
+                    | 'completed'
+                    | 'active',
+                };
+              }
+              return phase;
+            });
+
+            return { ...prevData, phases: updatedPhases };
+          });
+
+          // Também atualizar phasesPFUS3 se existir
+          if (phasesPFUS3.length > 0) {
+            setPhasesPFUS3((prevPhases) => {
+              return prevPhases.map((phase) => {
+                if (phase.id === 'preparacao') {
+                  return {
+                    ...phase,
+                    progress: progressoReal,
+                    status: (progressoReal === 100
+                      ? 'completed'
+                      : progressoReal > 0
+                        ? 'in-progress'
+                        : 'not-started') as
+                      | 'not-started'
+                      | 'in-progress'
+                      | 'completed'
+                      | 'active',
+                  };
+                }
+                return phase;
+              });
+            });
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Erro ao sincronizar fases:', error);
+      }
+    };
+
+    // Sincronizar imediatamente
+    syncPhasesWithCSVData();
+
+    // Listener para mudanças no localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'preparacao_data') {
+        console.log(
+          '📢 Detectada mudança nos dados de preparação, sincronizando...'
+        );
+        syncPhasesWithCSVData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [phasesPFUS3]); // Dependência para reagir a mudanças em phasesPFUS3
 
   // Função para carregar dados persistidos do backend
   const loadBackendData = useCallback(async () => {
@@ -256,8 +431,55 @@ function AppContent() {
     });
   };
 
-  // Função para obter os dados corretos das fases (prioriza PFUS3)
+  // Função para obter os dados corretos das fases (prioriza dados do CSV Manager)
   const getActivePhases = () => {
+    // Priorizar dados salvos do CSV Manager se disponíveis
+    try {
+      const savedPreparacao = localStorage.getItem('preparacao_data');
+      if (savedPreparacao) {
+        const dadosPreparacao = JSON.parse(savedPreparacao);
+
+        // Atualizar a fase de preparação com dados reais
+        const fasesAtualizadas =
+          phasesPFUS3.length > 0 ? [...phasesPFUS3] : [...paradaData.phases];
+
+        const indexPreparacao = fasesAtualizadas.findIndex(
+          (f) => f.id === 'preparacao'
+        );
+        if (indexPreparacao !== -1) {
+          fasesAtualizadas[indexPreparacao] = {
+            ...fasesAtualizadas[indexPreparacao],
+            progress:
+              dadosPreparacao.fase?.progress ||
+              dadosPreparacao.metadata?.progressoGeral ||
+              100,
+            status:
+              dadosPreparacao.fase?.progress === 100
+                ? 'completed'
+                : dadosPreparacao.fase?.progress > 0
+                  ? 'in-progress'
+                  : 'not-started',
+            completedActivities:
+              dadosPreparacao.atividades?.filter(
+                (a: any) => a.percentual === 100
+              ).length || fasesAtualizadas[indexPreparacao].completedActivities,
+            activities:
+              dadosPreparacao.atividades?.length ||
+              fasesAtualizadas[indexPreparacao].activities,
+          };
+
+          console.log(
+            '🔄 Fase de preparação atualizada com dados do CSV Manager:',
+            fasesAtualizadas[indexPreparacao].progress + '%'
+          );
+        }
+
+        return fasesAtualizadas;
+      }
+    } catch (error) {
+      console.warn('⚠️ Erro ao carregar dados do CSV Manager:', error);
+    }
+
     return phasesPFUS3.length > 0 ? phasesPFUS3 : paradaData.phases;
   };
 
@@ -577,8 +799,87 @@ function AppContent() {
   const getAtividadesPorFase = (fase: PhaseType) => {
     console.log('🔍 getAtividadesPorFase chamada para fase:', fase);
     console.log(' phasesPFUS3:', phasesPFUS3);
+    console.log(' dadosPreparacaoProcessados:', dadosPreparacaoProcessados);
 
     const atividadesDaFase: any[] = [];
+
+    // PRIORIDADE 0: Usar dados de preparação do CSV se disponível e for fase de preparação
+    if (
+      fase === 'preparacao' &&
+      dadosPreparacaoProcessados &&
+      dadosPreparacaoProcessados.atividades &&
+      dadosPreparacaoProcessados.atividades.length > 0
+    ) {
+      console.log(
+        '📊 Usando dados de preparação carregados via CSV para fase:',
+        fase
+      );
+      console.log(
+        ' Total de atividades de preparação:',
+        dadosPreparacaoProcessados.atividades.length
+      );
+
+      // Converter dados de preparação para o formato esperado pelo componente
+      dadosPreparacaoProcessados.atividades.forEach(
+        (item: any, index: number) => {
+          // Determinar status baseado no progresso
+          let status:
+            | 'nao-iniciada'
+            | 'em-andamento'
+            | 'concluida'
+            | 'atrasada' = 'nao-iniciada';
+          const progresso = item.percentual || 0;
+
+          if (progresso === 0) {
+            status = 'nao-iniciada';
+          } else if (progresso > 0 && progresso < 100) {
+            status = 'em-andamento';
+          } else if (progresso >= 100) {
+            status = 'concluida';
+          }
+
+          // Verificar se está atrasada (pode adicionar lógica de data aqui)
+          const dataFim = new Date(item.dataFim);
+          const hoje = new Date();
+          if (progresso < 100 && dataFim < hoje) {
+            status = 'atrasada';
+          }
+
+          atividadesDaFase.push({
+            id: item.id || `prep-${index}`,
+            nome: item.nome || item.nomeOriginal || `Atividade ${index + 1}`,
+            frenteTrabalho: item.categoria || 'Preparação',
+            percentualCompleto: progresso,
+            percentualFisico:
+              item.percentualFisico || Math.max(0, progresso - 5),
+            duracao: item.duracao || '1 day',
+            inicio: item.dataInicio || new Date().toISOString().split('T')[0],
+            fim: item.dataFim || new Date().toISOString().split('T')[0],
+            responsavel: 'Coordenador de Preparação',
+            prioridade: (item.critica ? 'alta' : 'media') as
+              | 'alta'
+              | 'media'
+              | 'baixa',
+            status: status,
+            dependencias: [],
+            recursos: ['Equipe de Preparação'],
+            fase: 'Preparação',
+            categoria: item.categoria || 'Atividade de Preparação',
+            nivel: item.nivel || 1,
+            source: 'CSV-Preparacao',
+            edt: '',
+            area: item.categoria || 'Preparação',
+            descricao: item.nomeOriginal || '',
+            observacoes: '',
+          });
+        }
+      );
+
+      console.log(
+        `✅ ${atividadesDaFase.length} atividades de preparação carregadas do CSV`
+      );
+      return atividadesDaFase;
+    }
 
     // PRIORIDADE 1: Usar estrutura hierárquica do PFUS3 se disponível
     if (phasesPFUS3 && phasesPFUS3.length > 0) {
@@ -1056,7 +1357,7 @@ function AppContent() {
             ...paradaData,
             fases: cronogramaData.fases,
           };
-          setParadaData(novasParadaData);
+          updateParadaData(novasParadaData);
           setModoCronograma(true);
 
           // Calcular resumo baseado nas fases
@@ -1129,7 +1430,7 @@ function AppContent() {
         const [operacionalResponse, preparacaoResponse, pfus3Response] =
           await Promise.all([
             fetch('/cronograma-operacional.csv'),
-            fetch('/cronograma-preparacao-real.csv'),
+            fetch('/290805 - Cronograma Preparação - PFUS3.csv'),
             fetch('/250820 - Report PFUS3.csv'),
           ]);
 
@@ -1225,8 +1526,45 @@ function AppContent() {
 
           console.log('📊 Dados processados com sucesso!');
 
-          // Armazenar dados de preparação processados para uso no modal
-          setDadosPreparacaoProcessados(dadosPreparacao);
+          // Verificar se já existem dados de preparação salvos antes de sobrescrever
+          const existingSavedData = localStorage.getItem('preparacao_data');
+          if (existingSavedData) {
+            console.log(
+              '⚠️ Dados de preparação já existem no localStorage - não sobrescrevendo'
+            );
+            console.log(
+              '🔄 Usando dados de preparação salvos em vez dos processados do CSV'
+            );
+
+            // Usar dados salvos em vez dos processados
+            try {
+              const dadosPreparacaoSalvos = JSON.parse(existingSavedData);
+              setDadosPreparacaoProcessados(dadosPreparacaoSalvos);
+              console.log(
+                '✅ Dados de preparação salvos carregados com progresso:',
+                dadosPreparacaoSalvos.fase?.progress ||
+                  dadosPreparacaoSalvos.metadata?.progressoGeral ||
+                  0
+              );
+            } catch (error) {
+              console.warn(
+                '⚠️ Erro ao carregar dados salvos, usando dados processados:',
+                error
+              );
+              setDadosPreparacaoProcessados(dadosPreparacao);
+            }
+          } else {
+            // Armazenar dados de preparação processados para uso no modal apenas se não existem dados salvos
+            setDadosPreparacaoProcessados(dadosPreparacao);
+            console.log(
+              '🔍 Dados de preparação armazenados (carregamento principal):',
+              {
+                estrutura: dadosPreparacao,
+                atividades: dadosPreparacao.atividades?.length || 0,
+                primeiraAtividade: dadosPreparacao.atividades?.[0],
+              }
+            );
+          }
 
           // IMPORTANTE: Criar categoriasCronograma a partir dos dados reais processados
           console.log(
@@ -1239,16 +1577,30 @@ function AppContent() {
             dadosPreparacao.atividades &&
             dadosPreparacao.atividades.length > 0
           ) {
+            // Verificar se existem dados salvos para usar o progresso correto
+            let progressoReal = 100; // Default para 100%
+            try {
+              const savedData = localStorage.getItem('preparacao_data');
+              if (savedData) {
+                const dadosSalvos = JSON.parse(savedData);
+                progressoReal =
+                  dadosSalvos.fase?.progress ||
+                  dadosSalvos.metadata?.progressoGeral ||
+                  100;
+                console.log(
+                  '🔄 Usando progresso real da preparação:',
+                  progressoReal + '%'
+                );
+              }
+            } catch (error) {
+              console.warn('⚠️ Erro ao carregar progresso salvo:', error);
+            }
+
             const categoriaPreparacao: CategoriaCronograma = {
               nome: 'Preparação PFUS3',
               cor: '#10B981', // Verde
               icone: '🔧',
-              progresso: Math.round(
-                dadosPreparacao.atividades.reduce(
-                  (acc, a) => acc + a.percentual,
-                  0
-                ) / dadosPreparacao.atividades.length
-              ),
+              progresso: progressoReal, // Usar progresso real em vez de calcular média
               tarefas: dadosPreparacao.atividades.map(
                 (atividade) =>
                   ({
@@ -1301,84 +1653,322 @@ function AppContent() {
             categoriasCronogramaReais.push(categoriaPreparacao);
           }
 
-          // Adicionar atividades operacionais
+          // Adicionar atividades operacionais separadas por fases específicas
           if (
             dadosOperacional.atividades &&
             dadosOperacional.atividades.length > 0
           ) {
-            const categoriaOperacional: CategoriaCronograma = {
-              nome: 'Operacional PFUS3',
-              cor: '#3B82F6', // Azul
-              icone: '⚙️',
-              progresso: Math.round(
-                (dadosOperacional.atividades.filter(
-                  (a) => a.status === 'completed'
-                ).length *
-                  100) /
-                  dadosOperacional.atividades.length
-              ),
-              tarefas: dadosOperacional.atividades.map(
-                (atividade) =>
-                  ({
-                    id: atividade.id || Math.random().toString(),
-                    nome: atividade.nome,
-                    percentualCompleto:
-                      atividade.status === 'completed'
-                        ? 100
-                        : atividade.status === 'in-progress'
-                          ? 50
-                          : 0,
-                    percentualFisico:
-                      atividade.status === 'completed'
-                        ? 100
-                        : atividade.status === 'in-progress'
-                          ? 50
-                          : 0,
-                    percentualReplanejamento: 0,
-                    percentualFisicoPrev:
-                      atividade.status === 'completed' ? 100 : 50,
-                    percentualFisicoReplan:
-                      atividade.status === 'completed' ? 100 : 50,
-                    percentualFisicoCalc:
-                      atividade.status === 'completed' ? 100 : 50,
-                    duracao: `${atividade.duracao || 1} days`,
-                    inicio:
-                      atividade.dataInicio ||
-                      new Date().toISOString().split('T')[0],
-                    fim:
-                      atividade.dataFim ||
-                      new Date().toISOString().split('T')[0],
-                    inicioBaseline:
-                      atividade.dataInicio ||
-                      new Date().toISOString().split('T')[0],
-                    fimBaseline:
-                      atividade.dataFim ||
-                      new Date().toISOString().split('T')[0],
-                    nivel: atividade.nivel || 0,
-                    categoria: 'Operacional',
-                    // Campos personalizados
-                    responsavel: atividade.responsavel || 'Equipe Operacional',
-                    prioridade: (atividade as any).critica ? 'alta' : 'media',
-                    status:
-                      atividade.status === 'completed'
-                        ? 'concluida'
-                        : atividade.status === 'in-progress'
-                          ? 'em-andamento'
-                          : 'pendente',
-                    dependencias: (atividade as any).dependencias || [],
-                    recursos: (atividade as any).recursos || [],
-                    fase: 'Operacional',
-                  }) as TarefaCronograma & {
-                    responsavel: string;
-                    prioridade: string;
-                    status: string;
-                    dependencias: string[];
-                    recursos: string[];
-                    fase: string;
-                  }
-              ),
+            // Separar atividades por fases
+            const atividadesParada = dadosOperacional.atividades.filter(
+              (a) =>
+                a.nome?.includes('Corte') ||
+                a.nome?.includes('Blackout') ||
+                a.nome?.includes('Procedimentos de Parada')
+            );
+
+            const atividadesManutencao = dadosOperacional.atividades.filter(
+              (a) =>
+                a.nome?.includes('Manutenção') && !a.nome?.includes('Início')
+            );
+
+            const atividadesPartida = dadosOperacional.atividades.filter(
+              (a) =>
+                a.nome?.includes('Procedimentos de Partida') ||
+                a.nome?.includes('Sincronização') ||
+                a.nome?.includes('Partida')
+            );
+
+            // Outras atividades operacionais não categorizadas
+            const outrasAtividades = dadosOperacional.atividades.filter(
+              (a) =>
+                !atividadesParada.includes(a) &&
+                !atividadesManutencao.includes(a) &&
+                !atividadesPartida.includes(a)
+            );
+
+            // Função auxiliar para criar categoria de fase
+            const criarCategoriaFase = (
+              nome: string,
+              atividades: any[],
+              cor: string,
+              icone: string,
+              categoria: string
+            ) => {
+              if (atividades.length === 0) return null;
+
+              return {
+                nome,
+                cor,
+                icone,
+                progresso: Math.round(
+                  (atividades.filter((a) => a.status === 'completed').length *
+                    100) /
+                    atividades.length
+                ),
+                tarefas: atividades.map(
+                  (atividade) =>
+                    ({
+                      id: atividade.id || Math.random().toString(),
+                      nome: atividade.nome,
+                      percentualCompleto:
+                        atividade.status === 'completed'
+                          ? 100
+                          : atividade.status === 'in-progress'
+                            ? 50
+                            : 0,
+                      percentualFisico:
+                        atividade.status === 'completed'
+                          ? 100
+                          : atividade.status === 'in-progress'
+                            ? 50
+                            : 0,
+                      percentualReplanejamento: 0,
+                      percentualFisicoPrev:
+                        atividade.status === 'completed' ? 100 : 50,
+                      percentualFisicoReplan:
+                        atividade.status === 'completed' ? 100 : 50,
+                      percentualFisicoCalc:
+                        atividade.status === 'completed' ? 100 : 50,
+                      duracao: `${atividade.duracao || 1} days`,
+                      inicio:
+                        atividade.dataInicio ||
+                        new Date().toISOString().split('T')[0],
+                      fim:
+                        atividade.dataFim ||
+                        new Date().toISOString().split('T')[0],
+                      inicioBaseline:
+                        atividade.dataInicio ||
+                        new Date().toISOString().split('T')[0],
+                      fimBaseline:
+                        atividade.dataFim ||
+                        new Date().toISOString().split('T')[0],
+                      nivel: atividade.nivel || 0,
+                      categoria,
+                      // Campos personalizados
+                      responsavel:
+                        atividade.responsavel || `Equipe ${categoria}`,
+                      prioridade: (atividade as any).critica ? 'alta' : 'media',
+                      status:
+                        atividade.status === 'completed'
+                          ? 'concluida'
+                          : atividade.status === 'in-progress'
+                            ? 'em-andamento'
+                            : 'pendente',
+                      dependencias: (atividade as any).dependencias || [],
+                      recursos: (atividade as any).recursos || [],
+                      fase: categoria,
+                    }) as TarefaCronograma & {
+                      responsavel: string;
+                      prioridade: string;
+                      status: string;
+                      dependencias: string[];
+                      recursos: string[];
+                      fase: string;
+                    }
+                ),
+              };
             };
-            categoriasCronogramaReais.push(categoriaOperacional);
+
+            // Criar categorias separadas para cada fase
+            const categoriaParada = criarCategoriaFase(
+              'Parada',
+              atividadesParada,
+              '#DC2626', // Vermelho
+              '⏸️',
+              'Parada'
+            );
+
+            const categoriaManutencao = criarCategoriaFase(
+              'Manutenção',
+              atividadesManutencao,
+              '#F59E0B', // Laranja
+              '🔧',
+              'Manutenção'
+            );
+
+            const categoriaPartida = criarCategoriaFase(
+              'Partida',
+              atividadesPartida,
+              '#10B981', // Verde
+              '▶️',
+              'Partida'
+            );
+
+            const categoriaOperacional = criarCategoriaFase(
+              'Outras Operacionais',
+              outrasAtividades,
+              '#3B82F6', // Azul
+              '⚙️',
+              'Operacional'
+            );
+
+            // Adicionar categorias válidas
+            [
+              categoriaParada,
+              categoriaManutencao,
+              categoriaPartida,
+              categoriaOperacional,
+            ]
+              .filter(Boolean)
+              .forEach((categoria) => {
+                categoriasCronogramaReais.push(
+                  categoria as CategoriaCronograma
+                );
+              });
+
+            console.log('🔧 Fases operacionais criadas:', {
+              parada: atividadesParada.length,
+              manutencao: atividadesManutencao.length,
+              partida: atividadesPartida.length,
+              outras: outrasAtividades.length,
+            });
+          }
+
+          // Adicionar dados do arquivo PFUS3 se disponível para análise completa
+          if (dadosPFUS3 && dadosPFUS3.length > 0) {
+            console.log('📄 Processando dados PFUS3 para KPIs...');
+
+            // Agrupar fases PFUS3 por tipo para análise completa
+            dadosPFUS3.forEach((fase) => {
+              // Verificar se já existe uma categoria similar
+              const categoriaExistente = categoriasCronogramaReais.find((cat) =>
+                cat.nome
+                  .toLowerCase()
+                  .includes(fase.name.toLowerCase().split(' ')[0])
+              );
+
+              if (
+                !categoriaExistente &&
+                fase.processedActivities &&
+                fase.processedActivities.length > 0
+              ) {
+                // Criar nova categoria baseada na fase PFUS3
+                const categoriaPFUS3: CategoriaCronograma = {
+                  nome: `${fase.name} (PFUS3)`,
+                  cor:
+                    fase.color === 'text-green-600'
+                      ? '#10B981'
+                      : fase.color === 'text-red-600'
+                        ? '#DC2626'
+                        : fase.color === 'text-orange-600'
+                          ? '#F59E0B'
+                          : fase.color === 'text-blue-600'
+                            ? '#3B82F6'
+                            : '#6B7280',
+                  icone:
+                    fase.icon === 'Power'
+                      ? '⏸️'
+                      : fase.icon === 'Wrench'
+                        ? '🔧'
+                        : fase.icon === 'Play'
+                          ? '▶️'
+                          : fase.icon === 'Settings'
+                            ? '🔧'
+                            : '📋',
+                  progresso: fase.progress || 0,
+                  tarefas: fase.processedActivities.map(
+                    (atividade: any, index: number) => ({
+                      id:
+                        parseInt(`${Date.now()}${index}`) ||
+                        Math.floor(Math.random() * 1000000),
+                      nome:
+                        atividade.name ||
+                        atividade.nome ||
+                        `Atividade ${index + 1}`,
+                      percentualCompleto:
+                        atividade.progress || atividade.percentual || 0,
+                      percentualFisico:
+                        atividade.progress || atividade.percentual || 0,
+                      percentualReplanejamento: 0,
+                      percentualFisicoPrev:
+                        atividade.progress || atividade.percentual || 0,
+                      percentualFisicoReplan:
+                        atividade.progress || atividade.percentual || 0,
+                      percentualFisicoCalc:
+                        atividade.progress || atividade.percentual || 0,
+                      duracao: `${atividade.duration || atividade.duracao || 1} days`,
+                      inicio:
+                        atividade.startDate ||
+                        atividade.dataInicio ||
+                        new Date().toISOString().split('T')[0],
+                      fim:
+                        atividade.endDate ||
+                        atividade.dataFim ||
+                        new Date().toISOString().split('T')[0],
+                      inicioBaseline:
+                        atividade.startDate ||
+                        atividade.dataInicio ||
+                        new Date().toISOString().split('T')[0],
+                      fimBaseline:
+                        atividade.endDate ||
+                        atividade.dataFim ||
+                        new Date().toISOString().split('T')[0],
+                      nivel: 1,
+                      categoria: fase.name,
+                      responsavel:
+                        atividade.responsible ||
+                        atividade.responsavel ||
+                        `Equipe ${fase.name}`,
+                      prioridade:
+                        atividade.critical || atividade.critica
+                          ? 'alta'
+                          : 'media',
+                      status:
+                        (atividade.progress || atividade.percentual) >= 100
+                          ? 'concluida'
+                          : (atividade.progress || atividade.percentual) > 0
+                            ? 'em-andamento'
+                            : 'pendente',
+                      dependencias: atividade.dependencias || [],
+                      recursos: atividade.recursos || [],
+                      fase: fase.name,
+                    })
+                  ),
+                };
+
+                categoriasCronogramaReais.push(categoriaPFUS3);
+                console.log(
+                  `✅ Categoria PFUS3 adicionada: ${fase.name} com ${fase.processedActivities.length} atividades`
+                );
+              } else if (!categoriaExistente && fase.activities > 0) {
+                // Criar categoria apenas com informações básicas se não há atividades processadas
+                const categoriaPFUS3Basica: CategoriaCronograma = {
+                  nome: `${fase.name} (PFUS3)`,
+                  cor:
+                    fase.color === 'text-green-600'
+                      ? '#10B981'
+                      : fase.color === 'text-red-600'
+                        ? '#DC2626'
+                        : fase.color === 'text-orange-600'
+                          ? '#F59E0B'
+                          : fase.color === 'text-blue-600'
+                            ? '#3B82F6'
+                            : '#6B7280',
+                  icone:
+                    fase.icon === 'Power'
+                      ? '⏸️'
+                      : fase.icon === 'Wrench'
+                        ? '🔧'
+                        : fase.icon === 'Play'
+                          ? '▶️'
+                          : fase.icon === 'Settings'
+                            ? '🔧'
+                            : '📋',
+                  progresso: fase.progress || 0,
+                  tarefas: [], // Vazio se não há atividades processadas disponíveis
+                };
+
+                categoriasCronogramaReais.push(categoriaPFUS3Basica);
+                console.log(
+                  `✅ Categoria PFUS3 básica adicionada: ${fase.name} (${fase.activities} atividades)`
+                );
+              }
+            });
+
+            console.log(
+              '📊 Total de categorias após PFUS3:',
+              categoriasCronogramaReais.length
+            );
           }
 
           console.log(
@@ -1429,7 +2019,7 @@ function AppContent() {
               ),
             ].length,
             progressoGeral: Math.round(
-              (dadosPreparacao.metadata.progressoGeral + 0) / 2
+              dadosPreparacao.metadata.progressoGeral || 100
             ),
             diasRestantes: Math.max(
               ...todasFases.map((f) => f.daysRemaining || 0)
@@ -1573,7 +2163,7 @@ function AppContent() {
               return phase;
             });
 
-            setParadaData({
+            updateParadaData({
               ...paradaData,
               phases: updatedPhases,
             });
@@ -1601,8 +2191,37 @@ function AppContent() {
               fase: dadosPreparacao.fase?.name || 'Não definida',
             });
 
-            // Armazenar dados de preparação processados para uso no modal
-            setDadosPreparacaoProcessados(dadosPreparacao);
+            // Verificar se já existem dados de preparação salvos antes de sobrescrever
+            const existingSavedData = localStorage.getItem('preparacao_data');
+            if (existingSavedData) {
+              console.log(
+                '⚠️ Dados de preparação já existem no localStorage - não sobrescrevendo (bloco processamento)'
+              );
+              try {
+                const dadosPreparacaoSalvos = JSON.parse(existingSavedData);
+                setDadosPreparacaoProcessados(dadosPreparacaoSalvos);
+                console.log(
+                  '✅ Dados de preparação salvos mantidos com progresso:',
+                  dadosPreparacaoSalvos.fase?.progress ||
+                    dadosPreparacaoSalvos.metadata?.progressoGeral ||
+                    0
+                );
+              } catch (error) {
+                console.warn(
+                  '⚠️ Erro ao carregar dados salvos (bloco processamento), usando dados processados:',
+                  error
+                );
+                setDadosPreparacaoProcessados(dadosPreparacao);
+              }
+            } else {
+              // Armazenar dados de preparação processados para uso no modal apenas se não existem dados salvos
+              setDadosPreparacaoProcessados(dadosPreparacao);
+              console.log('🔍 Dados de preparação armazenados:', {
+                estrutura: dadosPreparacao,
+                atividades: dadosPreparacao.atividades?.length || 0,
+                primeiraAtividade: dadosPreparacao.atividades?.[0],
+              });
+            }
 
             // Combinar dados das duas fases
             console.log('🔗 Combinando dados das fases...');
@@ -1639,8 +2258,8 @@ function AppContent() {
                 ),
               ].length,
               progressoGeral: Math.round(
-                (dadosPreparacao.metadata.progressoGeral + 0) / 2
-              ), // Operacional ainda não iniciado
+                dadosPreparacao.metadata.progressoGeral || 100
+              ), // Usar progresso real da preparação
               diasRestantes: Math.max(
                 ...todasFases.map((f) => f.daysRemaining || 0)
               ),
@@ -1658,7 +2277,7 @@ function AppContent() {
 
             // Atualizar estado com dados reais
             console.log('💾 Atualizando estado com dados reais...');
-            setParadaData({
+            updateParadaData({
               ...paradaData,
               phases: todasFases,
             });
@@ -1727,12 +2346,26 @@ function AppContent() {
     try {
       // Primeiro, tentar carregar preparação
       try {
-        const responsePrep = await fetch('/cronograma-preparacao-real.csv');
+        const responsePrep = await fetch(
+          '/290805 - Cronograma Preparação - PFUS3.csv'
+        );
         if (responsePrep.ok) {
           const csvTextPrep = await responsePrep.text();
           console.log('✅ CSV Preparação carregado automaticamente!');
           const dadosPreparacao =
             await processarCronogramaPreparacao(csvTextPrep);
+
+          console.log(
+            '🔍 Dados de preparação processados (carregamento automático):',
+            {
+              estrutura: dadosPreparacao,
+              atividades: dadosPreparacao.atividades?.length || 0,
+              primeiraAtividade: dadosPreparacao.atividades?.[0],
+            }
+          );
+
+          // Armazenar dados de preparação processados
+          setDadosPreparacaoProcessados(dadosPreparacao);
 
           // Converter para o formato de categorias
           const categoriaPreparacao: CategoriaCronograma = {
@@ -1864,12 +2497,133 @@ function AppContent() {
     }
   }, []);
 
+  // Função para processar dados de preparação carregados via CSV Manager
+  const handlePreparacaoUpdate = useCallback(
+    (dadosPreparacao: any) => {
+      try {
+        console.log(
+          '🔄 Processando dados de preparação carregados via CSV Manager:',
+          dadosPreparacao
+        );
+
+        // Armazenar os dados processados
+        setDadosPreparacaoProcessados(dadosPreparacao);
+
+        // Salvar dados de preparação no localStorage para persistência
+        localStorage.setItem(
+          'preparacao_data',
+          JSON.stringify(dadosPreparacao)
+        );
+        console.log('💾 Dados de preparação salvos no localStorage');
+
+        // Atualizar dinamicamente os dados de preparação
+        updatePreparacaoData(dadosPreparacao);
+
+        // Converter atividades de preparação para EventAreas se necessário
+        if (
+          dadosPreparacao.atividades &&
+          dadosPreparacao.atividades.length > 0
+        ) {
+          const areasPreparacao: EventArea[] = dadosPreparacao.atividades.map(
+            (atividade: any) => ({
+              id: `prep-${atividade.id}`,
+              name: atividade.nome,
+              description: `${atividade.categoria} - ${atividade.duracao}`,
+              status:
+                atividade.status === 'completed'
+                  ? 'concluida'
+                  : atividade.status === 'in-progress'
+                    ? 'em-andamento'
+                    : atividade.status === 'delayed'
+                      ? 'atrasada'
+                      : 'pendente',
+              progress: atividade.percentual,
+              estimatedDuration: parseInt(atividade.duracao) || 1,
+              actualDuration:
+                atividade.percentual === 100
+                  ? parseInt(atividade.duracao) || 1
+                  : 0,
+              startDate: atividade.dataInicio,
+              endDate: atividade.dataFim,
+              area: atividade.categoria,
+              priority: atividade.critica ? 'alta' : 'normal',
+              responsible: 'Equipe Preparação',
+              activities: [],
+              fase: 'Preparação',
+              categoria: atividade.categoria,
+              nivel: atividade.nivel || 0,
+              atrasada: atividade.atrasada || false,
+            })
+          );
+
+          // Adicionar áreas de preparação às áreas existentes (removendo antigas se existirem)
+          setAreas((prevAreas) => {
+            const areasLimpas = prevAreas.filter(
+              (area) => !String(area.id).startsWith('prep-')
+            );
+            return [...areasLimpas, ...areasPreparacao];
+          });
+
+          console.log(
+            `✅ ${areasPreparacao.length} atividades de preparação adicionadas às áreas`
+          );
+        }
+
+        // Atualizar último update
+        setLastUpdate(new Date());
+
+        // Notification de sucesso
+        notifications.success(
+          'Preparação Carregada',
+          `${dadosPreparacao.atividades?.length || 0} atividades de preparação carregadas com sucesso. Progresso: ${dadosPreparacao.fase?.progress || 0}%`
+        );
+      } catch (error) {
+        console.error('❌ Erro ao processar dados de preparação:', error);
+        notifications.error(
+          'Erro na Preparação',
+          'Erro ao processar dados de preparação carregados'
+        );
+      }
+    },
+    [paradaData, notifications]
+  );
+
   // Carregar dados iniciais - APENAS UMA VEZ
   useEffect(() => {
-    loadData();
-    loadBackendData(); // Carregar dados persistidos do backend
+    // ORDEM CRÍTICA: Carregar dados salvos PRIMEIRO, depois carregamento geral
+    loadSavedPreparacaoData(); // Carregar dados de preparação salvos PRIMEIRO
     loadPFUS3Data(); // Carregar dados PFUS3 salvos (com reprocessamento automático)
+    loadBackendData(); // Carregar dados persistidos do backend
+    loadData(); // Carregar dados gerais por último
   }, []); // Array vazio para executar apenas uma vez na montagem
+
+  // Função para carregar dados de preparação salvos do localStorage
+  const loadSavedPreparacaoData = useCallback(() => {
+    try {
+      const savedPreparacao = localStorage.getItem('preparacao_data');
+      if (savedPreparacao) {
+        const dadosPreparacao = JSON.parse(savedPreparacao);
+        console.log(
+          '📋 Carregando dados de preparação salvos:',
+          dadosPreparacao
+        );
+        console.log(
+          '📊 Progresso da preparação nos dados salvos:',
+          dadosPreparacao.fase?.progress ||
+            dadosPreparacao.metadata?.progressoGeral
+        );
+
+        setDadosPreparacaoProcessados(dadosPreparacao);
+
+        // Atualizar dinamicamente os dados de preparação
+        updatePreparacaoData(dadosPreparacao);
+      } else {
+        console.log('📭 Nenhum dado de preparação encontrado no localStorage');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar dados de preparação salvos:', error);
+    }
+  }, [updatePreparacaoData]);
 
   // Ativar automaticamente o modo atividades quando há dados de cronograma
   useEffect(() => {
@@ -1909,6 +2663,51 @@ function AppContent() {
 
     loadImages();
   }, []);
+
+  // Função para filtrar categorias por fase
+  const filtrarCategoriasPorFase = useCallback(
+    (categorias: CategoriaCronograma[], faseSelecionada: string) => {
+      if (faseSelecionada === 'todas') {
+        return categorias;
+      }
+
+      return categorias.filter((categoria) => {
+        const nomeCategoria = categoria.nome.toLowerCase();
+
+        switch (faseSelecionada) {
+          case 'preparacao':
+            return (
+              nomeCategoria.includes('preparação') ||
+              nomeCategoria.includes('preparacao')
+            );
+          case 'parada':
+            return nomeCategoria.includes('parada');
+          case 'manutencao':
+            return (
+              nomeCategoria.includes('manutenção') ||
+              nomeCategoria.includes('manutencao')
+            );
+          case 'partida':
+            return nomeCategoria.includes('partida');
+          default:
+            return true;
+        }
+      });
+    },
+    []
+  );
+
+  // Categorias filtradas baseadas na fase selecionada
+  const categoriasFiltradas = useMemo(() => {
+    return filtrarCategoriasPorFase(
+      categoriasCronograma,
+      faseAnalyticsSelecionada
+    );
+  }, [
+    categoriasCronograma,
+    faseAnalyticsSelecionada,
+    filtrarCategoriasPorFase,
+  ]);
 
   // Debug: Estados de navegação em tempo real
   useEffect(() => {
@@ -1954,29 +2753,6 @@ function AppContent() {
     isOnline,
   ]);
   */
-
-  // Função de debug para forçar carregamento de dados de demonstração
-  const forcarDadosDemo = () => {
-    console.log('🔧 FORÇANDO carregamento de dados de demonstração...');
-    setIsLoading(true);
-    setLoadingStep('mock');
-
-    try {
-      const mockData = getMockData();
-      console.log('📊 Dados de demonstração:', mockData);
-      setAreas(mockData.areas);
-      setSummary(mockData.summary);
-      setEvolution(mockData.evolution);
-      setIsOnline(false);
-      setModoCronograma(false);
-      setLastUpdate(new Date());
-      console.log('✅ Dados de demonstração carregados!');
-    } catch (error) {
-      console.error('❌ Erro ao carregar dados de demonstração:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Atualização automática desabilitada para evitar refreshs desnecessários
   // useEffect(() => {
@@ -2024,76 +2800,6 @@ function AppContent() {
     loadData();
     notifications.info('Atualizando', 'Buscando os dados mais recentes...');
   };
-
-  // Funções de filtro de atividades (comentadas para evitar warnings ESLint)
-  // const getAtividadesCriticas = (): TarefaCronograma[] => {
-  //   const todasTarefas: TarefaCronograma[] = [];
-  //   categoriasCronograma.forEach((categoria) => {
-  //     todasTarefas.push(...categoria.tarefas);
-  //   });
-
-  //   const hoje = new Date();
-  //   return todasTarefas.filter((tarefa) => {
-  //     if (tarefa.percentualCompleto === 100) return false;
-
-  //     const fimPrevisto = new Date(tarefa.fim);
-  //     const diasParaFim = Math.ceil(
-  //       (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
-  //     );
-
-  //     return diasParaFim <= 3 && diasParaFim >= 0;
-  //   });
-  // };
-
-  // const getAtividadesAtrasadas = (): TarefaCronograma[] => {
-  //   const todasTarefas: TarefaCronograma[] = [];
-  //   categoriasCronograma.forEach((categoria) => {
-  //     todasTarefas.push(...categoria.tarefas);
-  //   });
-
-  //   const hoje = new Date();
-  //   return todasTarefas.filter((tarefa) => {
-  //     if (tarefa.percentualCompleto === 100) return false;
-
-  //     const fimPrevisto = new Date(tarefa.fim);
-  //     const fimBaseline = new Date(tarefa.fimBaseline);
-  //     const diasParaFim = Math.ceil(
-  //       (fimPrevisto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
-  //     );
-
-  //     return diasParaFim < 0 || fimPrevisto > fimBaseline;
-  //   });
-  // };
-
-  // const getAtividadesConcluidas = (): TarefaCronograma[] => {
-  //   const todasTarefas: TarefaCronograma[] = [];
-  //   categoriasCronograma.forEach((categoria) => {
-  //     todasTarefas.push(...categoria.tarefas);
-  //   });
-
-  //   return todasTarefas.filter((tarefa) => tarefa.percentualCompleto === 100);
-  // };
-
-  // const getAtividadesEmAndamento = (): TarefaCronograma[] => {
-  //   const todasTarefas: TarefaCronograma[] = [];
-  //   categoriasCronograma.forEach((categoria) => {
-  //     todasTarefas.push(...categoria.tarefas);
-  //   });
-
-  //   return todasTarefas.filter(
-  //     (tarefa) =>
-  //       tarefa.percentualCompleto > 0 && tarefa.percentualCompleto < 100
-  //   );
-  // };
-
-  // const getAtividadesPendentes = (): TarefaCronograma[] => {
-  //   const todasTarefas: TarefaCronograma[] = [];
-  //   categoriasCronograma.forEach((categoria) => {
-  //     todasTarefas.push(...categoria.tarefas);
-  //   });
-
-  //   return todasTarefas.filter((tarefa) => tarefa.percentualCompleto === 0);
-  // };
 
   // Função para limpar dados salvos - apenas para administradores autenticados
   const limparDados = () => {
@@ -2172,7 +2878,7 @@ function AppContent() {
       return phase;
     });
 
-    setParadaData({
+    updateParadaData({
       ...paradaData,
       phases: updatedPhases,
     });
@@ -2202,7 +2908,7 @@ function AppContent() {
       return phase;
     });
 
-    setParadaData({
+    updateParadaData({
       ...paradaData,
       phases: updatedPhases,
       subtitle: cronograma.metadata.titulo,
@@ -2235,7 +2941,7 @@ function AppContent() {
       return phase;
     });
 
-    setParadaData({
+    updateParadaData({
       ...paradaData,
       phases: updatedPhases,
       subtitle: preparacao.metadata.titulo,
@@ -2259,94 +2965,8 @@ function AppContent() {
           loadData();
         }}
         onPFUS3PhasesUpdate={handlePFUS3PhasesUpdate}
+        onPreparacaoUpdate={handlePreparacaoUpdate}
       />
-
-      {/* Botão de Debug - só aparece se não há dados */}
-      {(!areas || areas.length === 0) &&
-        (!categoriasCronograma || categoriasCronograma.length === 0) && (
-          <div className="fixed top-20 right-4 z-50 space-y-2">
-            <button
-              onClick={forcarDadosDemo}
-              className="block w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg"
-              title="Forçar carregamento de dados de demonstração"
-            >
-              🔧 Debug: Carregar Dados Demo
-            </button>
-            <button
-              onClick={async () => {
-                console.log('� Carregando dados reais dos arquivos CSV...');
-                try {
-                  // Carregar cronograma operacional
-                  const responseCronograma = await fetch(
-                    '/cronograma-operacional.csv'
-                  );
-                  const csvCronograma = await responseCronograma.text();
-                  console.log(
-                    '📄 Cronograma operacional carregado:',
-                    csvCronograma.slice(0, 200)
-                  );
-
-                  // Carregar cronograma de preparação
-                  const responsePreparacao = await fetch(
-                    '/cronograma-preparacao.csv'
-                  );
-                  const csvPreparacao = await responsePreparacao.text();
-                  console.log(
-                    '📄 Cronograma preparação carregado:',
-                    csvPreparacao.slice(0, 200)
-                  );
-
-                  // Processar dados usando as funções existentes
-                  const dadosOperacionais =
-                    await processarCronogramaOperacional(csvCronograma);
-                  const dadosPreparacao =
-                    await processarCronogramaPreparacao(csvPreparacao);
-
-                  console.log('✅ Dados processados:');
-                  console.log('🔧 Operacionais:', dadosOperacionais);
-                  console.log('🔨 Preparação:', dadosPreparacao);
-
-                  // Definir dados (usar a estrutura correta dos tipos)
-                  if (
-                    dadosOperacionais &&
-                    (dadosOperacionais as any).categorias
-                  ) {
-                    setCategoriasCronograma(
-                      (dadosOperacionais as any).categorias
-                    );
-                    if ((dadosOperacionais as any).resumo) {
-                      setResumoCronograma((dadosOperacionais as any).resumo);
-                    }
-                    console.log('✅ Dados operacionais definidos!');
-                  } else if (
-                    dadosPreparacao &&
-                    (dadosPreparacao as any).categorias
-                  ) {
-                    setCategoriasCronograma(
-                      (dadosPreparacao as any).categorias
-                    );
-                    if ((dadosPreparacao as any).resumo) {
-                      setResumoCronograma((dadosPreparacao as any).resumo);
-                    }
-                    console.log('✅ Dados de preparação definidos!');
-                  }
-
-                  notifications.success(
-                    'Dados Carregados',
-                    'Arquivos CSV carregados com sucesso!'
-                  );
-                } catch (error) {
-                  console.error('❌ Erro ao carregar dados:', error);
-                  notifications.error('Erro', 'Erro ao carregar dados CSV');
-                }
-              }}
-              className="block w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg"
-              title="Carregar dados reais dos arquivos CSV"
-            >
-              📊 Carregar CSV Reais
-            </button>
-          </div>
-        )}
 
       {/* Top Navigation */}
       <TopNavigation
@@ -2624,6 +3244,78 @@ function AppContent() {
                   <div className="text-xs bg-yellow-100 p-1 rounded">
                     Aba ativa: {abaAnalytics}
                   </div>
+                </div>
+
+                {/* Seletor de Fases */}
+                <div className="mb-4">
+                  <label
+                    className={`block text-sm font-medium ${themeClasses.textSecondary} mb-2`}
+                  >
+                    🔍 Filtrar por Fase:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: 'todas', nome: 'Todas as Fases', icone: '📊' },
+                      { id: 'preparacao', nome: 'Preparação', icone: '🔧' },
+                      { id: 'parada', nome: 'Parada', icone: '⏸️' },
+                      { id: 'manutencao', nome: 'Manutenção', icone: '🔧' },
+                      { id: 'partida', nome: 'Partida', icone: '▶️' },
+                    ].map((fase) => (
+                      <button
+                        key={fase.id}
+                        onClick={() => {
+                          console.log('🎯 Fase selecionada:', fase.id);
+                          setFaseAnalyticsSelecionada(fase.id);
+                        }}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                          faseAnalyticsSelecionada === fase.id
+                            ? `${themeClasses.bgPrimary} ${themeClasses.textPrimary} shadow-sm`
+                            : `${themeClasses.bgSecondary} ${themeClasses.textSecondary} hover:${themeClasses.textPrimary}`
+                        }`}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>{fase.icone}</span>
+                          <span>{fase.nome}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  {/* Indicador de dados filtrados */}
+                  <div className="mt-2 text-xs text-gray-500">
+                    📊 Mostrando{' '}
+                    <span className="font-semibold text-blue-600">
+                      {categoriasFiltradas.length}
+                    </span>{' '}
+                    de {categoriasCronograma.length} categorias
+                    {faseAnalyticsSelecionada !== 'todas' && (
+                      <span className="ml-1">
+                        (filtrado por:{' '}
+                        <span className="font-semibold text-green-600">
+                          {faseAnalyticsSelecionada === 'preparacao'
+                            ? 'Preparação'
+                            : faseAnalyticsSelecionada === 'parada'
+                              ? 'Parada'
+                              : faseAnalyticsSelecionada === 'manutencao'
+                                ? 'Manutenção'
+                                : faseAnalyticsSelecionada === 'partida'
+                                  ? 'Partida'
+                                  : ''}
+                        </span>
+                        )
+                      </span>
+                    )}
+                    {categoriasFiltradas.length === 0 &&
+                      faseAnalyticsSelecionada !== 'todas' && (
+                        <div className="mt-1 text-yellow-600 text-sm">
+                          ⚠️ Nenhuma categoria encontrada para esta fase.
+                          Carregue os dados do CSV Manager primeiro.
+                        </div>
+                      )}
+                  </div>
+                </div>
+
+                {/* Botões de Analytics */}
+                <div className="flex items-center justify-between mb-4">
                   <div
                     className={`flex ${themeClasses.bgSecondary} rounded-lg p-1`}
                   >
@@ -2735,7 +3427,9 @@ function AppContent() {
                           // Carregar ambos os cronogramas
                           const [responsePreparacao, responseOperacional] =
                             await Promise.all([
-                              fetch('/cronograma-preparacao-real.csv'),
+                              fetch(
+                                '/290805 - Cronograma Preparação - PFUS3.csv'
+                              ),
                               fetch('/cronograma-operacional.csv'),
                             ]);
 
@@ -3041,7 +3735,7 @@ function AppContent() {
                     return null;
                   })()}
                   {/* KPI Dashboard - Aba KPI ativa */}
-                  <KPIDashboard categorias={categoriasCronograma} />
+                  <KPIDashboard categorias={categoriasFiltradas} />
                 </div>
               )}
 
@@ -3049,7 +3743,7 @@ function AppContent() {
                 <div>
                   {/* Gantt Chart - Aba Gantt ativa */}
                   <GanttChart
-                    categorias={categoriasCronograma}
+                    categorias={categoriasFiltradas}
                     onTarefaClick={(tarefa) => {
                       setTarefaSelecionada(tarefa);
                       setModalTarefaDetalhes(true);
@@ -3062,7 +3756,7 @@ function AppContent() {
                 <div>
                   {/* CPM Analysis - Aba CPM ativa */}
                   <CPMAnalysis
-                    categorias={categoriasCronograma}
+                    categorias={categoriasFiltradas}
                     onTarefaClick={(tarefa) => {
                       setTarefaSelecionada(tarefa);
                       setModalTarefaDetalhes(true);
@@ -3073,10 +3767,10 @@ function AppContent() {
 
               {abaAnalytics === 'tendencias' && resumoCronograma && (
                 <div className="space-y-6">
-                  <AIAnalysisComponent categorias={categoriasCronograma} />
-                  <KPIDashboard categorias={categoriasCronograma} />
+                  <AIAnalysisComponent categorias={categoriasFiltradas} />
+                  <KPIDashboard categorias={categoriasFiltradas} />
                   <CPMAnalysis
-                    categorias={categoriasCronograma}
+                    categorias={categoriasFiltradas}
                     onTarefaClick={(tarefa) => {
                       setTarefaSelecionada(tarefa);
                       setModalTarefaDetalhes(true);
@@ -3144,7 +3838,7 @@ function AppContent() {
                 className={`flex items-center justify-between text-sm ${themeClasses.textSecondary}`}
               >
                 <div className="flex items-center space-x-4">
-                  <span>Preparação PFUS3 (73%)</span>
+                  <span>Preparação PFUS3 ({getPreparacaoProgress()}%)</span>
                   {lastUpdate && (
                     <>
                       <span>•</span>
@@ -3193,36 +3887,9 @@ function AppContent() {
         onDataUpdate={loadData}
       />
 
-      {/* System Status */}
-      <SystemStatus
-        isVisible={showSystemStatus}
-        onClose={() => setShowSystemStatus(false)}
-      />
+      {/* System Status e Performance Monitor removidos */}
 
-      {/* Performance Monitor */}
-      <PerformanceMonitor
-        visible={showPerformanceMonitor}
-        dataLoaded={areas.length > 0}
-        activitiesCount={areas.length}
-      />
-
-      {/* Dev Tools (only in development) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 left-4 space-y-2">
-          <button
-            onClick={() => setShowSystemStatus(!showSystemStatus)}
-            className="block px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
-          >
-            📊 Status
-          </button>
-          <button
-            onClick={() => setShowPerformanceMonitor(!showPerformanceMonitor)}
-            className="block px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
-          >
-            ⚡ Performance
-          </button>
-        </div>
-      )}
+      {/* Dev Tools removidos */}
     </div>
   );
 }

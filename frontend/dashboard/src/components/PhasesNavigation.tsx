@@ -26,6 +26,21 @@ const PhasesNavigation: React.FC<PhasesNavigationProps> = ({
 }) => {
   const themeClasses = useThemeClasses();
 
+  // Log para debug
+  React.useEffect(() => {
+    console.log(
+      '🎨 PhasesNavigation renderizado com fases:',
+      phases.map((p) => ({
+        id: p.id,
+        name: p.name,
+        status: p.status,
+        progress: p.progress,
+        completedActivities: p.completedActivities,
+        activities: p.activities,
+      }))
+    );
+  }, [phases]);
+
   const getPhaseIcon = (iconName: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
       Settings: <Settings className="w-8 h-8" />,

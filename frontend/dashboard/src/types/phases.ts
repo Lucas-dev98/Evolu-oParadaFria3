@@ -50,16 +50,77 @@ export interface ParadaData {
   estimatedEndDate: Date;
 }
 
+/**
+ * Calcula o progresso geral baseado no progresso de cada fase,
+ * ponderado pela duração estimada de cada fase
+ */
+export const calculateOverallProgress = (phases: Phase[]): number => {
+  const totalDuration = phases.reduce(
+    (sum, phase) => sum + phase.estimatedDuration,
+    0
+  );
+
+  if (totalDuration === 0) return 0;
+
+  const weightedProgress = phases.reduce((sum, phase) => {
+    const weight = phase.estimatedDuration / totalDuration;
+    return sum + phase.progress * weight;
+  }, 0);
+
+  return Math.round(weightedProgress);
+};
+
+/**
+ * Atualiza os dados da parada com o progresso geral calculado dinamicamente
+ */
+export const updateParadaDataWithCalculatedProgress = (
+  paradaData: ParadaData
+): ParadaData => {
+  const calculatedProgress = calculateOverallProgress(paradaData.phases);
+
+  return {
+    ...paradaData,
+    overallProgress: calculatedProgress,
+  };
+};
+
 // Dados mock das fases
-export const getPhasesMockData = (): ParadaData => ({
-  title: 'EPU - Parada de Usina',
-  subtitle: 'Parada Fria Usina 3 2025',
-  year: 2025,
-  currentPhase: 'preparacao',
-  overallProgress: 73,
-  startDate: new Date('2025-05-31'),
-  estimatedEndDate: new Date('2025-10-14'),
-  phases: [
+export const getPhasesMockData = (dadosPreparacao?: any): ParadaData => {
+  // Calcular progresso real da preparação se dados estão disponíveis
+  let progressoPreparacao = 100; // valor padrão alterado para 100 (dados atualizados)
+
+  // Priorizar dados salvos no localStorage se disponíveis
+  try {
+    const savedData = localStorage.getItem('preparacao_data');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      progressoPreparacao =
+        parsedData.fase?.progress || parsedData.metadata?.progressoGeral || 100;
+      console.log(
+        '🔄 getPhasesMockData: Usando dados salvos com progresso:',
+        progressoPreparacao + '%'
+      );
+    }
+  } catch (error) {
+    console.warn(
+      '⚠️ Erro ao acessar localStorage em getPhasesMockData:',
+      error
+    );
+  }
+
+  // Se dados de preparação foram passados como parâmetro, usar eles
+  if (dadosPreparacao && dadosPreparacao.fase) {
+    progressoPreparacao =
+      dadosPreparacao.fase.progress ||
+      dadosPreparacao.metadata?.progressoGeral ||
+      progressoPreparacao; // Manter o valor obtido do localStorage se parâmetro não tem dados
+    console.log(
+      '🔄 getPhasesMockData: Usando dados do parâmetro com progresso:',
+      progressoPreparacao + '%'
+    );
+  }
+
+  const phases: Phase[] = [
     {
       id: 'preparacao',
       name: 'Preparação',
@@ -69,30 +130,37 @@ export const getPhasesMockData = (): ParadaData => ({
       color: 'text-blue-700',
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-200',
-      status: 'in-progress',
-      progress: 73,
+      status:
+        progressoPreparacao === 100
+          ? 'completed'
+          : progressoPreparacao > 0
+            ? 'in-progress'
+            : 'not-started',
+      progress: progressoPreparacao,
       startDate: new Date('2025-05-31'),
-      estimatedDuration: 111, // 31/05 até 18/09 = ~111 dias
-      activities: 352,
-      completedActivities: 257, // 73% de 352
-      delayedActivities: 38,
-      criticalActivities: 48,
-      onTimeActivities: 57,
-      advancedActivities: 0,
-      estimatedEnd: '18/09/2025',
-      daysRemaining: 32, // dias até 18/09/2025
-      totalTasks: 352,
-      inProgressTasks: 57,
-      pendingTasks: 38,
-      categories: [
+      estimatedDuration: 107, // 31/05 até 14/08 = ~75 dias (ajustado considerando período completo de preparação)
+      activities: dadosPreparacao?.fase?.activities || 352,
+      completedActivities:
+        dadosPreparacao?.fase?.completedActivities ||
+        Math.round((progressoPreparacao * 352) / 100),
+      delayedActivities: dadosPreparacao?.fase?.delayedActivities || 38,
+      criticalActivities: dadosPreparacao?.fase?.criticalActivities || 48,
+      onTimeActivities: dadosPreparacao?.fase?.onTimeActivities || 57,
+      advancedActivities: dadosPreparacao?.fase?.advancedActivities || 0,
+      estimatedEnd: dadosPreparacao?.fase?.estimatedEnd || '14/08/2025', // Fim da preparação / início da parada
+      daysRemaining: dadosPreparacao?.fase?.daysRemaining || 32, // dias até 14/08/2025
+      totalTasks: dadosPreparacao?.fase?.totalTasks || 352,
+      inProgressTasks: dadosPreparacao?.fase?.inProgressTasks || 57,
+      pendingTasks: dadosPreparacao?.fase?.pendingTasks || 38,
+      categories: dadosPreparacao?.fase?.categories || [
         { name: 'Mobilização', delayed: 0, critical: 5, progress: 100 },
         { name: 'Canteiros', delayed: 0, critical: 2, progress: 100 },
-        { name: 'Logística', delayed: 8, critical: 10, progress: 32 },
-        { name: 'Refratário', delayed: 6, critical: 8, progress: 33 },
-        { name: 'Elétrica', delayed: 4, critical: 12, progress: 50 },
-        { name: 'Mecânica do Forno', delayed: 15, critical: 18, progress: 27 },
-        { name: 'Ventiladores', delayed: 2, critical: 5, progress: 0 },
-        { name: 'Bogiflex', delayed: 3, critical: 8, progress: 45 },
+        { name: 'Logística', delayed: 0, critical: 10, progress: 100 },
+        { name: 'Refratário', delayed: 0, critical: 8, progress: 100 },
+        { name: 'Elétrica', delayed: 0, critical: 12, progress: 100 },
+        { name: 'Mecânica do Forno', delayed: 0, critical: 18, progress: 100 },
+        { name: 'Ventiladores', delayed: 0, critical: 5, progress: 100 },
+        { name: 'Bogiflex', delayed: 0, critical: 8, progress: 100 },
       ],
     },
     {
@@ -136,15 +204,15 @@ export const getPhasesMockData = (): ParadaData => ({
       borderColor: 'border-orange-200',
       status: 'not-started',
       progress: 0,
-      estimatedDuration: 54, // 15/08 até 07/10 = ~54 dias
+      estimatedDuration: 51, // 26/08 até 16/10 = ~51 dias (ajustado para incluir período completo)
       activities: 1, // Manutenção principal
       completedActivities: 0,
       delayedActivities: 0,
       criticalActivities: 1, // Manutenção é crítica
       onTimeActivities: 0,
       advancedActivities: 0,
-      estimatedEnd: '07/10/2025',
-      daysRemaining: 51, // dias até 07/10/2025
+      estimatedEnd: '08/10/2025', // Fim da manutenção / início da partida
+      daysRemaining: 51, // dias até 08/10/2025
       totalTasks: 1,
       inProgressTasks: 0,
       pendingTasks: 1,
@@ -165,15 +233,15 @@ export const getPhasesMockData = (): ParadaData => ({
       borderColor: 'border-green-200',
       status: 'not-started',
       progress: 0,
-      estimatedDuration: 36, // 08/09 até 14/10 = ~36 dias (856 hrs ÷ 24)
+      estimatedDuration: 8, // 08/10 até 16/10 = ~8 dias
       activities: 1, // Procedimentos de Partida
       completedActivities: 0,
       delayedActivities: 0,
       criticalActivities: 1, // Partida é crítica
       onTimeActivities: 0,
       advancedActivities: 0,
-      estimatedEnd: '14/10/2025',
-      daysRemaining: 58, // dias até 14/10/2025
+      estimatedEnd: '16/10/2025', // Data final do projeto PFUS3
+      daysRemaining: 58, // dias até 16/10/2025
       totalTasks: 1,
       inProgressTasks: 0,
       pendingTasks: 1,
@@ -184,5 +252,19 @@ export const getPhasesMockData = (): ParadaData => ({
         { name: 'Procedimentos', delayed: 0, critical: 0, progress: 0 },
       ],
     },
-  ],
-});
+  ];
+
+  // Calcular progresso geral baseado nas fases
+  const overallProgress = calculateOverallProgress(phases);
+
+  return {
+    title: 'EPU - Parada de Usina',
+    subtitle: 'Parada Fria Usina 3 2025',
+    year: 2025,
+    currentPhase: 'preparacao',
+    overallProgress, // Agora calculado dinamicamente
+    startDate: new Date('2025-05-31'), // Primeiro dia de preparação (Mobilização da Equipe de Apoio de Elétrica)
+    estimatedEndDate: new Date('2025-10-16'), // Último dia de partida (Parada Fria da Usina 3 Concluída)
+    phases,
+  };
+};

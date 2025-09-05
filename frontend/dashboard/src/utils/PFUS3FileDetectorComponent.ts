@@ -16,8 +16,9 @@ export class PFUS3FileDetectorComponent {
     // Detecção por nome do arquivo
     if (fileName) {
       if (
-        fileName.includes('250805') ||
-        fileName.toLowerCase().includes('preparacao')
+        fileName.includes('290805') ||
+        fileName.toLowerCase().includes('preparacao') ||
+        fileName.toLowerCase().includes('preparação')
       ) {
         console.log('🔍 Tipo detectado por nome do arquivo: Preparação');
         return 'preparacao';
@@ -34,11 +35,14 @@ export class PFUS3FileDetectorComponent {
     // Detecção por conteúdo do cabeçalho
     const isPreparacaoFile =
       header.includes('ID,Nome da tarefa,% Complete') ||
+      header.includes('Physical % Complete') ||
       csvContent.includes('Cronograma de Preparação - PFUS3') ||
-      header.includes('Physical % Complete');
+      csvContent.includes('Cronograma Preparação - PFUS3') ||
+      header.includes('Duration,Start,Finish');
 
     const isReportFile =
       header.includes('Id;Id_exclusiva;Nivel') ||
+      header.includes('Id;Id_exclusiva;N�vel') ||
       csvContent.includes('Report PFUS3') ||
       header.includes('EDT;Nome;');
 

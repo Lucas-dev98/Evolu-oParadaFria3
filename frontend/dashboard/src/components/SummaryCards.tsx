@@ -5,9 +5,13 @@ import { DashboardSummary } from '../types';
 
 interface SummaryCardsProps {
   summary: DashboardSummary;
+  preparacaoProgress?: number; // Nova prop para progresso dinâmico
 }
 
-const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
+const SummaryCards: React.FC<SummaryCardsProps> = ({
+  summary,
+  preparacaoProgress = 73,
+}) => {
   const themeClasses = useThemeClasses();
 
   const cards = [
@@ -29,11 +33,11 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
     },
     {
       title: 'Preparação PFUS3',
-      value: `73%`,
+      value: `${preparacaoProgress}%`,
       subtitle: 'cronograma geral completo',
       icon: Activity,
       color: 'green',
-      percentage: 73,
+      percentage: preparacaoProgress,
     },
     {
       title: 'Status Atual',
@@ -41,7 +45,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       subtitle: 'Fase ativa do projeto',
       icon: Calendar,
       color: 'purple',
-      percentage: 73,
+      percentage: preparacaoProgress,
     },
   ];
 
